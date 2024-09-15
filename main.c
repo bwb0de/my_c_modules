@@ -33,27 +33,3 @@ int main() {
     return 0;
 }
 */
-
-
-#include <stdio.h>
-#include "lib/matrizes.h"
-
-int main() {
-    Matriz mat;
-    int linhas = 3, colunas = 3;
-
-    // Criando a matriz dinamicamente
-    criar_matriz(&mat, linhas, colunas);
-
-    // Preenchendo a matriz com o valor 7
-    preencher_matriz(&mat, 7);
-
-    // Imprimindo a matriz
-    printf("Matriz preenchida:\n");
-    imprimir_matriz(&mat);
-
-    // Liberando a memória da matriz
-    liberar_matriz(&mat);
-
-    return 0;
-}

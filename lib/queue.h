@@ -10,12 +10,13 @@ typedef struct {
 } Fila;
 
 
-struct Fila* criar_fila();
-void apagar_fila(struct Fila *f);
-void enfileirar(int n, struct Fila *f);
-int desenfileirar(struct Fila *p);
-void mostrar_fila(struct Fila *f);
-struct Fila* reconstruir_fila(struct Fila *old_f);
+Fila* criar_fila();
+void liberar_fila(Fila *f);
+void enfileirar(int n, Fila *f);
+int desenfileirar(Fila *f);
+void mostrar_fila(Fila *f);
+Fila* reconstruir_fila(Fila *old_f);
+int tamanho_fila(Fila *f);
 
 #endif
 

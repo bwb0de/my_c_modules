@@ -8,11 +8,17 @@ typedef struct {
     int elementos[TAM_MAX_PILHA];
 } Pilha;
 
+typedef struct {
+    int contagem;
+    void *elementos[TAM_MAX_PILHA];
+} Pilha_de_Ponteiros;
 
-struct Pilha* criar_pilha();
-void apagar_pilha(struct Pilha *p);
-void empilhar(int n, struct Pilha *p);
-int desempilhar(struct Pilha *p);
-void mostrar_pilha(struct Pilha *p);
 
-#endif
+Pilha* criar_pilha();
+void liberar_pilha(Pilha *p);
+void empilhar(int n, Pilha *p);
+int desempilhar(Pilha *p);
+int tamanho_pilha(Pilha *p);
+void mostrar_pilha(Pilha *p);
+
+#endif 
