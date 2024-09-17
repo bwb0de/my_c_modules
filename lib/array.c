@@ -1,37 +1,9 @@
+#include "array.h"
+#include "mathext.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
-#define ARRAY_DEFAULT_LEN 15
-
-typedef enum { INT_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY } TipoArray;
-
-
-typedef struct {
-    int contador;
-    int *elementos;
-    TipoArray tipo;
-    int maximo;
-    int minimo;
-    double media;
-} ArrayInteiros;
-
-typedef struct {
-    int contador;
-    float *elementos;
-    TipoArray tipo;
-    float maximo;
-    float minimo;
-    double media;    
-} ArrayFloats;
-
-typedef struct {
-    int contador;
-    double *elementos;
-    TipoArray tipo;
-    double maximo;
-    double minimo;
-    double media;    
-} ArrayDoubles;
 
 ArrayInteiros* criar_array_inteiros() {
     ArrayInteiros *arr = (ArrayInteiros *)malloc(sizeof(ArrayInteiros));
@@ -228,6 +200,137 @@ void array_element_swap(int i1, int i2, void *arr) {
     }
 }
 
+
+
+void array_reverse(void *arr) {
+    TipoArray tipo = ((ArrayInteiros *)arr)->tipo;
+    
+    switch (tipo) {
+        case INT_ARRAY: {
+            ArrayInteiros *arr_int = (ArrayInteiros *)arr;
+                int i = 0;
+                int j = arr_int->contador - 1;
+                while (j > i) {
+                    array_element_swap(i, j, arr_int);
+                    i++; j--;
+                }           
+            break;
+        }
+        case FLOAT_ARRAY: {
+            ArrayFloats *arr_float = (ArrayFloats *)arr;
+                int i = 0;
+                int j = arr_float->contador - 1;
+                while (j > i) {
+                    array_element_swap(i, j, arr_float);
+                    i++; j--;
+                }  
+            break;
+        }
+        case DOUBLE_ARRAY: {
+            ArrayDoubles *arr_double = (ArrayDoubles *)arr;
+                int i = 0;
+                int j = arr_double->contador - 1;
+                while (j > i) {
+                    array_element_swap(i, j, arr_double);
+                    i++; j--;
+                }  
+            break;
+        }
+        default:
+            break;
+    }    
+}
+
+void array_quicksort(ArrayInteiros *arr) {
+
+    
+}
+
+void array_quicksort_part(ArrayInteiros *arr) {
+
+}
+
+ParMinMaxInteiros array_slice_min_max_index(int i1, int i2, ArrayInteiros *arr) {
+    if ( i1 >= arr->contador || i2+1 >= arr->contador ) {
+        printf("Slice além dos limites do array...");
+    }
+
+    ParMinMaxInteiros resultado;
+    ParMinMaxInteiros resultado_index;
+    resultado.min = INT_MAX;
+    resultado.max = INT_MIN;
+
+    for (int i = i1; i < i2+1; i++) {
+        if ( arr->elementos[i] > resultado.max ) { 
+            resultado.max = arr->elementos[i]; 
+            resultado_index.max = i; 
+        }
+        if ( arr->elementos[i] < resultado.min ) { 
+            resultado.min = arr->elementos[i]; 
+            resultado_index.min = i; 
+        }
+    }
+
+    return resultado_index;
+}
+
+void array_simple_sort(void *arr) {
+    // Min Max sort
+    TipoArray tipo = ((ArrayInteiros *)arr)->tipo;
+    
+    switch (tipo) {
+        case INT_ARRAY: {
+            ArrayInteiros *arr_int = (ArrayInteiros *)arr;
+            int i = 0;
+            int j = arr_int->contador-1;    
+
+            ParMinMaxInteiros min_max;
+
+            while ( i < j ) {
+                min_max = array_slice_min_max_index(i, j, arr_int);
+                array_element_swap(i, min_max.min, arr_int);
+                array_element_swap(j, min_max.max, arr_int);
+                i++; j--;
+            }          
+            break;
+        }
+        case FLOAT_ARRAY: {
+            ArrayFloats *arr_float = (ArrayFloats *)arr;
+            int i = 0;
+            int j = arr_float->contador-1;    
+
+            ParMinMaxInteiros min_max;
+
+            while ( i < j ) {
+                min_max = array_slice_min_max_index(i, j, arr_float);
+                array_element_swap(i, min_max.min, arr_float);
+                array_element_swap(j, min_max.max, arr_float);
+                i++; j--;
+            }
+            break;
+        }
+        case DOUBLE_ARRAY: {
+            ArrayDoubles *arr_double = (ArrayDoubles *)arr;
+            int i = 0;
+            int j = arr_double->contador-1;    
+
+            ParMinMaxInteiros min_max;
+
+            while ( i < j ) {
+                min_max = array_slice_min_max_index(i, j, arr_double);
+                array_element_swap(i, min_max.min, arr_double);
+                array_element_swap(j, min_max.max, arr_double);
+                i++; j--;
+            }
+            break;
+        }
+        default:
+            break;
+    }    
+}
+
+
+
 void liberar_array(void *arr) {
     TipoArray tipo = ((ArrayInteiros *)arr)->tipo;
     
@@ -284,16 +387,22 @@ void calcular_memoria_usada(void *arr) {
 void _teste_array_inteiros() {
     _memoria_array_inteiros();
     ArrayInteiros *a1 = criar_array_inteiros();
-    printf("Contador array (int): %d\n", a1->contador);
+    //printf("Contador array (int): %d\n", a1->contador);
     printf("Adicionando elementos...\n");
-    int d = 33;
-    for (int i = 0; i < 32; i++) {
-        array_push(&d, a1);
-        d += 8;
-    }
+    int d = 4 ; array_push(&d, a1);
+        d = 6 ; array_push(&d, a1);
+        d = 8 ; array_push(&d, a1);
+        d = 2 ; array_push(&d, a1);
+        d = 10; array_push(&d, a1);
+        d = 3 ; array_push(&d, a1);
+        d = 7 ; array_push(&d, a1);
+        d = 4 ; array_push(&d, a1);
+        d = 5 ; array_push(&d, a1);
+    
     array_list(a1);
     printf("Contador array (int): %d\n", a1->contador);    
 
+    /*
     printf("Retirando elementos...\n");
     int* e_int = (int*)array_pop(a1);
     if (e_int != NULL) {
@@ -321,11 +430,19 @@ void _teste_array_inteiros() {
     array_push(&d, a1); 
     array_list(a1);
     printf("Contador array (int): %d\n", a1->contador);    
-    printf("Trocando elementos de posição...\n");
-    array_element_swap(0, 25, a1);
-    array_element_swap(5, 125, a1);
+    printf("Invertando array...\n");
+    array_reverse(a1);
     array_list(a1);
-    
+    if ( a1->contador-1 % 2 == 0) {
+        printf("Array com quantidade par de elementos...\n");
+    } else {
+        printf("Array com quantidade ímpar de elementos...\n");
+    }*/
+    //array_simple_sort(a1);
+
+    array_simple_sort(a1);
+    array_list(a1);
+
     liberar_array(a1);
 }
 
