@@ -14,13 +14,13 @@ typedef struct {
 typedef struct {
     float min;
     float max;
-} ParMinMaxFloat;
+} ParMinMaxFloats;
 
 
 typedef struct {
     double min;
     double max;
-} ParMinMaxDouble;
+} ParMinMaxDoubles;
 
 
 typedef struct {
@@ -63,8 +63,8 @@ void array_list(void *arr);
 void array_element_swap(int i1, int i2, void *arr);
 void array_reverse(void *arr);
 
-ParMinMaxInteiros array_slice_min_max_index(int i1, int i2, ArrayInteiros *arr); //mudar para void
-void array_simple_sort(void *arr);
+ParMinMaxInteiros array_slice_min_max_index(int i1, int i2, void *arr); 
+void array_sort_min_max(void *arr);
 void liberar_array(void *arr);
 
 void _memoria_array_inteiros();

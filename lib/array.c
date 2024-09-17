@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <float.h>
 
 
 ArrayInteiros* criar_array_inteiros() {
@@ -250,31 +251,93 @@ void array_quicksort_part(ArrayInteiros *arr) {
 
 }
 
-ParMinMaxInteiros array_slice_min_max_index(int i1, int i2, ArrayInteiros *arr) {
-    if ( i1 >= arr->contador || i2+1 >= arr->contador ) {
-        printf("Slice além dos limites do array...");
-    }
+ParMinMaxInteiros array_slice_min_max_index(int i1, int i2, void *arr) {
+    TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
 
-    ParMinMaxInteiros resultado;
-    ParMinMaxInteiros resultado_index;
-    resultado.min = INT_MAX;
-    resultado.max = INT_MIN;
+    switch (tipo) {
+        case INT_ARRAY: {
+            ArrayInteiros *arr_int = (ArrayInteiros *)arr;
+			if ( i1 >= arr_int->contador || i2 >= arr_int->contador ) {
+				printf("Slice além dos limites do array...\n");
+			}
 
-    for (int i = i1; i < i2+1; i++) {
-        if ( arr->elementos[i] > resultado.max ) { 
-            resultado.max = arr->elementos[i]; 
-            resultado_index.max = i; 
+			ParMinMaxInteiros resultado;
+			ParMinMaxInteiros resultado_index;
+			resultado.min = INT_MAX;
+			resultado.max = INT_MIN;
+
+			for (int i = i1; i < i2+1; i++) {
+				if ( arr_int->elementos[i] > resultado.max ) { 
+					resultado.max = arr_int->elementos[i]; 
+					resultado_index.max = i; 
+				}
+				if ( arr_int->elementos[i] < resultado.min ) { 
+					resultado.min = arr_int->elementos[i]; 
+					resultado_index.min = i; 
+				}
+			}
+
+			return resultado_index;
+            break;
+
         }
-        if ( arr->elementos[i] < resultado.min ) { 
-            resultado.min = arr->elementos[i]; 
-            resultado_index.min = i; 
-        }
-    }
+        case FLOAT_ARRAY: {
+            ArrayFloats *arr_float = (ArrayFloats *)arr;
+			if ( i1 >= arr_float->contador || i2 >= arr_float->contador ) {
+				printf("Slice além dos limites do array...\n");
+			}
 
-    return resultado_index;
+			ParMinMaxFloats resultado;
+			ParMinMaxInteiros resultado_index;
+			resultado.min = FLT_MAX;
+			resultado.max = FLT_MIN;
+
+			for (int i = i1; i < i2+1; i++) {
+				if ( arr_float->elementos[i] > resultado.max ) { 
+					resultado.max = arr_float->elementos[i]; 
+					resultado_index.max = i; 
+				}
+				if ( arr_float->elementos[i] < resultado.min ) { 
+					resultado.min = arr_float->elementos[i]; 
+					resultado_index.min = i; 
+				}
+			}
+
+			return resultado_index;
+            break;
+
+        }
+        case DOUBLE_ARRAY: {
+            ArrayDoubles *arr_double = (ArrayDoubles *)arr;
+			if ( i1 >= arr_double->contador || i2 >= arr_double->contador ) {
+				printf("Slice além dos limites do array...\n");
+			}
+
+			ParMinMaxDoubles resultado;
+			ParMinMaxInteiros resultado_index;
+			resultado.min = DBL_MAX;
+			resultado.max = DBL_MIN;
+
+			for (int i = i1; i < i2+1; i++) {
+				if ( arr_double->elementos[i] > resultado.max ) { 
+					resultado.max = arr_double->elementos[i]; 
+					resultado_index.max = i; 
+				}
+				if ( arr_double->elementos[i] < resultado.min ) { 
+					resultado.min = arr_double->elementos[i]; 
+					resultado_index.min = i; 
+				}
+			}
+
+			return resultado_index;
+            break;
+        }
+        default:
+            break;
+	}
 }
 
-void array_simple_sort(void *arr) {
+void array_sort_min_max(void *arr) {
     // Min Max sort
     TipoArray tipo = ((ArrayInteiros *)arr)->tipo;
     
@@ -401,8 +464,9 @@ void _teste_array_inteiros() {
     
     array_list(a1);
     printf("Contador array (int): %d\n", a1->contador);    
-
-    /*
+	printf("Ordenando...\n", a1->contador);    
+    array_sort_min_max(a1);
+    array_list(a1);
     printf("Retirando elementos...\n");
     int* e_int = (int*)array_pop(a1);
     if (e_int != NULL) {
@@ -433,34 +497,58 @@ void _teste_array_inteiros() {
     printf("Invertando array...\n");
     array_reverse(a1);
     array_list(a1);
-    if ( a1->contador-1 % 2 == 0) {
-        printf("Array com quantidade par de elementos...\n");
-    } else {
-        printf("Array com quantidade ímpar de elementos...\n");
-    }*/
-    //array_simple_sort(a1);
-
-    array_simple_sort(a1);
-    array_list(a1);
-
     liberar_array(a1);
 }
 
 void _teste_array_floats() {
+	_memoria_array_floats();
     ArrayFloats *a1 = criar_array_floats();
-    float d = 33.9;
-    for (int i = 0; i < 32; i++) {
-        array_push(&d, a1);
-        d += 8.7;
-    }
+    printf("Adicionando elementos...\n");
+    float d = 33.9  ; array_push(&d, a1);
+          d = 6.98  ; array_push(&d, a1);
+          d = 8.23  ; array_push(&d, a1);
+          d = 2.5   ; array_push(&d, a1);
+          d = 10.23 ; array_push(&d, a1);
+          d = 3.98  ; array_push(&d, a1);
+          d = 7.78  ; array_push(&d, a1);
+          d = 4.43  ; array_push(&d, a1);
+          d = 5.27  ; array_push(&d, a1);
+    
     array_list(a1);
+    printf("Contador array (float): %d\n", a1->contador);    
+	printf("Ordenando...\n", a1->contador);    
+    array_sort_min_max(a1);
+    array_list(a1);
+    printf("Retirando elementos...\n");
     float* e_float = (float*)array_pop(a1);
     if (e_float != NULL) {
-        printf("\n\nPop: %f\n\n", *e_float);
+        printf("Pop: %f\n", *e_float);
     }
+    e_float = (float*)array_pop(a1);
+    if (e_float != NULL) {
+        printf("Pop: %f\n", *e_float);
+    }
+    e_float = (float*)array_pop(a1);
+    if (e_float != NULL) {
+        printf("Pop: %f\n", *e_float);
+    }
+    e_float = (float*)array_pop(a1);
+    if (e_float != NULL) {
+        printf("Pop: %f\n", *e_float);
+    }
+
     array_list(a1);
-    printf("\nContador array (float): %d\n", a1->contador);    
-    array_list(a1); 
+    printf("Contador array (float): %d\n", a1->contador);    
+
+    printf("Adicionando elementos...\n");
+    array_push(&d, a1);
+    array_push(&d, a1);
+    array_push(&d, a1); 
+    array_list(a1);
+    printf("Contador array (float): %d\n", a1->contador);    
+    printf("Invertando array...\n");
+    array_reverse(a1);
+    array_list(a1);
     liberar_array(a1);
 }
 
@@ -484,6 +572,7 @@ void _teste_array_doubles() {
 
 // Apagar
 int main() {
+	_teste_array_floats();
     _teste_array_inteiros();
     return 0;
 }
