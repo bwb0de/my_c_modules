@@ -16,6 +16,7 @@ char input[256]; /* quary recieve bufer */
 main() {
     port_init( PORT,0xe3 ); /* initilize serial port:baud = 9600,no verify,1 bit stop,8 bit data */
     string_wr( "trig:sour bus;*trg" );
+
     string_rd( input );
     printf( "\n%s",input );
     string_wr( "freq 10khz" );
