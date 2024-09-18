@@ -1,5 +1,6 @@
 #include <stdio.h>    // stdio.h: Funções de entrada e saída (ex.: printf, scanf).
 #include <stdlib.h>   // stdlib.h: Funções de utilidades padrão (ex.: malloc, free).
+#include <assert.h>
 #include "queue.h"
 
 #define TAM_MAX_FILA 300
@@ -19,6 +20,11 @@ Fila* criar_fila() {
 
 void liberar_fila(Fila *f) {
     free(f);
+}
+
+void esvaziar_fila(Fila *f) {
+    f->primeiro_elemento = 0;
+    f->ultimo_elemento = 0;
 }
 
 void enfileirar(int n, Fila *f) {
@@ -56,4 +62,45 @@ Fila* reconstruir_fila(Fila *old_f) {
 
 int tamanho_fila(Fila *f) {
     return f->ultimo_elemento - f-> primeiro_elemento;
+}
+
+void _memoria_fila() {
+    //Stack
+    printf("Memória fila: %zu bytes\n", sizeof(Fila));
+}
+
+void main() {//_teste_fila() {
+    Fila *f = criar_fila();
+    printf("Elementos:\n");
+    enfileirar(12,f);
+    enfileirar(25,f);
+    enfileirar(26,f);
+    enfileirar(27,f);
+    enfileirar(12,f);
+    enfileirar(22,f);
+    enfileirar(47,f);
+    enfileirar(24,f);
+    enfileirar(26,f);
+    enfileirar(27,f);
+    mostrar_fila(f);
+    printf("Tamanho: %d\n", tamanho_fila(f));
+    
+    //assert(tamanho_fila(f) == 10);
+    //assert(desenfileirar(f) == 12);
+    //assert(desenfileirar(f) == 25);
+    //assert(desenfileirar(f) == 26);
+    //assert(tamanho_fila(f) == 7);
+    printf("Elementos após desenfileirar:\n");
+    mostrar_fila(f);
+    printf("Tamanho depois de desenfileirar 3 vezes: %d\n", tamanho_fila(f));
+    printf("Esvaziando fila...\n");
+    esvaziar_fila(f);
+    printf("Tamanho depois de esvaziar fila: %d\n", tamanho_fila(f));
+    mostrar_fila(f);
+    printf("Enfileirando 3 elementos...\n");
+    enfileirar(27,f);
+    enfileirar(77,f);
+    enfileirar(28,f);
+    mostrar_fila(f);
+    liberar_fila(f);    
 }

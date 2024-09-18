@@ -58,13 +58,13 @@ ArrayFloats* criar_array_floats();
 ArrayDoubles* criar_array_doubles();
 
 void array_push(void *element, void *arr);
-void* array_pop(void *arr);
-void array_list(void *arr);
-void array_element_swap(int i1, int i2, void *arr);
+const void* array_pop(void *arr);
+void array_elements_list(void *arr);
+void array_elements_swap(int i1, int i2, void *arr);
 void array_reverse(void *arr);
 
-ParMinMaxInteiros array_slice_min_max_index(int i1, int i2, void *arr); 
-void array_sort_min_max(void *arr);
+void array_sort_min_max(void *arr); // Mover para sorting
+
 void liberar_array(void *arr);
 
 void _memoria_array_inteiros();

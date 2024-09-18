@@ -11,12 +11,13 @@ typedef struct {
 
 
 Fila* criar_fila();
-void liberar_fila(Fila *f);
 void enfileirar(int n, Fila *f);
 int desenfileirar(Fila *f);
 void mostrar_fila(Fila *f);
 Fila* reconstruir_fila(Fila *old_f);
 int tamanho_fila(Fila *f);
+void esvaziar_fila(Fila *f);
+void liberar_fila(Fila *f);
 
 #endif
 
