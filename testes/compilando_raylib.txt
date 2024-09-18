@@ -1,0 +1,21 @@
+### Linux POP_OS
+# primeiro instalar dependencias:
+sudo apt update
+sudo apt install build-essential libasound2-dev libpulse-dev libx11-dev libxcursor-dev libxi-dev libxrandr-dev libxinerama-dev libx11-xcb-dev libgl1-mesa-dev
+
+# baixar compilar e instalar raylib
+git clone https://github.com/raysan5/raylib.git
+cd raylib/src
+make PLATFORM=PLATFORM_DESKTOP
+sudo make install
+
+# para compilar o arquivo do jogo use o comando:
+gcc jogo.c -o jogo -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+
+
+
+### Windows
+
+# para compilar o arquivo do jogo use o comando
+gcc jogo.c -o jogo -lraylib -lopengl32 -lgdi32 -lwinmm
+gcc jogo.c -o jogo -L<diretório_da_raylib> -lraylib -lopengl32 -lgdi32 -lwinmm [alternativa]
