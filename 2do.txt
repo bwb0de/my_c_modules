@@ -4,45 +4,45 @@ Observações:
  *criar de análise da memória em todos módulos "_", "_memoria..."
  *ao criar criar funções auxiliares PRIVADAS utilizar o prefixo "_aux_"
 
-[ ] solucionar problema com a inicialização de "raylib"
-[ ] implementar funções e estruturas básicas para jogos: gamming.c/h;
-   - [ ] struct score;
-   - [ ] struct vida;
+(~) solucionar problema com a inicialização de "raylib"
+( ) implementar funções e estruturas básicas para jogos: gamming.c/h;
+   - ( ) struct score;
+   - ( ) struct vida;
 
-[x] corrigir erro em array.c/h;
-   - [x] ordenamento min/max, provável choque quando há coincidência entre números min/max e indices limites i1 e i2 do slice.
-   - [ ] mover "array_sort_min_max(void *arr)" para sorting.c/h
+( ) corrigir erro em array.c/h;
+   - (x) ordenamento min/max, provável choque quando há coincidência entre números min/max e indices limites i1 e i2 do slice.
+   - ( ) mover "array_sort_min_max(void *arr)" para sorting.c/h
 
 
-[ ] ampliar funções em queue.c/h;
-   - [ ] criar métodos alternativos para criação de fila em memória stack ou heap;
-   - [ ] verificar alocação dinâmica de fila;
-   - [ ] verificar se liberação de memória implementada em fila é efetivas;
+( ) ampliar funções em queue.c/h;
+   - ( ) criar métodos alternativos para criação de fila em memória stack ou heap;
+   - ( ) verificar alocação dinâmica de fila;
+   - ( ) verificar se liberação de memória implementada em fila é efetivas;
 
-[ ] ampliar funções em pilha.c/h;
-   - [ ] criar métodos alternativos para criação de pilha em memória stack ou heap;
-   - [ ] verificar alocação dinâmica de pilha;
-   - [ ] verificar se liberação de memória implementada pilha é efetivas;
+( ) ampliar funções em pilha.c/h;
+   - ( ) criar métodos alternativos para criação de pilha em memória stack ou heap;
+   - ( ) verificar alocação dinâmica de pilha;
+   - ( ) verificar se liberação de memória implementada pilha é efetivas;
 
-[ ] ampliar funções em io_cli.c/h;
-   - [ ] criar menu de seleção CLI;
-   - [ ] criar função de limpar a tela;
+( ) ampliar funções em io_cli.c/h;
+   - ( ) criar menu de seleção CLI;
+   - ( ) criar função de limpar a tela;
 
-[ ] ampliar funções em io_cli.c/h;
-   - [ ] criar menu de seleção CLI;
-   - [ ] criar função de limpar a tela;
+( ) ampliar funções em io_cli.c/h;
+   - ( ) criar menu de seleção CLI;
+   - ( ) criar função de limpar a tela;
 
-[ ] implementar arquivo sorting.c/h;
-   - [ ] implementar mergesort não recursivo;
-   - [ ] implementar quicksort não recursivo;
-   - [ ] implementar insertionsort não recursivo;
+( ) implementar arquivo sorting.c/h;
+   - ( ) implementar mergesort não recursivo;
+   - ( ) implementar quicksort não recursivo;
+   - ( ) implementar insertionsort não recursivo;
 
-[ ] implementar cycling.c;
-[ ] implementar io_textfile.c/h;
-[ ] implementar logfile.c/h;
-[ ] implementar linkedlist.c/h;
-[ ] implementar tabela.c/h;
-[ ] implementar binarytree.c/h;
-[ ] implementar priority_queue.c/h;
-[ ] implementar serial_connection.c/h;
-[ ] implementar socket_comunication.c/h;
+( ) implementar cycling.c;
+( ) implementar io_textfile.c/h;
+( ) implementar logfile.c/h;
+( ) implementar linkedlist.c/h;
+( ) implementar tabela.c/h;
+( ) implementar binarytree.c/h;
+( ) implementar priority_queue.c/h;
+( ) implementar serial_connection.c/h;
+( ) implementar socket_comunication.c/h;
