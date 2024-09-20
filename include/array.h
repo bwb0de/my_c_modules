@@ -5,23 +5,6 @@
 
 typedef enum { INT_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY } TipoArray;
 
-typedef struct {
-    int min;
-    int max;
-} ParMinMaxInteiros;
-
-
-typedef struct {
-    float min;
-    float max;
-} ParMinMaxFloats;
-
-
-typedef struct {
-    double min;
-    double max;
-} ParMinMaxDoubles;
-
 
 typedef struct {
     int contador;
@@ -70,7 +53,7 @@ void liberar_array(void *arr);
 void _memoria_array_inteiros();
 void _memoria_array_floats();
 void _memoria_array_doubles();
-void _memoria_usada(void *arr);
+void _memoria_array_usada(void *arr);
 
 void _teste_array_inteiros();
 void _teste_array_floats();

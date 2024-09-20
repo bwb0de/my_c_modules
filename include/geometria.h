@@ -18,4 +18,7 @@ Ponto3D* criar_ponto3D(double x, double y, double z);
 double distancia2D(Ponto2D *p1, Ponto2D *p2);
 double distancia3D(Ponto3D *p1, Ponto3D *p2);
 
+void _teste_ponto_2D();
+void _teste_ponto_3D();
+
 #endif

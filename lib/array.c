@@ -235,7 +235,6 @@ void array_elements_swap(int i1, int i2, void *arr) {
             float tmp = arr_float->elementos[i1];
             arr_float->elementos[i1] = arr_float->elementos[i2];
             arr_float->elementos[i2] = tmp;
-            printf("Trocando elementos [%d] e [%d]: %.6f, %.6f\n", i1, i2, arr_float->elementos[i1], arr_float->elementos[i2]);                        
             break;
         }
         case DOUBLE_ARRAY: {
@@ -527,7 +526,7 @@ void _memoria_array_doubles() {
 }
 
 /*
-void calcular_memoria_usada(void *arr) {
+void calcular_memoria_array_usada(void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
 
     switch (tipo) {
@@ -667,10 +666,4 @@ void _teste_array_doubles() {
     array_elements_list(a1); liberar_array(a1);
 }
 
-
-// Apagar
-int main() {
-	_teste_array_floats();
-    return 0;
-}
 
