@@ -4,7 +4,7 @@ Observações:
  *criar de análise da memória em todos módulos "_", "_memoria..."
  *ao criar criar funções auxiliares PRIVADAS utilizar o prefixo "_aux_"
 
-[~] solucionar problema com a inicialização de "raylib"
+[x] solucionar problema com a inicialização de "raylib"
 [ ] implementar funções e estruturas básicas para jogos: gamming.c/h;
    - [ ] struct score;
    - [ ] struct vida;
@@ -37,7 +37,7 @@ Observações:
    - [ ] implementar quicksort não recursivo;
    - [ ] implementar insertionsort não recursivo;
 
-[ ] implementar cycling.c;
+[~] implementar cycling.c;
 [ ] implementar io_textfile.c/h;
 [ ] implementar logfile.c/h;
 [ ] implementar linkedlist.c/h;
