@@ -33,3 +33,12 @@ int main() {
     return 0;
 }
 */
+
+
+#include "array.h"
+#include <stdio.h>
+
+int main() {
+    printf("Doupa...");
+    return 0;
+}

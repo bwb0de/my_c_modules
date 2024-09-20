@@ -1,4 +1,7 @@
-testes/bin
+raylib.h
+raymath.h
+rlgl.h
+bin/
 
 # Prerequisites
 *.d
