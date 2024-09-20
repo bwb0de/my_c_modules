@@ -14,6 +14,14 @@ ArrayInteiros* criar_array_inteiros() {
     return arr;
 }
 
+ArrayParInteiros* criar_array_par_inteiros() {
+    ArrayParInteiros *arr = (ArrayParInteiros *)malloc(sizeof(ArrayParInteiros));
+    arr->contador = 0;
+    arr->elementos = (Par *)malloc(ARRAY_DEFAULT_LEN * sizeof(Par));
+    arr->tipo = PAIR_INT_ARRAY;
+    return arr;    
+}
+
 ArrayFloats* criar_array_floats() {
     ArrayFloats *arr = (ArrayFloats *)malloc(sizeof(ArrayFloats));
     arr->contador = 0;
@@ -46,7 +54,19 @@ void array_push(void *element, void *arr) {
             arr_int->elementos[arr_int->contador] = e;
             arr_int->contador++;
             break;
+        }
+        case PAIR_INT_ARRAY: {
+            ArrayParInteiros *pair_int_arr = (ArrayParInteiros *)arr;
+            if ( pair_int_arr->contador > 0 && pair_int_arr->contador % ARRAY_DEFAULT_LEN == 0 ) {
+                int NOVO_TAMANHO = pair_int_arr->contador + ARRAY_DEFAULT_LEN;
+                pair_int_arr->elementos = realloc(pair_int_arr->elementos, NOVO_TAMANHO * sizeof(Par));
+            }
 
+            Par *e = (Par *)element;
+
+            pair_int_arr->elementos[pair_int_arr->contador] = *e;
+            pair_int_arr->contador++;
+            break;
         }
         case FLOAT_ARRAY: {
             ArrayFloats *arr_float = (ArrayFloats *)arr;
@@ -130,6 +150,17 @@ void array_elements_list(void *arr) {
                     printf("%d\n", arr_int->elementos[i]); break;
                 }
                 printf("%d, ", arr_int->elementos[i]);
+            }
+            break;
+        }
+        case PAIR_INT_ARRAY: {
+            ArrayParInteiros *pair_int_arr = (ArrayParInteiros *)arr;
+            for (int i = 0; i < pair_int_arr->contador; i++) {
+                Par e = pair_int_arr->elementos[i];
+                if ( i == pair_int_arr->contador - 1) {
+                    printf("(%d, %d)\n", e.a, e.b); break;
+                }
+                printf("(%d, %d); ", e.a, e.b);
             }
             break;
         }
@@ -497,12 +528,19 @@ void liberar_array(void *arr) {
     switch (tipo) {
         case INT_ARRAY:
             free(((ArrayInteiros *)arr)->elementos);
+            free((ArrayInteiros *)arr);
+            break;
+        case PAIR_INT_ARRAY:
+            free(((ArrayParInteiros *)arr)->elementos);
+            free((ArrayParInteiros *)arr);
             break;
         case FLOAT_ARRAY:
             free(((ArrayFloats *)arr)->elementos);
+            free((ArrayFloats *)arr);
             break;
         case DOUBLE_ARRAY:
             free(((ArrayDoubles *)arr)->elementos);
+            free((ArrayDoubles *)arr);
             break;
         default:
             printf("Tipo desconhecido\n");
@@ -667,3 +705,25 @@ void _teste_array_doubles() {
 }
 
 
+void _teste_array_par_de_inteiros() {
+    _memoria_array_inteiros();
+    ArrayParInteiros *a1 = criar_array_par_inteiros();
+
+    printf("Adicionando elementos...\n");
+    Par *d;
+    d = (Par *)malloc(sizeof(Par)); d->a = 4; d->b = 9; array_push(d, a1);
+    d = (Par *)malloc(sizeof(Par)); d->a = 9; d->b = 9; array_push(d, a1);
+    d = (Par *)malloc(sizeof(Par)); d->a = 3; d->b = 9; array_push(d, a1);
+    d = (Par *)malloc(sizeof(Par)); d->a = 34; d->b = 9; array_push(d, a1);
+    d = (Par *)malloc(sizeof(Par)); d->a = 47; d->b = 9; array_push(d, a1);
+    d = (Par *)malloc(sizeof(Par)); d->a = 8; d->b = 9; array_push(d, a1);
+    d = (Par *)malloc(sizeof(Par)); d->a = 94; d->b = 9; array_push(d, a1);
+    d = (Par *)malloc(sizeof(Par)); d->a = 104; d->b = 9; array_push(d, a1);
+    d = (Par *)malloc(sizeof(Par)); d->a = 42; d->b = 9; array_push(d, a1);
+
+    array_elements_list(a1);
+    printf("Contador array (int): %d\n", a1->contador);    
+	printf("Ordenando...\n", a1->contador);    
+    
+    liberar_array(a1);
+}

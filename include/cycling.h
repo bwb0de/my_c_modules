@@ -29,7 +29,7 @@ typedef struct {
 typedef struct {
     int contador;
     int selecionado;
-    int *elementos;
+    char **elementos;
     TipoCycler tipo;    
 } CyclerStrings;
 
@@ -37,7 +37,7 @@ typedef struct {
 CyclerInteiros* criar_cycler_inteiros();
 CyclerFloats* criar_cycler_floats();
 CyclerDoubles* criar_cycler_doubles();
-CyclerStrings* criar_cycler_strings(int string_max_len);
+CyclerStrings* criar_cycler_strings();
 
 void cycler_push(void *element, void *cycler);
 const void* cycler_pop(void *cycler);
@@ -57,6 +57,6 @@ void _memoria_cycler_usada(void *cycler);
 void _teste_cycler_inteiros();
 //void _teste_cycler_floats();
 //void _teste_cycler_doubles();
-//void _teste_cycler_strings();
+void _teste_cycler_strings();
 
 #endif

@@ -3,7 +3,7 @@
 
 #define ARRAY_DEFAULT_LEN 15
 
-typedef enum { INT_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY } TipoArray;
+typedef enum { INT_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY, PAIR_INT_ARRAY, STRING_ARRAY } TipoArray;
 
 
 typedef struct {
@@ -36,7 +36,21 @@ typedef struct {
 } ArrayDoubles;
 
 
+typedef struct {
+    int a;
+    int b;
+} Par;
+
+
+typedef struct {
+    int contador;
+    Par *elementos;
+    TipoArray tipo;
+} ArrayParInteiros;
+
+
 ArrayInteiros* criar_array_inteiros();
+ArrayParInteiros* criar_array_par_inteiros();
 ArrayFloats* criar_array_floats();
 ArrayDoubles* criar_array_doubles();
 
@@ -58,5 +72,6 @@ void _memoria_array_usada(void *arr);
 void _teste_array_inteiros();
 void _teste_array_floats();
 void _teste_array_doubles();
+void _teste_array_par_de_inteiros();
 
 #endif

@@ -5,6 +5,7 @@ Observações:
  *ao criar criar funções auxiliares PRIVADAS utilizar o prefixo "_aux_"
 
 [x] solucionar problema com a inicialização de "raylib"
+[ ] verificar se em pop de array e cycler é necessário/interessante executar o free...
 [ ] implementar funções e estruturas básicas para jogos: gamming.c/h;
    - [ ] struct score;
    - [ ] struct vida;
@@ -12,6 +13,7 @@ Observações:
 [ ] corrigir erro em array.c/h;
    - [x] ordenamento min/max, provável choque quando há coincidência entre números min/max e indices limites i1 e i2 do slice.
    - [ ] mover "array_sort_min_max[void *arr]" para sorting.c/h
+   - [ ] implementar string array (basear-se em cycling)
 
 
 [ ] ampliar funções em queue.c/h;
@@ -38,6 +40,9 @@ Observações:
    - [ ] implementar insertionsort não recursivo;
 
 [~] implementar cycling.c;
+   - [ ] finalizar a implementação de SRING_CYCLER nos métodos restantes
+   - [ ] excrever os testes
+
 [ ] implementar io_textfile.c/h;
 [ ] implementar logfile.c/h;
 [ ] implementar linkedlist.c/h;
@@ -46,3 +51,5 @@ Observações:
 [ ] implementar priority_queue.c/h;
 [ ] implementar serial_connection.c/h;
 [ ] implementar socket_comunication.c/h;
+[ ] implementar calendário universal ucalendar.c/h;
+[ ] implementar mathext.c/h => funções estatísiticas

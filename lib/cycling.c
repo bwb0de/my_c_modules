@@ -1,6 +1,7 @@
 #include "cycling.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 CyclerInteiros* criar_cycler_inteiros() {
@@ -27,6 +28,16 @@ CyclerDoubles* criar_cycler_doubles() {
     cycler->selecionado = 0;
     cycler->elementos = (double *)malloc(CYCLER_DEFAULT_LEN * sizeof(double));
     cycler->tipo = DOUBLE_CYCLER;
+    return cycler;
+}
+
+
+CyclerStrings* criar_cycler_strings() {
+    CyclerStrings *cycler = (CyclerStrings *)malloc(sizeof(CyclerStrings));
+    cycler->contador = 0;
+    cycler->selecionado = 0;
+    cycler->elementos = (char **)malloc(CYCLER_DEFAULT_LEN * sizeof(char *));
+    cycler->tipo = STRING_CYCLER;
     return cycler;
 }
 
@@ -73,9 +84,33 @@ void cycler_push(void *element, void *cycler) {
             cycler_double->contador++;
             break;
         }
+        case STRING_CYCLER: {
+            CyclerStrings *cycler_string = (CyclerStrings *)cycler;
+            if (cycler_string->contador > 0 && cycler_string->contador % CYCLER_DEFAULT_LEN == 0) {
+                int NOVO_TAMANHO = cycler_string->contador * 2;
+                cycler_string->elementos = realloc(cycler_string->elementos, NOVO_TAMANHO * sizeof(char *));
+            }
+            cycler_string->elementos[cycler_string->contador] = malloc(strlen((char *)element) + 1);
+            strcpy(cycler_string->elementos[cycler_string->contador], (char *)element);
+            cycler_string->contador++;
+            break;
+        }
         default:
             break;
     }
+}
+
+
+const char* cycler_string_next(CyclerStrings *cycler) {
+    if (cycler->contador == 0) {
+        return NULL;
+    }
+    if (cycler->selecionado = cycler->contador) {
+        cycler->selecionado = 0;
+    }
+    const char *elemento = cycler->elementos[cycler->selecionado];
+    cycler->selecionado++;
+    return elemento;
 }
 
 
@@ -85,31 +120,37 @@ const void* cycler_next(void *cycler) {
     switch (tipo) {
         case INT_CYCLER: {
             CyclerInteiros *cycler_int = (CyclerInteiros *)cycler;
-            if ( cycler_int->selecionado == cycler_int->contador ) { cycler_int->selecionado = 0; }
+            if (cycler_int->contador == 0) { return NULL; }
             int *e = &(cycler_int->elementos[cycler_int->selecionado]);
             cycler_int->selecionado++;
+            if ( cycler_int->selecionado == cycler_int->contador ) { cycler_int->selecionado = 0; }
             return e;
 
         }
         case FLOAT_CYCLER: {
             CyclerFloats *cycler_float = (CyclerFloats *)cycler;
+            if (cycler_float->contador == 0) { return NULL; }
             const void* e = &(cycler_float->elementos[cycler_float->selecionado]);
-            if (cycler_float->selecionado = cycler_float->contador) {
-                cycler_float->selecionado = 0;
-                return e;
-            }
             cycler_float->selecionado++;
+            if (cycler_float->selecionado == cycler_float->contador) { cycler_float->selecionado = 0; }
             return e;
         }
         case DOUBLE_CYCLER: {
             CyclerDoubles *cycler_double = (CyclerDoubles *)cycler;
+            if (cycler_double->contador == 0) { return NULL; }
             const void* e = &(cycler_double->elementos[cycler_double->selecionado]);
-            if (cycler_double->selecionado = cycler_double->contador) {
-                cycler_double->selecionado = 0;
-                return e;
-            }
             cycler_double->selecionado++;
+            if (cycler_double->selecionado == cycler_double->contador) { cycler_double->selecionado = 0; }
             return e;
+        }
+        case STRING_CYCLER: {
+            CyclerStrings *cycler_string = (CyclerStrings *)cycler;
+            if (cycler_string->contador == 0) { return NULL; }
+            const char *e = cycler_string->elementos[cycler_string->selecionado];
+            cycler_string->selecionado++;
+            if (cycler_string->selecionado >= cycler_string->contador) { cycler_string->selecionado = 0; }
+            return e;
+
         }
         default:
             break;
@@ -205,18 +246,29 @@ void liberar_cycler(void *cycler) {
     switch (tipo) {
         case INT_CYCLER:
             free(((CyclerInteiros *)cycler)->elementos);
+            free((CyclerInteiros *)cycler);
             break;
         case FLOAT_CYCLER:
             free(((CyclerFloats *)cycler)->elementos);
+            free((CyclerFloats *)cycler);
             break;
         case DOUBLE_CYCLER:
             free(((CyclerDoubles *)cycler)->elementos);
+            free((CyclerDoubles *)cycler);
+            break;
+        case STRING_CYCLER:
+            CyclerStrings *cycler_string = (CyclerStrings *)cycler;
+            for (int i = 0; i < cycler_string->contador; i++) {
+                free(cycler_string->elementos[i]);  // Libera a memória de cada string
+            }
+            free(cycler_string->elementos);
+            free(cycler_string);
             break;
         default:
             printf("Tipo desconhecido\n");
             break;
     }
-    free(cycler);
+
 }
 
 
@@ -226,40 +278,47 @@ void liberar_cycler(void *cycler) {
 void _teste_cycler_inteiros() {
     CyclerInteiros *cycler = criar_cycler_inteiros();
     printf("Inserindo 3 elementos no cycler...\n");
-    int d = 33; cycler_push(&d, cycler);
-        d = 45; cycler_push(&d, cycler);
-        d = 41; cycler_push(&d, cycler);
-    printf("Elementos adicionados: %d\n...", cycler->contador);
-    printf("Posição seleciopnada: %d\n...", cycler->selecionado);
+
+    int  d = 33; cycler_push(&d, cycler);
+         d = 45; cycler_push(&d, cycler);
+         d = 41; cycler_push(&d, cycler);
+
+    printf("Elementos adicionados: %d\n", cycler->contador);
+    printf("Posição selecionada: %d\n", cycler->selecionado);
     printf("Rotacionando 11 vezes...\n");
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
+
+    int  n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+
     printf("Posição selecionada após 2 rotações: %d...\n", cycler->selecionado);
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("Removendo um elemento...\n");
-    cycler_pop(cycler);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+
+    printf("Removendo o elemento: %d...\n", *(int *)cycler_pop(cycler));
+
     printf("Rotacionando 7 vezes...\n");
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("Removendo um elemento...\n");
-    cycler_pop(cycler);
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));
-    printf("%d\n", *(int *)cycler_next(cycler));    
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+
+    printf("Removendo o elemento: %d...\n", *(int *)cycler_pop(cycler));
+    
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);
+         n = *(int *)cycler_next(cycler); printf("%d\n", n);    
+    
     liberar_cycler(cycler);
 
 }
@@ -271,4 +330,35 @@ void _teste_cycler_floats() {
 
 void _teste_cycler_doubles() {
 
+}
+
+
+
+void _teste_cycler_strings() {
+    CyclerStrings *cycler = criar_cycler_strings();
+    printf("Inserindo 3 elementos no cycler...\n");
+
+    cycler_push("Daniel", cycler);
+    cycler_push("Aline", cycler);
+    cycler_push("Vera", cycler);
+
+    printf("Elementos adicionados: %d\n", cycler->contador);
+    printf("Posição selecionada: %d\n", cycler->selecionado);
+    printf("Rotacionando 11 vezes...\n");
+
+    const char *e;
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    e = cycler_next(cycler); printf("%s\n", e);
+    
+    
+    liberar_cycler(cycler);
 }
