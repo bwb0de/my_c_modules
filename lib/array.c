@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <float.h>
+#include <string.h>
 
 
 ArrayInteiros* criar_array_inteiros() {
@@ -37,6 +38,18 @@ ArrayDoubles* criar_array_doubles() {
     arr->tipo = DOUBLE_ARRAY;
     return arr;
 }
+
+
+ArrayStrings* criar_array_strings() {
+    ArrayStrings *arr = (ArrayStrings *)malloc(sizeof(ArrayStrings));
+    arr->contador = 0;
+    arr->elementos = (char **)malloc(ARRAY_DEFAULT_LEN * sizeof(char *));
+    arr->tipo = STRING_ARRAY;
+    return arr;
+
+}
+
+
 
 void array_push(void *element, void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
@@ -91,6 +104,19 @@ void array_push(void *element, void *arr) {
             arr_double->contador++;
             break;
         }
+
+        case STRING_ARRAY: {
+            ArrayStrings *arr_str = (ArrayStrings *)arr;
+            if (arr_str->contador > 0 && arr_str->contador % ARRAY_DEFAULT_LEN == 0) {
+                int NOVO_TAMANHO = arr_str->contador * 2;
+                arr_str->elementos = realloc(arr_str->elementos, NOVO_TAMANHO * sizeof(char *));
+            }
+            arr_str->elementos[arr_str->contador] = malloc(strlen((char *)element) + 1);
+            strcpy(arr_str->elementos[arr_str->contador], (char *)element);
+            arr_str->contador++;
+            break;
+        }
+
         default:
             break;
     }
@@ -133,6 +159,19 @@ const void* array_pop(void *arr) {
             return &(arr_double->elementos[arr_double->contador]);
             break;
         }
+
+        case STRING_ARRAY: {
+            ArrayStrings *arr_str = (ArrayStrings *)arr;
+            char* str = arr_str->elementos[arr_str->contador];
+            if (arr_str->contador == 0 ) {
+                break;
+            }
+            arr_str->contador--;
+            return &(arr_str->elementos[arr_str->contador]);
+            break;
+        }
+
+
         default:
             break;
     }

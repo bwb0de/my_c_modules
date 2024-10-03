@@ -41,7 +41,6 @@ CyclerStrings* criar_cycler_strings() {
     return cycler;
 }
 
-/// PENDENTE CRIAR_CYCLER_STRING
 
 void cycler_push(void *element, void *cycler) {
     TipoCycler tipo = ((CyclerInteiros*)cycler)->tipo;
