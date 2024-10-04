@@ -27,21 +27,18 @@ int _main() {
 }
 
 int main() {
-    ArrayInteiros *arr = criar_array_inteiros();
-    int d = 34; array_push(&d, arr);
-        d = 30; array_push(&d, arr);
-        d = 32; array_push(&d, arr);
-    
+    ArrayStrings *arr = criar_array_strings();
+
+    array_push("Daniel", arr);
+    array_push("Mariana", arr);
+    array_push("Alice", arr);
+    array_push("Vicente", arr);
+
     array_elements_list(arr);
 
-    printf("POP: %d\n", (int *)array_pop(arr));
-    printf("POP: %d\n", (int *)array_pop(arr));
-    printf("POP: %d\n", (int *)array_pop(arr));
-    printf("POP: %d\n", (int *)array_pop(arr));
-    printf("POP: %d\n", (int *)array_pop(arr));
     
 
-    //limpando memoria    
+
     liberar_array(arr);
     return 0;
 }
