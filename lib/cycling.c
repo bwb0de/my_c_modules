@@ -63,23 +63,6 @@ void cycler_push(void *element, void *cycler) {
     }
 }
 
-
-
-/*
-const char* cycler_string_next(CyclerStrings *cycler) {
-    if (cycler->contador == 0) {
-        return NULL;
-    }
-    if (cycler->selecionado = cycler->contador) {
-        cycler->selecionado = 0;
-    }
-    const char *elemento = cycler->elementos[cycler->selecionado];
-    cycler->selecionado++;
-    return elemento;
-}
-*/
-
-
 const void* cycler_next(void *cycler) {
     TipoArray tipo = ((CyclerInteiros*)cycler)->array->tipo;
 
@@ -123,7 +106,6 @@ const void* cycler_next(void *cycler) {
     }
 }
 
-
 const void* cycler_pop(void *cycler) {
     TipoArray tipo = ((CyclerInteiros*)cycler)->array->tipo;
 
@@ -153,7 +135,6 @@ const void* cycler_pop(void *cycler) {
     }
 }
 
-
 void cycler_elements_swap(int i1, int i2, void *cycler) {
     TipoArray tipo = ((CyclerInteiros *)cycler)->array->tipo;
     
@@ -182,7 +163,6 @@ void cycler_elements_swap(int i1, int i2, void *cycler) {
             break;
     }
 }
-
 
 int cycler_len(void *cycler) {
     TipoArray tipo = ((CyclerInteiros *)cycler)->array->tipo;
@@ -246,7 +226,6 @@ void liberar_cycler(void *cycler) {
 
 
 
-
 void _teste_cycler_inteiros() {
     CyclerInteiros *cycler = criar_cycler_inteiros();
     printf("Inserindo 3 elementos no cycler...\n");
@@ -294,18 +273,13 @@ void _teste_cycler_inteiros() {
     liberar_cycler(cycler);
 
 }
-
 void _teste_cycler_floats() {
-	//_memoria_cycler_floats();
+
 
 }
-
 void _teste_cycler_doubles() {
 
 }
-
-
-
 void _teste_cycler_strings() {
     CyclerStrings *cycler = criar_cycler_strings();
     printf("Inserindo 3 elementos no cycler...\n");

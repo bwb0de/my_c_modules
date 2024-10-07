@@ -3,104 +3,212 @@
 #include <assert.h>
 #include "queue.h"
 
-#define TAM_MAX_FILA 300
-
-Fila* criar_fila() {
-    Fila *f = (Fila *)malloc(sizeof( Fila));
-    
-    if (f == NULL) {
-        printf("Erro ao alocar memória para a fila!\n");
-        exit(1);
-    }
-    
-    f->primeiro_elemento = 0;
-    f->ultimo_elemento = 0;
-    return f;
+FilaInteiros* criar_fila_inteiros() {
+    FilaInteiros *fila = (FilaInteiros *)malloc(sizeof( FilaInteiros));
+    fila->primeiro_elemento = 0;
+    fila->array = criar_array_inteiros();
+    return fila;
 }
 
-void liberar_fila(Fila *f) {
-    free(f);
+FilaStrings* criar_fila_strings() {
+    FilaStrings *fila = (FilaStrings *)malloc(sizeof( FilaStrings));
+    fila->primeiro_elemento = 0;
+    fila->array = criar_array_strings();
+    return fila;
 }
 
-void esvaziar_fila(Fila *f) {
-    f->primeiro_elemento = 0;
-    f->ultimo_elemento = 0;
-}
 
-void enfileirar(int n, Fila *f) {
-    if (f->ultimo_elemento >= TAM_MAX_FILA) {
-        printf("Fila cheia, não é possível enfileirar.\n");
-        return;
+
+void queue_reset(void *fila) {
+    TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+
+    switch (tipo) {
+        case INT_ARRAY:
+            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            fila_int->primeiro_elemento = 0;
+            fila_int->array->contador = 0;            
+            break;
+        case STRING_ARRAY:
+            FilaStrings *fila_str = (FilaStrings *)fila;
+            fila_str->primeiro_elemento = 0;
+            fila_str->array->contador = 0;            
+            break;
+        default:
+            //Tipo desconhecido
+            break;
     }    
-    f->elementos[f->ultimo_elemento] = n;
-    f->ultimo_elemento += 1;
+}
+
+void queue_push(void *element, void *fila) {
+    TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+
+    switch (tipo) {
+        case INT_ARRAY:
+            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            array_push(element, fila_int->array);
+            break;
+        case STRING_ARRAY:
+            FilaStrings *fila_str = (FilaStrings *)fila;
+            array_push(element, fila_str->array);
+            break;
+        default:
+            //Tipo desconhecido
+            break;
+    }    
 }
 
 
-int desenfileirar(Fila *p) {
-    if (p->primeiro_elemento == p->ultimo_elemento ) { return -1; }
-    int valor = p->elementos[p->primeiro_elemento];
-    p->primeiro_elemento += 1;
-    return valor;
+const void* queue_pop(void *fila) {
+    TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+
+    switch (tipo) {
+        case INT_ARRAY:
+            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            if (fila_int->primeiro_elemento == fila_int->array->contador ) { return NULL; }
+            int i = fila_int->primeiro_elemento;
+            fila_int->primeiro_elemento++;
+            return &(fila_int->array->elementos[i]);
+            
+        case STRING_ARRAY:
+            FilaStrings *fila_str = (FilaStrings *)fila;
+            if (fila_str->primeiro_elemento == fila_str->array->contador ) { return NULL; }
+            char *e = fila_str->array->elementos[fila_str->primeiro_elemento];
+            fila_str->primeiro_elemento++;
+            return e;
+
+        default:
+            //Tipo desconhecido
+            return NULL;
+    }        
 }
 
-void mostrar_fila(Fila *f) {
-    for (int i = f->primeiro_elemento; i < f->ultimo_elemento; i++) {
-        printf("%d\n", f->elementos[i]);
+void queue_elements_list(void *fila) {
+    TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+
+    switch (tipo) {
+        case INT_ARRAY:
+            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            for (int i = fila_int->primeiro_elemento; i < fila_int->array->contador; i++) {
+                if ( i == fila_int->array->contador - 1) {
+                    printf("%d\n", fila_int->array->elementos[i]); break;
+                }
+                printf("%d, ", fila_int->array->elementos[i]);
+            }
+            break;
+            
+        case STRING_ARRAY:
+            FilaStrings *fila_str = (FilaStrings *)fila;
+            for (int i = fila_str->primeiro_elemento; i < fila_str->array->contador; i++) {
+                if (i == fila_str->array->contador - 1) {
+                    printf("%s\n", fila_str->array->elementos[i]); break;
+                }
+                printf("%s, ", fila_str->array->elementos[i]);
+            }
+            break;
+
+        default:
+            //Tipo desconhecido
+            break;
+    }  
+}
+
+
+
+
+int queue_len(void *fila) {
+    TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+
+    switch (tipo) {
+        case INT_ARRAY:
+            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            return fila_int->array->contador - fila_int->primeiro_elemento;
+        case STRING_ARRAY:
+            FilaStrings *fila_str = (FilaStrings *)fila;
+            return fila_str->array->contador - fila_str->primeiro_elemento;
+        default:
+            //Tipo desconhecido
+            return -1;
     }
 }
 
-Fila* reconstruir_fila(Fila *old_f) {
-    Fila *new_f = criar_fila();
-    for (int i = old_f->primeiro_elemento; i < old_f->ultimo_elemento; i++) {
-        enfileirar(old_f->elementos[i], new_f);
+
+
+void liberar_fila(void *fila) {
+    TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+    
+    switch (tipo) {
+        case INT_ARRAY: {
+            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            liberar_array(fila_int->array);
+            free(fila_int);
+            break;
+        }
+        case STRING_ARRAY: {
+            FilaStrings *fila_str = (FilaStrings *)fila;
+            liberar_array(fila_str->array);
+            free(fila_str);
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+
+FilaInteiros* queue_int_rebuild(FilaInteiros *old_f) {
+    FilaInteiros *new_f = criar_fila_inteiros();
+    for (int i = old_f->primeiro_elemento; i < old_f->array->contador; i++) {
+        queue_push(&(old_f->array->elementos[i]), new_f);
     }
     liberar_fila(old_f);
     return new_f;
 }
 
 
-int tamanho_fila(Fila *f) {
-    return f->ultimo_elemento - f-> primeiro_elemento;
+FilaStrings* queue_str_rebuild(FilaStrings *old_f) {
+    FilaStrings *new_f = criar_fila_strings();
+    for (int i = old_f->primeiro_elemento; i < old_f->array->contador; i++) {
+        queue_push(old_f->array->elementos[i], new_f);
+    }
+    liberar_fila(old_f);
+    return new_f;
 }
 
-void _memoria_fila() {
-    //Stack
-    printf("Memória fila: %zu bytes\n", sizeof(Fila));
-}
 
-void main() {//_teste_fila() {
-    Fila *f = criar_fila();
+void _teste_fila_inteiros() {
+    FilaInteiros *fila = criar_fila_inteiros();
     printf("Elementos:\n");
-    enfileirar(12,f);
-    enfileirar(25,f);
-    enfileirar(26,f);
-    enfileirar(27,f);
-    enfileirar(12,f);
-    enfileirar(22,f);
-    enfileirar(47,f);
-    enfileirar(24,f);
-    enfileirar(26,f);
-    enfileirar(27,f);
-    mostrar_fila(f);
-    printf("Tamanho: %d\n", tamanho_fila(f));
-    
-    //assert(tamanho_fila(f) == 10);
-    //assert(desenfileirar(f) == 12);
-    //assert(desenfileirar(f) == 25);
-    //assert(desenfileirar(f) == 26);
-    //assert(tamanho_fila(f) == 7);
+
+    int i = 12; queue_push(&i,fila);
+        i = 25; queue_push(&i,fila);
+        i = 26; queue_push(&i,fila);
+        i = 29; queue_push(&i,fila);
+        i = 66; queue_push(&i,fila);
+        i = 76; queue_push(&i,fila);
+        i = 89; queue_push(&i,fila);
+        i = 99; queue_push(&i,fila);
+        i = 12; queue_push(&i,fila);
+    queue_elements_list(fila);
+    printf("Tamanho: %d\n", queue_len(fila));
+
+    queue_pop(fila);
+    queue_pop(fila);
+    queue_pop(fila);
+
     printf("Elementos após desenfileirar:\n");
-    mostrar_fila(f);
-    printf("Tamanho depois de desenfileirar 3 vezes: %d\n", tamanho_fila(f));
+    queue_elements_list(fila);
+
+    printf("Tamanho depois de desenfileirar 3 vezes: %d\n", queue_len(fila));
     printf("Esvaziando fila...\n");
-    esvaziar_fila(f);
-    printf("Tamanho depois de esvaziar fila: %d\n", tamanho_fila(f));
-    mostrar_fila(f);
+    queue_reset(fila);
+    printf("Tamanho depois de esvaziar fila: %d\n", queue_len(fila));
+    queue_elements_list(fila);
+
     printf("Enfileirando 3 elementos...\n");
-    enfileirar(27,f);
-    enfileirar(77,f);
-    enfileirar(28,f);
-    mostrar_fila(f);
-    liberar_fila(f);    
+    i = 66; queue_push(&i,fila);
+    i = 76; queue_push(&i,fila);
+    i = 89; queue_push(&i,fila);
+    queue_elements_list(fila);
+
+    liberar_fila(fila);    
 }

@@ -1,23 +1,33 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#define TAM_MAX_FILA 300
+#include "array.h"
+
 
 typedef struct {
     int primeiro_elemento;
-    int ultimo_elemento;
-    int elementos[TAM_MAX_FILA];
-} Fila;
+    ArrayInteiros *array;
+} FilaInteiros;
+
+typedef struct {
+    int primeiro_elemento;
+    ArrayStrings *array;
+} FilaStrings;
 
 
-Fila* criar_fila();
-void enfileirar(int n, Fila *f);
-int desenfileirar(Fila *f);
-void mostrar_fila(Fila *f);
-Fila* reconstruir_fila(Fila *old_f);
-int tamanho_fila(Fila *f);
-void esvaziar_fila(Fila *f);
-void liberar_fila(Fila *f);
+FilaInteiros* criar_fila_inteiros();
+FilaStrings* criar_fila_strings();
+
+
+void queue_reset(void *fila);
+void queue_push(void *element, void *fila);
+const void* queue_pop(void *fila);
+void queue_elements_list(void *fila);
+int queue_len(void *fila);
+FilaInteiros* queue_int_rebuild(FilaInteiros *old_f);
+FilaStrings* queue_str_rebuild(FilaStrings *old_f);
+
+void _teste_fila_inteiros();
 
 #endif
 

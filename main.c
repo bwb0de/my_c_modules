@@ -1,8 +1,5 @@
 #include <stdio.h>
-#include <stdint.h>
-#include "cycling.h"
-#include <string.h>
-#include <limits.h>
+#include "queue.h"
 
 int _main() {
     //Código para identificar pares próximos em um array a partir dos indices. Primeira linha.. Partir para o merge...
@@ -33,6 +30,6 @@ int _main() {
 
 
 int main() {
-
+    _teste_fila_inteiros();
     return 0;
 }
