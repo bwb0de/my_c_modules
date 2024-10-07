@@ -80,6 +80,8 @@ void array_reverse(void *arr);
 
 void liberar_array(void *arr);
 
+
+void _teste_obter_pontos();
 void _memoria_array_inteiros();
 void _memoria_array_floats();
 void _memoria_array_doubles();
@@ -89,5 +91,6 @@ void _teste_array_inteiros();
 void _teste_array_floats();
 void _teste_array_doubles();
 void _teste_array_par_de_inteiros();
+void _teste_array_string();
 
 #endif

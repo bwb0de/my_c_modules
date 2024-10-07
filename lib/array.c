@@ -1,7 +1,9 @@
 #include "array.h"
-#include "mathext.h"
+//#include "mathext.h"
+#include "geometria.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <limits.h>
 #include <float.h>
 #include <string.h>
@@ -49,6 +51,12 @@ ArrayStrings* criar_array_strings() {
 }
 
 
+float _obter_valor_par(Par par) {
+    Ponto2D *p_origem = criar_ponto2D(0.0, 0.0);
+    Ponto2D *p_dado = criar_ponto2D((double)par.a, (double)par.b);
+    double valor = distancia2D(p_origem, p_dado);
+    return (float)valor;
+}
 
 void array_push(void *element, void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
@@ -73,9 +81,7 @@ void array_push(void *element, void *arr) {
                 int NOVO_TAMANHO = pair_int_arr->contador + ARRAY_DEFAULT_LEN;
                 pair_int_arr->elementos = realloc(pair_int_arr->elementos, NOVO_TAMANHO * sizeof(Par));
             }
-
             Par *e = (Par *)element;
-
             pair_int_arr->elementos[pair_int_arr->contador] = *e;
             pair_int_arr->contador++;
             break;
@@ -114,12 +120,10 @@ void array_push(void *element, void *arr) {
             arr_str->contador++;
             break;
         }
-
         default:
             break;
     }
 }
-
 
 const void* array_pop(void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
@@ -127,52 +131,49 @@ const void* array_pop(void *arr) {
     switch (tipo) {
         case INT_ARRAY: {
             ArrayInteiros *arr_int = (ArrayInteiros *)arr;
-            int e = arr_int->elementos[arr_int->contador];
             if (arr_int->contador == 0 ) {
-                break;
+                return NULL;
             }
             arr_int->contador--;
             return &(arr_int->elementos[arr_int->contador]);
-            break;
-
         }
-        // case PAIR_INT_ARRAY: {}
+        case PAIR_INT_ARRAY: {
+            ArrayParInteiros *pair_int_arr = (ArrayParInteiros *)arr;
+            if (pair_int_arr->contador == 0 ) {
+                return NULL;
+            }
+            pair_int_arr->contador--;
+            return &(pair_int_arr->elementos[pair_int_arr->contador]);
+        }
         case FLOAT_ARRAY: {
             ArrayFloats *arr_float = (ArrayFloats *)arr;
-            float e = arr_float->elementos[arr_float->contador];
             if (arr_float->contador == 0 ) {
-                break;
+                return NULL;
             }
             arr_float->contador--;
             return &(arr_float->elementos[arr_float->contador]);
-            break;
-
         }
         case DOUBLE_ARRAY: {
             ArrayDoubles *arr_double = (ArrayDoubles *)arr;
-            double e = arr_double->elementos[arr_double->contador];
             if (arr_double->contador == 0 ) {
-                break;
+                return NULL;
             }
             arr_double->contador--;
             return &(arr_double->elementos[arr_double->contador]);
-            break;
         }
         case STRING_ARRAY: {
             ArrayStrings *arr_str = (ArrayStrings *)arr;
-            char* str = arr_str->elementos[arr_str->contador];
-            if (arr_str->contador == 0 ) {
-                break;
+            if (arr_str->contador == 0) {
+                return NULL; 
             }
             arr_str->contador--;
-            return &(arr_str->elementos[arr_str->contador]);
-            break;
+            const char *e = arr_str->elementos[arr_str->contador];
+            return e;
         }
         default:
-            break;
+            return NULL;
     }
 }
-
 
 void array_elements_list(void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
@@ -234,7 +235,6 @@ void array_elements_list(void *arr) {
     }    
 }
 
-
 void array_reverse(void *arr) {
     TipoArray tipo = ((ArrayInteiros *)arr)->tipo;
     
@@ -249,7 +249,16 @@ void array_reverse(void *arr) {
                 }           
             break;
         }
-        //case PAIR_INT_ARRAY: {}
+        case PAIR_INT_ARRAY: {
+            ArrayParInteiros *pair_int_arr = (ArrayParInteiros *)arr;
+                int i = 0;
+                int j = pair_int_arr->contador - 1;
+                while (j > i) {
+                    array_elements_swap(i, j, pair_int_arr);
+                    i++; j--;
+                }           
+            break;
+        }
         case FLOAT_ARRAY: {
             ArrayFloats *arr_float = (ArrayFloats *)arr;
                 int i = 0;
@@ -270,12 +279,20 @@ void array_reverse(void *arr) {
                 }  
             break;
         }
-        //case STRING_ARRAY: {}
+        case STRING_ARRAY: {
+            ArrayStrings *arr_str = (ArrayStrings *)arr;
+                int i = 0;
+                int j = arr_str->contador - 1;
+                while (j > i) {
+                    array_elements_swap(i, j, arr_str);
+                    i++; j--;
+                }  
+            break;
+        }
         default:
             break;
     }    
 }
-
 
 void array_elements_swap(int i1, int i2, void *arr) {
     TipoArray tipo = ((ArrayInteiros *)arr)->tipo;
@@ -285,19 +302,29 @@ void array_elements_swap(int i1, int i2, void *arr) {
             ArrayInteiros *arr_int = (ArrayInteiros *)arr;
             if ( i1 > arr_int->contador || i2 > arr_int->contador ) {
                 printf("Índice além do tamanho da array...\n");
-                return;
+                break;
             }
             int tmp = arr_int->elementos[i1];
             arr_int->elementos[i1] = arr_int->elementos[i2];
             arr_int->elementos[i2] = tmp;            
             break;
         }
-        //case PAIR_INT_ARRAY: {}
+        case PAIR_INT_ARRAY: {
+            ArrayParInteiros *par_int_arr = (ArrayParInteiros *)arr;
+            if ( i1 > par_int_arr->contador || i2 > par_int_arr->contador ) {
+                printf("Índice além do tamanho da array...\n");
+                break;
+            }
+            Par tmp = par_int_arr->elementos[i1];
+            par_int_arr->elementos[i1] = par_int_arr->elementos[i2];
+            par_int_arr->elementos[i2] = tmp;            
+            break;            
+        }
         case FLOAT_ARRAY: {
             ArrayFloats *arr_float = (ArrayFloats *)arr;
             if ( i1 > arr_float->contador || i2 > arr_float->contador ) {
                 printf("Índice além do tamanho da array...\n");
-                return;
+                break;
             }
             float tmp = arr_float->elementos[i1];
             arr_float->elementos[i1] = arr_float->elementos[i2];
@@ -308,19 +335,28 @@ void array_elements_swap(int i1, int i2, void *arr) {
             ArrayDoubles *arr_double = (ArrayDoubles *)arr;
             if ( i1 > arr_double->contador || i2 > arr_double->contador ) {
                 printf("Índice além do tamanho da array...\n");
-                return;
+                break;
             }
             double tmp = arr_double->elementos[i1];
             arr_double->elementos[i1] = arr_double->elementos[i2];
             arr_double->elementos[i2] = tmp;                        
             break;
         }
-        //casa STRING_ARRAY: {}
+        case STRING_ARRAY: {
+            ArrayStrings *arr_str = (ArrayStrings *)arr;
+            if ( i1 > arr_str->contador || i2 > arr_str->contador ) {
+                printf("Índice além do tamanho da array...\n");
+                break;
+            }
+            char *tmp = arr_str->elementos[i1];
+            arr_str->elementos[i1] = arr_str->elementos[i2];
+            arr_str->elementos[i2] = tmp;            
+            break;   
+        }
         default:
             break;
     }
 }
-
 
 int array_min_index(int i1, int i2, void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
@@ -329,8 +365,8 @@ int array_min_index(int i1, int i2, void *arr) {
         case INT_ARRAY: {
             ArrayInteiros *arr_int = (ArrayInteiros *)arr;
 			if ( i1 >= arr_int->contador || i2 >= arr_int->contador ) {
-				printf("Slice além dos limites do array...\n");
-                return -1;
+				// Slice além dos limites do array...
+                return -2;
 			}
 
 			int min = INT_MAX;
@@ -346,12 +382,34 @@ int array_min_index(int i1, int i2, void *arr) {
 			return min_i;
 
         }
-        //case PAIR_INT_ARRAY: {}
+        case PAIR_INT_ARRAY: {
+            ArrayParInteiros *pair_int_arr = (ArrayParInteiros *)arr;
+			if ( i1 >= pair_int_arr->contador || i2 >= pair_int_arr->contador ) {
+				// Slice além dos limites do array...
+                return -2;
+			}
+
+			double min = DBL_MAX;
+            double p_dado_valor;
+			int min_i;
+
+			for (int i = i1; i <= i2; i++) {
+                Par p_dado = pair_int_arr->elementos[i];
+                p_dado_valor = _obter_valor_par(p_dado);
+				if ( p_dado_valor < min ) { 
+					min = p_dado_valor; 
+					min_i = i; 
+				}
+                printf("(%d, %d) = %f; min = %f; min_i = %d \n", p_dado.a, p_dado.b, _obter_valor_par(p_dado), min, min_i);
+			}
+
+			return min_i;        
+        }
         case FLOAT_ARRAY: {
             ArrayFloats *arr_float = (ArrayFloats *)arr;
 			if ( i1 >= arr_float->contador || i2 >= arr_float->contador ) {
-				printf("Slice além dos limites do array...\n");
-                return -1;
+				// Slice além dos limites do array...
+                return -2;
 			}
 
 			float min = FLT_MAX;
@@ -370,8 +428,8 @@ int array_min_index(int i1, int i2, void *arr) {
         case DOUBLE_ARRAY: {
             ArrayDoubles *arr_double = (ArrayDoubles *)arr;
 			if ( i1 >= arr_double->contador || i2 >= arr_double->contador ) {
-				printf("Slice além dos limites do array...\n");
-                return -1;
+				// Slice além dos limites do array...
+                return -2;
 			}
 
 			float min = DBL_MAX;
@@ -386,37 +444,61 @@ int array_min_index(int i1, int i2, void *arr) {
 
 			return min_i;
         }
-        //casa STRING_ARRAY: {}
+        case STRING_ARRAY: {
+            ArrayStrings *arr_str = (ArrayStrings *)arr;
+			if ( i1 >= arr_str->contador || i2 >= arr_str->contador ) {
+				// Slice além dos limites do array...
+                return -2;
+			}
+
+            int min_i = i1;
+
+            for (int i = i1 + 1; i <= i2; i++) {
+                if (strcmp(arr_str->elementos[i], arr_str->elementos[min_i]) < 0) { 
+                    min_i = i; 
+                }
+            }            
+			return min_i;            
+        }
         default:
-            break;
+            //Tipo desconhecido
+            return -1;
 	}
 }
 
-
-const void* array_min(int i1, int i2, void *arr) {
-    int min_idx = array_min_index(i1, i2, arr);
+const void* array_min(void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
 
     switch (tipo) {
         case INT_ARRAY: {
             ArrayInteiros *arr_int = (ArrayInteiros *)arr;
+            int min_idx = array_min_index(0, arr_int->contador-1, arr_int);
         	return &(arr_int->elementos[min_idx]);
         }
-        //case PAIR_INT_ARRAY: {}
+        case PAIR_INT_ARRAY: {
+            ArrayInteiros *par_int_arr = (ArrayInteiros *)arr;
+            int min_idx = array_min_index(0, par_int_arr->contador-1, par_int_arr);
+        	return &(par_int_arr->elementos[min_idx]);
+        }
         case FLOAT_ARRAY: {
             ArrayFloats *arr_float = (ArrayFloats *)arr;
+            int min_idx = array_min_index(0, arr_float->contador-1, arr_float);
         	return &(arr_float->elementos[min_idx]);
         }
         case DOUBLE_ARRAY: {
             ArrayDoubles *arr_double = (ArrayDoubles *)arr;
+            int min_idx = array_min_index(0, arr_double->contador-1, arr_double);
         	return &(arr_double->elementos[min_idx]);
         }
-        //casa STRING_ARRAY: {}
+        case STRING_ARRAY: {
+            ArrayStrings *arr_str = (ArrayStrings *)arr;
+            int min_idx = array_min_index(0, arr_str->contador-1, arr_str);
+        	return arr_str->elementos[min_idx];
+        }
         default:
-            break;
+            return NULL;
 	}
 }
-
 
 int array_max_index(int i1, int i2, void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
@@ -425,14 +507,14 @@ int array_max_index(int i1, int i2, void *arr) {
         case INT_ARRAY: {
             ArrayInteiros *arr_int = (ArrayInteiros *)arr;
 			if ( i1 >= arr_int->contador || i2 >= arr_int->contador ) {
-				printf("Slice além dos limites do array...\n");
+				// Slice além dos limites do array...
                 return -1;
 			}
 
 			int max = INT_MIN;
 			int max_i;
 
-			for (int i = i1; i <= i2; i++) {
+			for (int i = i1; i <= i2 + 1; i++) {
 				if ( arr_int->elementos[i] > max ) { 
 					max = arr_int->elementos[i]; 
 					max_i = i; 
@@ -442,12 +524,31 @@ int array_max_index(int i1, int i2, void *arr) {
 			return max_i;
 
         }
-        //case PAIR_INT_ARRAY: {}
+        case PAIR_INT_ARRAY: {
+           ArrayParInteiros *pair_int_arr = (ArrayParInteiros *)arr;
+			if ( i1 >= pair_int_arr->contador || i2 >= pair_int_arr->contador ) {
+				// Slice além dos limites do array...
+                return -2;
+			}
+
+			float max = FLT_MIN;
+			int max_i;
+
+			for (int i = i1; i < i2 + 1 ; i++) {
+                Par p_dado = pair_int_arr->elementos[i];
+				if ( _obter_valor_par(p_dado) > max ) { 
+					max = _obter_valor_par(p_dado); 
+					max_i = i; 
+				}
+			}
+
+			return max_i;                   
+        }
         case FLOAT_ARRAY: {
             ArrayFloats *arr_float = (ArrayFloats *)arr;
 			if ( i1 >= arr_float->contador || i2 >= arr_float->contador ) {
-				printf("Slice além dos limites do array...\n");
-                return -1;
+				// Slice além dos limites do array...
+                return -2;
 			}
 
 			float max = FLT_MIN;
@@ -466,8 +567,8 @@ int array_max_index(int i1, int i2, void *arr) {
         case DOUBLE_ARRAY: {
             ArrayDoubles *arr_double = (ArrayDoubles *)arr;
 			if ( i1 >= arr_double->contador || i2 >= arr_double->contador ) {
-				printf("Slice além dos limites do array...\n");
-                return -1;
+				// Slice além dos limites do array...
+                return -2;
 			}
 
 			float max = DBL_MIN;
@@ -482,34 +583,59 @@ int array_max_index(int i1, int i2, void *arr) {
 
 			return max_i;
         }
-        //casa STRING_ARRAY: {}
+        case STRING_ARRAY: {
+            ArrayStrings *arr_str = (ArrayStrings *)arr;
+			if ( i1 >= arr_str->contador || i2 >= arr_str->contador ) {
+				// Slice além dos limites do array...
+                return -2;
+			}
+
+            int max_i = i1;
+
+            for (int i = i1 + 1; i <= i2; i++) {
+                if (strcmp(arr_str->elementos[i], arr_str->elementos[max_i]) < 0) { 
+                    max_i = i; 
+                }
+            }            
+			return max_i;      
+        }
         default:
-            break;
+            // Tipo desconhecido
+            return -1;
 	}
 }
 
-
-const void* array_max(int i1, int i2, void *arr) {
-    int max_idx = array_max_index(i1, i2, arr);
+const void* array_max(void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
     
     switch (tipo) {
         case INT_ARRAY: {
             ArrayInteiros *arr_int = (ArrayInteiros *)arr;
+            int max_idx = array_max_index(0, arr_int->contador-1, arr_int);
         	return &(arr_int->elementos[max_idx]);
         }
-        //case PAIR_INT_ARRAY: {}
+        case PAIR_INT_ARRAY: {
+            ArrayParInteiros *par_int_arr = (ArrayParInteiros *)arr;
+            int max_idx = array_max_index(0, par_int_arr->contador-1, par_int_arr);
+        	return &(par_int_arr->elementos[max_idx]);
+        }
         case FLOAT_ARRAY: {
             ArrayFloats *arr_float = (ArrayFloats *)arr;
+            int max_idx = array_max_index(0, arr_float->contador-1, arr_float);
         	return &(arr_float->elementos[max_idx]);
         }
         case DOUBLE_ARRAY: {
             ArrayDoubles *arr_double = (ArrayDoubles *)arr;
+            int max_idx = array_max_index(0, arr_double->contador-1, arr_double);
         	return &(arr_double->elementos[max_idx]);
         }
-        //casa STRING_ARRAY: {}
+        case STRING_ARRAY: {
+            ArrayStrings *arr_str = (ArrayStrings *)arr;
+            int max_idx = array_max_index(0, arr_str->contador-1, arr_str);
+        	return arr_str->elementos[max_idx];
+        }
         default:
-            break;
+            return NULL;
 	}
 }
 
@@ -634,7 +760,6 @@ void _teste_array_inteiros() {
     array_elements_list(a1);
     liberar_array(a1);
 }
-
 void _teste_array_floats() {
 	_memoria_array_floats();
     ArrayFloats *a1 = criar_array_floats();
@@ -683,7 +808,6 @@ void _teste_array_floats() {
     array_elements_list(a1);
     liberar_array(a1);
 }
-
 void _teste_array_doubles() {
     ArrayDoubles *a1 = criar_array_doubles();
     double d = 33.9;
@@ -700,7 +824,6 @@ void _teste_array_doubles() {
     printf("\nContador array (double): %d\n", a1->contador);    
     array_elements_list(a1); liberar_array(a1);
 }
-
 void _teste_array_par_de_inteiros() {
     _memoria_array_inteiros();
     ArrayParInteiros *a1 = criar_array_par_inteiros();
@@ -722,4 +845,42 @@ void _teste_array_par_de_inteiros() {
 	printf("Ordenando...\n", a1->contador);    
     
     liberar_array(a1);
+}
+void _teste_array_string() {
+    ArrayStrings *arr = criar_array_strings();
+
+    array_push("Daniel", arr);
+    array_push("Mariana", arr);
+    array_push("Alice", arr);
+    array_push("Vicente", arr);
+
+    const char *s;
+    s = array_min(arr);
+    printf("%s\n", s);
+    
+    array_elements_list(arr);
+    liberar_array(arr);
+}
+void _teste_obter_pontos(){
+    Par p1 = {1, 0};
+    Par p2 = {1, 1};
+    Par p3 = {1, 3};
+
+    ArrayParInteiros *arr = criar_array_par_inteiros();
+    array_push(&p1, arr);
+    array_push(&p2, arr);
+    array_push(&p3, arr);
+
+    array_elements_list(arr);
+
+    const Par *v = array_min(arr);
+    const Par *v2 = array_max(arr);
+    
+    printf("Par: (%d, %d)\n", v->a, v->b);
+    printf("Par: (%d, %d)\n", v2->a, v2->b);
+
+    array_reverse(arr);
+    array_elements_list(arr);
+
+    liberar_array(arr);
 }

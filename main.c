@@ -1,5 +1,8 @@
 #include <stdio.h>
-#include "array.h"
+#include <stdint.h>
+#include "cycling.h"
+#include <string.h>
+#include <limits.h>
 
 int _main() {
     //Código para identificar pares próximos em um array a partir dos indices. Primeira linha.. Partir para o merge...
@@ -26,19 +29,10 @@ int _main() {
     return 0;
 }
 
+
+
+
 int main() {
-    ArrayStrings *arr = criar_array_strings();
 
-    array_push("Daniel", arr);
-    array_push("Mariana", arr);
-    array_push("Alice", arr);
-    array_push("Vicente", arr);
-
-    array_elements_list(arr);
-
-    
-
-
-    liberar_array(arr);
     return 0;
 }
