@@ -37,8 +37,8 @@ const void* cycler_next(void *cycler);
 void liberar_cycler(void *cycler);
 
 void _teste_cycler_inteiros();
-//void _teste_cycler_floats();
-//void _teste_cycler_doubles();
+void _teste_cycler_floats();
+void _teste_cycler_doubles();
 void _teste_cycler_strings();
 
 /*

@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "queue.h"
 
+
 FilaInteiros* criar_fila_inteiros() {
     FilaInteiros *fila = (FilaInteiros *)malloc(sizeof( FilaInteiros));
     fila->primeiro_elemento = 0;
@@ -19,25 +20,6 @@ FilaStrings* criar_fila_strings() {
 
 
 
-void queue_reset(void *fila) {
-    TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
-
-    switch (tipo) {
-        case INT_ARRAY:
-            FilaInteiros *fila_int = (FilaInteiros *)fila;
-            fila_int->primeiro_elemento = 0;
-            fila_int->array->contador = 0;            
-            break;
-        case STRING_ARRAY:
-            FilaStrings *fila_str = (FilaStrings *)fila;
-            fila_str->primeiro_elemento = 0;
-            fila_str->array->contador = 0;            
-            break;
-        default:
-            //Tipo desconhecido
-            break;
-    }    
-}
 
 void queue_push(void *element, void *fila) {
     TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
@@ -176,9 +158,10 @@ FilaStrings* queue_str_rebuild(FilaStrings *old_f) {
 
 
 void _teste_fila_inteiros() {
-    FilaInteiros *fila = criar_fila_inteiros();
-    printf("Elementos:\n");
+    printf("Testando >> teste_fila_inteiros ... ");
 
+    //Push an size
+    FilaInteiros *fila = criar_fila_inteiros();
     int i = 12; queue_push(&i,fila);
         i = 25; queue_push(&i,fila);
         i = 26; queue_push(&i,fila);
@@ -188,27 +171,79 @@ void _teste_fila_inteiros() {
         i = 89; queue_push(&i,fila);
         i = 99; queue_push(&i,fila);
         i = 12; queue_push(&i,fila);
-    queue_elements_list(fila);
-    printf("Tamanho: %d\n", queue_len(fila));
+    assert(queue_len(fila) == 9);
 
+    //Pop and check
     queue_pop(fila);
     queue_pop(fila);
+    const int *v_pop = queue_pop(fila);
+    assert(*v_pop == 26);
+    assert(queue_len(fila) == 6);
+
+    //Re-push
+    i = 77; queue_push(&i,fila);
+    assert(queue_len(fila) == 7);
+
+    //Pop and check
     queue_pop(fila);
+    queue_pop(fila);
+    const int *v_pop2 = queue_pop(fila);
+    assert(*v_pop2 == 76);
 
-    printf("Elementos após desenfileirar:\n");
-    queue_elements_list(fila);
+    liberar_fila(fila);
 
-    printf("Tamanho depois de desenfileirar 3 vezes: %d\n", queue_len(fila));
-    printf("Esvaziando fila...\n");
-    queue_reset(fila);
-    printf("Tamanho depois de esvaziar fila: %d\n", queue_len(fila));
-    queue_elements_list(fila);
+    printf("ok!\n");
+}
 
-    printf("Enfileirando 3 elementos...\n");
-    i = 66; queue_push(&i,fila);
-    i = 76; queue_push(&i,fila);
-    i = 89; queue_push(&i,fila);
-    queue_elements_list(fila);
 
-    liberar_fila(fila);    
+void _teste_fila_strings() {
+    printf("Testando >> teste_fila_strings ... ");
+    
+    // Criando fila de strings
+    FilaStrings *fila = criar_fila_strings();
+    
+    // Adicionando strings na fila (push)
+    char *s1 = "Primeira";
+    char *s2 = "Segunda";
+    char *s3 = "Terceira";
+    char *s4 = "Quarta";
+    
+    queue_push(s1, fila);
+    queue_push(s2, fila);
+    queue_push(s3, fila);
+    queue_push(s4, fila);
+    
+    // Verificando se a fila tem 4 elementos
+    assert(queue_len(fila) == 4);
+    
+    // Removendo elementos (pop) e verificando
+    const char *v_pop1 = queue_pop(fila);
+    assert(strcmp(v_pop1, "Primeira") == 0);
+    
+    const char *v_pop2 = queue_pop(fila);
+    assert(strcmp(v_pop2, "Segunda") == 0);
+    
+    assert(queue_len(fila) == 2);  // Restam dois elementos
+    
+    // Re-adicionando um novo elemento
+    char *s5 = "Quinta";
+    queue_push(s5, fila);
+    assert(queue_len(fila) == 3);  // Agora há 3 elementos
+    
+    // Removendo e verificando o próximo elemento
+    const char *v_pop3 = queue_pop(fila);
+    assert(strcmp(v_pop3, "Terceira") == 0);
+    
+    const char *v_pop4 = queue_pop(fila);
+    assert(strcmp(v_pop4, "Quarta") == 0);
+    
+    const char *v_pop5 = queue_pop(fila);
+    assert(strcmp(v_pop5, "Quinta") == 0);
+    
+    assert(queue_len(fila) == 0);  // A fila está vazia agora
+    
+    // Liberando a fila
+    liberar_fila(fila);
+
+    printf("ok!\n");
 }
