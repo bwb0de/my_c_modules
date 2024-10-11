@@ -51,6 +51,13 @@ ArrayStrings* criar_array_strings() {
 }
 
 
+int array_len(void *arr) {
+    TipoArray len = ((ArrayInteiros*)arr)->contador;
+    return len;
+}
+
+
+
 float _obter_valor_par(Par par) {
     Ponto2D *p_origem = criar_ponto2D(0.0, 0.0);
     Ponto2D *p_dado = criar_ponto2D((double)par.a, (double)par.b);

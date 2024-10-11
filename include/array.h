@@ -77,6 +77,7 @@ const void* array_pop(void *arr);
 void array_elements_list(void *arr);
 void array_elements_swap(int i1, int i2, void *arr);
 void array_reverse(void *arr);
+int array_len(void *arr);
 
 void liberar_array(void *arr);
 

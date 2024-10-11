@@ -1,4 +1,5 @@
 #include "array.h"
+#include <math.h>
 
 void _quicksort_partition(ArrayInteiros *arr) {}
 
@@ -8,8 +9,6 @@ void quicksort(ArrayInteiros *arr) {
 }
 
 
-
-}
 void merge_sort() {
 
 }
