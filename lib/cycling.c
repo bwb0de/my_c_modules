@@ -36,26 +36,30 @@ CyclerStrings* criar_cycler_strings() {
 
 void cycler_push(void *element, void *cycler) {
     TipoArray tipo = ((CyclerInteiros*)cycler)->array->tipo;
-
+	CyclerInteiros *cycler_int;
+	CyclerFloats *cycler_float;
+	CyclerDoubles *cycler_double;
+	CyclerStrings *cycler_str;
+	
     switch (tipo) {
         case INT_ARRAY: {
-            CyclerInteiros *cycler_int = (CyclerInteiros *)cycler;
+            cycler_int = (CyclerInteiros *)cycler;
             array_push(element, cycler_int->array);
             break;
         }
         case FLOAT_ARRAY: {
-            CyclerFloats *cycler_float = (CyclerFloats *)cycler;
+            cycler_float = (CyclerFloats *)cycler;
             array_push(element, cycler_float->array);
             break;
         }
         case DOUBLE_ARRAY: {
-            CyclerDoubles *cycler_double = (CyclerDoubles *)cycler;
+            cycler_double = (CyclerDoubles *)cycler;
             array_push(element, cycler_double->array);
             break;
         }
         case STRING_ARRAY: {
-            CyclerStrings *cycler_string = (CyclerStrings *)cycler;
-            array_push(element, cycler_string->array);
+            cycler_str = (CyclerStrings *)cycler;
+            array_push(element, cycler_str->array);
             break;
         }
         default:
@@ -65,10 +69,14 @@ void cycler_push(void *element, void *cycler) {
 
 const void* cycler_next(void *cycler) {
     TipoArray tipo = ((CyclerInteiros*)cycler)->array->tipo;
+	CyclerInteiros *cycler_int;
+	CyclerFloats *cycler_float;
+	CyclerDoubles *cycler_double;
+	CyclerStrings *cycler_str;
 
     switch (tipo) {
         case INT_ARRAY: {
-            CyclerInteiros *cycler_int = (CyclerInteiros *)cycler;
+            cycler_int = (CyclerInteiros *)cycler;
             if (cycler_int->array->contador == 0) { return NULL; }
             int *e = &(cycler_int->array->elementos[cycler_int->selecionado]);
             cycler_int->selecionado++;
@@ -77,7 +85,7 @@ const void* cycler_next(void *cycler) {
 
         }
         case FLOAT_ARRAY: {
-            CyclerFloats *cycler_float = (CyclerFloats *)cycler;
+            cycler_float = (CyclerFloats *)cycler;
             if (cycler_float->array->contador == 0) { return NULL; }
             const void* e = &(cycler_float->array->elementos[cycler_float->selecionado]);
             cycler_float->selecionado++;
@@ -85,7 +93,7 @@ const void* cycler_next(void *cycler) {
             return e;
         }
         case DOUBLE_ARRAY: {
-            CyclerDoubles *cycler_double = (CyclerDoubles *)cycler;
+            cycler_double = (CyclerDoubles *)cycler;
             if (cycler_double->array->contador == 0) { return NULL; }
             const void* e = &(cycler_double->array->elementos[cycler_double->selecionado]);
             cycler_double->selecionado++;
@@ -93,11 +101,11 @@ const void* cycler_next(void *cycler) {
             return e;
         }
         case STRING_ARRAY: {
-            CyclerStrings *cycler_string = (CyclerStrings *)cycler;
-            if (cycler_string->array->contador == 0) { return NULL; }
-            const char *e = cycler_string->array->elementos[cycler_string->selecionado];
-            cycler_string->selecionado++;
-            if (cycler_string->selecionado >= cycler_string->array->contador) { cycler_string->selecionado = 0; }
+            cycler_str = (CyclerStrings *)cycler;
+            if (cycler_str->array->contador == 0) { return NULL; }
+            const char *e = cycler_str->array->elementos[cycler_str->selecionado];
+            cycler_str->selecionado++;
+            if (cycler_str->selecionado >= cycler_str->array->contador) { cycler_str->selecionado = 0; }
             return e;
 
         }
@@ -108,25 +116,29 @@ const void* cycler_next(void *cycler) {
 
 const void* cycler_pop(void *cycler) {
     TipoArray tipo = ((CyclerInteiros*)cycler)->array->tipo;
+	CyclerInteiros *cycler_int;
+	CyclerFloats *cycler_float;
+	CyclerDoubles *cycler_double;
+	CyclerStrings *cycler_str;
 
     switch (tipo) {
         case INT_ARRAY: {
-            CyclerInteiros *cycler_int = (CyclerInteiros *)cycler;
+            cycler_int = (CyclerInteiros *)cycler;
             if (cycler_int->selecionado > 0) {cycler_int->selecionado--;}
             return array_pop(cycler_int->array);
         }
         case FLOAT_ARRAY: {
-            CyclerFloats *cycler_float = (CyclerFloats *)cycler;
+            cycler_float = (CyclerFloats *)cycler;
             if (cycler_float->selecionado > 0) {cycler_float->selecionado--;}
             return array_pop(cycler_float->array);
         }
         case DOUBLE_ARRAY: {
-            CyclerDoubles *cycler_double = (CyclerDoubles *)cycler;
+            cycler_double = (CyclerDoubles *)cycler;
             if (cycler_double->selecionado > 0) {cycler_double->selecionado--;}
             return array_pop(cycler_double->array);
         }
         case STRING_ARRAY: {
-            CyclerStrings *cycler_str = (CyclerStrings *)cycler;
+            cycler_str = (CyclerStrings *)cycler;
             if (cycler_str->selecionado > 0) {cycler_str->selecionado--;}
             return array_pop(cycler_str->array);
         }
@@ -137,25 +149,29 @@ const void* cycler_pop(void *cycler) {
 
 void cycler_elements_swap(int i1, int i2, void *cycler) {
     TipoArray tipo = ((CyclerInteiros *)cycler)->array->tipo;
-    
+   	CyclerInteiros *cycler_int;
+	CyclerFloats *cycler_float;
+	CyclerDoubles *cycler_double;
+	CyclerStrings *cycler_str;
+
     switch (tipo) {
         case INT_ARRAY: {
-            CyclerInteiros *cycler_int = (CyclerInteiros *)cycler;
+            cycler_int = (CyclerInteiros *)cycler;
             array_elements_swap(i1, i2, cycler_int->array);
             break;
         }
         case FLOAT_ARRAY: {
-            CyclerFloats *cycler_float = (CyclerFloats *)cycler;
+            cycler_float = (CyclerFloats *)cycler;
             array_elements_swap(i1, i2, cycler_float->array);
             break;
         }
         case DOUBLE_ARRAY: {
-            CyclerDoubles *cycler_double = (CyclerDoubles *)cycler;
+            cycler_double = (CyclerDoubles *)cycler;
             array_elements_swap(i1, i2, cycler_double->array);
             break;
         }
         case STRING_ARRAY: {
-            CyclerDoubles *cycler_str = (CyclerDoubles *)cycler;
+            cycler_str = (CyclerStrings *)cycler;
             array_elements_swap(i1, i2, cycler_str->array);
             break;
         }
@@ -166,22 +182,26 @@ void cycler_elements_swap(int i1, int i2, void *cycler) {
 
 int cycler_len(void *cycler) {
     TipoArray tipo = ((CyclerInteiros *)cycler)->array->tipo;
+	CyclerInteiros *cycler_int;
+	CyclerFloats *cycler_float;
+	CyclerDoubles *cycler_double;
+	CyclerStrings *cycler_str;
 
     switch (tipo) {
         case INT_ARRAY: {
-            CyclerInteiros *cycler_int = (CyclerInteiros *)cycler;
+            cycler_int = (CyclerInteiros *)cycler;
             return cycler_int->array->contador;
         }
         case FLOAT_ARRAY: {
-            CyclerFloats *cycler_float = (CyclerFloats *)cycler;
+            cycler_float = (CyclerFloats *)cycler;
             return cycler_float->array->contador;
         }
         case DOUBLE_ARRAY: {
-            CyclerDoubles *cycler_double = (CyclerDoubles *)cycler;
+            cycler_double = (CyclerDoubles *)cycler;
             return cycler_double->array->contador;
         }
         case STRING_ARRAY: {
-            CyclerDoubles *cycler_str = (CyclerDoubles *)cycler;
+            cycler_str = (CyclerStrings *)cycler;
             return cycler_str->array->contador;
         }
         default:
@@ -194,27 +214,31 @@ int cycler_len(void *cycler) {
 
 void liberar_cycler(void *cycler) {
     TipoArray tipo = ((CyclerInteiros *)cycler)->array->tipo;
-    
+   	CyclerInteiros *cycler_int;
+	CyclerFloats *cycler_float;
+	CyclerDoubles *cycler_double;
+	CyclerStrings *cycler_str;
+
     switch (tipo) {
         case INT_ARRAY:
-            CyclerInteiros *cycler_int = (CyclerInteiros *)cycler;
+            cycler_int = (CyclerInteiros *)cycler;
             liberar_array(cycler_int->array);
             free(cycler_int);
             break;
         case FLOAT_ARRAY:
-            CyclerFloats *cycler_float = (CyclerFloats *)cycler;
+            cycler_float = (CyclerFloats *)cycler;
             liberar_array(cycler_float->array);
             free(cycler_float);
             break;
         case DOUBLE_ARRAY:
-            CyclerDoubles *cycler_double = (CyclerDoubles *)cycler;
+            cycler_double = (CyclerDoubles *)cycler;
             liberar_array(cycler_double->array);
             free(cycler_double);
             break;
         case STRING_ARRAY:
-            CyclerStrings *cycler_string = (CyclerStrings *)cycler;
-            liberar_array(cycler_string->array);
-            free(cycler_string);
+            cycler_str = (CyclerStrings *)cycler;
+            liberar_array(cycler_str->array);
+            free(cycler_str);
             break;
         default:
             printf("Memoria não liberada, tipo cycler desconhecido\n");
@@ -280,7 +304,7 @@ void _teste_cycler_floats() {
 void _teste_cycler_doubles() {
 
 }
-void _teste_cycler_strings() {
+void _teste_cycler_strs() {
     CyclerStrings *cycler = criar_cycler_strings();
     printf("Inserindo 3 elementos no cycler...\n");
 

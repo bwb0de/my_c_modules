@@ -34,14 +34,15 @@ PilhaStrings* criar_pilha_strings() {
 
 void stack_reset(void *pilha) {
     TipoArray tipo = ((PilhaInteiros*)pilha)->array->tipo;
-
+	PilhaInteiros *pilha_int;
+	PilhaStrings *pilha_str;
     switch (tipo) {
         case INT_ARRAY:
-            PilhaInteiros *pilha_int = (PilhaInteiros *)pilha;
+            pilha_int = (PilhaInteiros *)pilha;
             pilha_int->array->contador = 0;            
             break;
         case STRING_ARRAY:
-            PilhaStrings *pilha_str = (PilhaStrings *)pilha;
+            pilha_str = (PilhaStrings *)pilha;
             pilha_str->array->contador = 0;            
             break;
         default:
@@ -53,14 +54,15 @@ void stack_reset(void *pilha) {
 
 void stack_push(void *element, void *pilha) {
     TipoArray tipo = ((PilhaInteiros*)pilha)->array->tipo;
-
+	PilhaInteiros *pilha_int;
+	PilhaStrings *pilha_str;
     switch (tipo) {
         case INT_ARRAY:
-            PilhaInteiros *pilha_int = (PilhaInteiros *)pilha;
+            pilha_int = (PilhaInteiros *)pilha;
             array_push(element, pilha_int->array);
             break;
         case STRING_ARRAY:
-            PilhaStrings *pilha_str = (PilhaStrings *)pilha;
+            pilha_str = (PilhaStrings *)pilha;
             array_push(element, pilha_str->array);
             break;
         default:
@@ -75,15 +77,18 @@ void stack_push(void *element, void *pilha) {
 const void* stack_pop(void *pilha) {
     TipoArray tipo = ((PilhaInteiros*)pilha)->array->tipo;
     int i;
+   	PilhaInteiros *pilha_int;
+	PilhaStrings *pilha_str;
+
     switch (tipo) {
         case INT_ARRAY:
-            PilhaInteiros *pilha_int = (PilhaInteiros *)pilha;
+            pilha_int = (PilhaInteiros *)pilha;
             if (pilha_int->array->contador == 0 ) { return NULL; }
             pilha_int->array->contador--;
             return &(pilha_int->array->elementos[pilha_int->array->contador]);
             
         case STRING_ARRAY:
-            PilhaStrings *pilha_str = (PilhaStrings *)pilha;
+            pilha_str = (PilhaStrings *)pilha;
             if (pilha_str->array->contador == 0 ) { return NULL; } 
             pilha_str->array->contador--;
             return pilha_str->array->elementos[pilha_str->array->contador];
@@ -97,10 +102,12 @@ const void* stack_pop(void *pilha) {
 
 void stack_elements_list(void *pilha) {
     TipoArray tipo = ((PilhaInteiros*)pilha)->array->tipo;
+	PilhaInteiros *pilha_int;
+	PilhaStrings *pilha_str;
 
     switch (tipo) {
         case INT_ARRAY:
-            PilhaInteiros *pilha_int = (PilhaInteiros *)pilha;
+            pilha_int = (PilhaInteiros *)pilha;
             for (int i = pilha_int->array->contador - 1; i > -1; i--) {
                 if ( i == 0) {
                     printf("%d\n", pilha_int->array->elementos[i]); break;
@@ -110,7 +117,7 @@ void stack_elements_list(void *pilha) {
             break;
             
         case STRING_ARRAY:
-            PilhaStrings *pilha_str = (PilhaStrings *)pilha;
+            pilha_str = (PilhaStrings *)pilha;
             for (int i = pilha_str->array->contador - 1; i > -1; i--) {
                 if ( i == 0) {
                     printf("%s\n", pilha_str->array->elementos[i]); break;
@@ -130,13 +137,15 @@ void stack_elements_list(void *pilha) {
 
 int stack_len(void *pilha) {
     TipoArray tipo = ((PilhaInteiros*)pilha)->array->tipo;
+	PilhaInteiros *pilha_int;
+	PilhaStrings *pilha_str;
 
     switch (tipo) {
         case INT_ARRAY:
-            PilhaInteiros *pilha_int = (PilhaInteiros *)pilha;
+            pilha_int = (PilhaInteiros *)pilha;
             return pilha_int->array->contador;
         case STRING_ARRAY:
-            PilhaStrings *pilha_str = (PilhaStrings *)pilha;
+            pilha_str = (PilhaStrings *)pilha;
             return pilha_str->array->contador;
         default:
             //Tipo desconhecido
@@ -149,16 +158,18 @@ int stack_len(void *pilha) {
 
 void liberar_pilha(void *pilha) {
     TipoArray tipo = ((PilhaInteiros*)pilha)->array->tipo;
+	PilhaInteiros *pilha_int;
+	PilhaStrings *pilha_str;
     
     switch (tipo) {
         case INT_ARRAY: {
-            PilhaInteiros *pilha_int = (PilhaInteiros *)pilha;
+            pilha_int = (PilhaInteiros *)pilha;
             liberar_array(pilha_int->array);
             free(pilha_int);
             break;
         }
         case STRING_ARRAY: {
-            PilhaStrings *pilha_str = (PilhaStrings *)pilha;
+            pilha_str = (PilhaStrings *)pilha;
             liberar_array(pilha_str->array);
             free(pilha_str);
             break;

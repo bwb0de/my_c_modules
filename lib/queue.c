@@ -23,14 +23,16 @@ FilaStrings* criar_fila_strings() {
 
 void queue_push(void *element, void *fila) {
     TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
-
+	FilaInteiros *fila_int;
+	FilaStrings *fila_str;
+	
     switch (tipo) {
         case INT_ARRAY:
-            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            fila_int = (FilaInteiros *)fila;
             array_push(element, fila_int->array);
             break;
         case STRING_ARRAY:
-            FilaStrings *fila_str = (FilaStrings *)fila;
+            fila_str = (FilaStrings *)fila;
             array_push(element, fila_str->array);
             break;
         default:
@@ -42,17 +44,19 @@ void queue_push(void *element, void *fila) {
 
 const void* queue_pop(void *fila) {
     TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+	FilaInteiros *fila_int;
+	FilaStrings *fila_str;
 
     switch (tipo) {
         case INT_ARRAY:
-            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            fila_int = (FilaInteiros *)fila;
             if (fila_int->primeiro_elemento == fila_int->array->contador ) { return NULL; }
             int i = fila_int->primeiro_elemento;
             fila_int->primeiro_elemento++;
             return &(fila_int->array->elementos[i]);
             
         case STRING_ARRAY:
-            FilaStrings *fila_str = (FilaStrings *)fila;
+            fila_str = (FilaStrings *)fila;
             if (fila_str->primeiro_elemento == fila_str->array->contador ) { return NULL; }
             char *e = fila_str->array->elementos[fila_str->primeiro_elemento];
             fila_str->primeiro_elemento++;
@@ -66,10 +70,12 @@ const void* queue_pop(void *fila) {
 
 void queue_elements_list(void *fila) {
     TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+	FilaInteiros *fila_int;
+	FilaStrings *fila_str;
 
     switch (tipo) {
         case INT_ARRAY:
-            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            fila_int = (FilaInteiros *)fila;
             for (int i = fila_int->primeiro_elemento; i < fila_int->array->contador; i++) {
                 if ( i == fila_int->array->contador - 1) {
                     printf("%d\n", fila_int->array->elementos[i]); break;
@@ -79,7 +85,7 @@ void queue_elements_list(void *fila) {
             break;
             
         case STRING_ARRAY:
-            FilaStrings *fila_str = (FilaStrings *)fila;
+            fila_str = (FilaStrings *)fila;
             for (int i = fila_str->primeiro_elemento; i < fila_str->array->contador; i++) {
                 if (i == fila_str->array->contador - 1) {
                     printf("%s\n", fila_str->array->elementos[i]); break;
@@ -99,13 +105,15 @@ void queue_elements_list(void *fila) {
 
 int queue_len(void *fila) {
     TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+	FilaInteiros *fila_int;
+	FilaStrings *fila_str;
 
     switch (tipo) {
         case INT_ARRAY:
-            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            fila_int = (FilaInteiros *)fila;
             return fila_int->array->contador - fila_int->primeiro_elemento;
         case STRING_ARRAY:
-            FilaStrings *fila_str = (FilaStrings *)fila;
+            fila_str = (FilaStrings *)fila;
             return fila_str->array->contador - fila_str->primeiro_elemento;
         default:
             //Tipo desconhecido
@@ -117,16 +125,18 @@ int queue_len(void *fila) {
 
 void liberar_fila(void *fila) {
     TipoArray tipo = ((FilaInteiros*)fila)->array->tipo;
+	FilaInteiros *fila_int;
+	FilaStrings *fila_str;
     
     switch (tipo) {
         case INT_ARRAY: {
-            FilaInteiros *fila_int = (FilaInteiros *)fila;
+            fila_int = (FilaInteiros *)fila;
             liberar_array(fila_int->array);
             free(fila_int);
             break;
         }
         case STRING_ARRAY: {
-            FilaStrings *fila_str = (FilaStrings *)fila;
+            fila_str = (FilaStrings *)fila;
             liberar_array(fila_str->array);
             free(fila_str);
             break;

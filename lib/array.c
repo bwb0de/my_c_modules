@@ -1,5 +1,6 @@
 #include "array.h"
 //#include "mathext.h"
+#include <stddef.h>
 #include "geometria.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -182,6 +183,44 @@ const void* array_pop(void *arr) {
     }
 }
 
+
+void array_elements_list_slice(size_t i1, size_t i2, void *arr) {
+	TipoArray tipo;
+	tipo = ((ArrayInteiros*)arr)->tipo;
+	
+	    switch (tipo) {
+        case INT_ARRAY: {
+            ArrayInteiros *arr_int;
+            arr_int = (ArrayInteiros *)arr;
+            for (int i = i1; i < i2+1; i++) {
+                if ( i == arr_int->contador - 1) {
+                    printf("%d\n", arr_int->elementos[i]); break;
+                }
+                printf("%d, ", arr_int->elementos[i]);
+            }
+			break;
+
+        }
+        case PAIR_INT_ARRAY: {
+            break;
+        }
+        case FLOAT_ARRAY: {
+			break;
+        }
+        case DOUBLE_ARRAY: {
+			break;
+		}
+        case STRING_ARRAY: {
+			break;
+        }
+        default:
+            //Tipo desconhecido
+            break;
+	}	
+
+}
+
+
 void array_elements_list(void *arr) {
     TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
 
@@ -363,6 +402,41 @@ void array_elements_swap(int i1, int i2, void *arr) {
         default:
             break;
     }
+}
+
+void array_max_to_end_swap(void *arr) {
+	TipoArray tipo;
+	tipo = ((ArrayInteiros*)arr)->tipo;
+	
+	    switch (tipo) {
+        case INT_ARRAY: {
+            ArrayInteiros *arr_int;
+            arr_int = (ArrayInteiros *)arr;
+			size_t max_v_idx, last_idx;
+			last_idx = arr_int->contador-1;
+			max_v_idx = array_max_index(0, last_idx, arr_int);
+			if (max_v_idx < last_idx) {
+				array_elements_swap(max_v_idx, last_idx, arr_int);
+			}
+			break;
+
+        }
+        case PAIR_INT_ARRAY: {
+            break;
+        }
+        case FLOAT_ARRAY: {
+			break;
+        }
+        case DOUBLE_ARRAY: {
+			break;
+		}
+        case STRING_ARRAY: {
+			break;
+        }
+        default:
+            //Tipo desconhecido
+            break;
+	}	
 }
 
 int array_min_index(int i1, int i2, void *arr) {

@@ -1,6 +1,8 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
+#include <stddef.h>
+
 #define ARRAY_DEFAULT_LEN 15
 
 typedef enum { 
@@ -78,6 +80,9 @@ void array_elements_list(void *arr);
 void array_elements_swap(int i1, int i2, void *arr);
 void array_reverse(void *arr);
 int array_len(void *arr);
+void array_max_to_end_swap(void *arr);
+void array_elements_list_slice(size_t i1, size_t i2, void *arr);
+
 
 void liberar_array(void *arr);
 
