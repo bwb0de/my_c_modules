@@ -52,4 +52,4 @@ Observações:
 [ ] implementar serial_connection.c/h;
 [ ] implementar socket_comunication.c/h;
 [ ] implementar calendário universal ucalendar.c/h;
-[ ] implementar mathext.c/h => funções estatísiticas
+[ ] implementar mathext.c/h => funções estatísiticas;
