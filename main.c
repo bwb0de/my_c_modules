@@ -28,31 +28,68 @@ void ordenar_pares_consecutivos(ArrayInteiros *arr) {
 }
 
 void unir_grupos_ordenadamente(ArrayInteiros *arr) {
-	size_t n, max_idx, group_size, group_step, group_range, a, b;
+	size_t n, max_idx, group_size, group_step, group_range, group_range_last, a, b, c1, d1, c2, d2;
 	n = array_len(arr);
 	max_idx = n - 1;
 	group_size = 2;
 	group_step = 2;
 	group_range = pow(group_size, group_step);
-	printf("%d\n", (size_t)group_range);
-	
+	group_range_last = pow(group_size, group_step-1);
+
+
+	printf("%ld\n", (size_t)group_range);
 	a = 0;
 	b = group_range - 1;
-	
+
+	c1 = 0;
+	d1 = group_range_last - 1; //limite par 1
+
+	c2 = c1 + group_range_last;
+	d2 = d1 + group_range_last; //limite par 2
+
+
     while ( 1 ) {
-		printf("(%d, %d)\n", a, b);
-		array_elements_list_slice(a,b,arr);
-		printf("\n\n");
-        a += group_range; b += group_range;
-        
-        
-        if (b > max_idx ) {
-			printf("(%d, %d)\n", a, max_idx);
-			array_elements_list_slice(a,b,arr);
-			printf("\n\n");
-            break;
+        while ( 1 ) {
+            if ( b > max_idx ) { b = max_idx; }
+            printf("*(%ld, %ld)\n", a, b);
+            array_elements_list_slice(a,b,arr);
+            printf("\n\n");
+
+            //ordenar aqui
+
+
+
+            //
+
+
+            /////////  apenas vizualização, no momento
+            a += group_range; b += group_range;
+            
+            if (a > max_idx ) {
+                break;
+            } 
+            ///////////////////////////////////////////
+            
+            /*
+            else if (b >= max_idx ) {
+                
+                printf("(%ld, %ld)\n", a, max_idx);
+                array_elements_list_slice(a,b,arr);
+                printf("\n\n");
+                break;
+            }
+            */
         }
+        if ( group_range >= arr->contador ) { break; }
+        group_step++;
+        group_range = pow(group_size, group_step);
+        a = 0;
+        b = group_range - 1;
+        
     }
+    
+	
+
 	
 	
 	
@@ -60,6 +97,7 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
 	
 }
 
+/*
 ArrayParInteiros *criar_primeira_camada_indices(int n) {
     int pairs;
     if ( n % 2 == 1 ) {
@@ -104,16 +142,8 @@ ArrayParInteiros *criar_camadas_indices_subsequentes(ArrayParInteiros *arr) {
     arr_saida = criar_array_par_inteiros();
     
     size_t pairs = array_len(arr);
-    //size_t pairs;
 
-    /*
-    if ( n % 2 == 1 ) {
-        pairs = (n - 1);
-    } else {
-        pairs = n;
-    }*/
-
-    printf("INSIDE FUNC pairs: %d\n", pairs);
+    //printf("INSIDE FUNC pairs: %ld\n", pairs);
 
     size_t i = 0;
     size_t j = i + 1;
@@ -152,8 +182,7 @@ ArrayParInteiros *criar_camadas_indices_subsequentes(ArrayParInteiros *arr) {
 
     return arr_saida;
 }
-
-
+*/
 
 int main() {
     //Código para identificar pares próximos em um array a partir dos indices. Primeira linha.. Partir para o merge...
@@ -177,8 +206,8 @@ int main() {
 	v = 42; array_push(&v, arr);
 	v = 16; array_push(&v, arr);
 	v = 55; array_push(&v, arr);
-	v = 64; array_push(&v, arr);
-	v = 42; array_push(&v, arr);
+	//v = 64; array_push(&v, arr);
+	//v = 42; array_push(&v, arr);
 	//v = 84; array_push(&v, arr);
 	v = 47; array_push(&v, arr);
 	v = 99; array_push(&v, arr);
@@ -191,6 +220,8 @@ int main() {
 	
 	liberar_array(arr);
 	return 0;
+
+    /*
 
     int n = 1008;
     
@@ -254,6 +285,7 @@ int main() {
     liberar_array(arr_idx10);
 
     return 0;
+    */
 }
 
 

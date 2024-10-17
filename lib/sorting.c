@@ -3,15 +3,14 @@
 
 void _quicksort_partition(ArrayInteiros *arr) {}
 
-void quicksort(ArrayInteiros *arr) {
-
-    
-}
 
 
-void merge_sort() {
+void quicksort(ArrayInteiros *arr) {}
 
-}
+
+
+void merge_sort() {}
+
 
 
 void insertion_sort(void *arr) {

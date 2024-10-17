@@ -1,3 +1,4 @@
+/*
 #include "geometria.h"
 
 int main() {
@@ -5,3 +6,4 @@ int main() {
     _teste_ponto_3D();
     return 0;
 }
+*/

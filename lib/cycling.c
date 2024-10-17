@@ -329,7 +329,7 @@ void _teste_cycler_strs() {
     e = cycler_next(cycler); printf("%s\n", e);
     e = cycler_next(cycler); printf("%s\n", e);
 
-    printf("Retirando elemento %s...\n", cycler_pop(cycler));
+    printf("Retirando elemento %p...\n", cycler_pop(cycler));
     printf("Rotacionando 3 vezes...\n");
     e = cycler_next(cycler); printf("%s\n", e);
     e = cycler_next(cycler); printf("%s\n", e);
