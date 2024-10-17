@@ -47,17 +47,79 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
 	c2 = c1 + group_range_last;
 	d2 = d1 + group_range_last; //limite par 2
 
+    ArrayInteiros *idx_reposicionado;
+    idx_reposicionado = criar_array_inteiros();
+
 
     while ( 1 ) {
         while ( 1 ) {
             if ( b > max_idx ) { b = max_idx; }
             printf("*(%ld, %ld)\n", a, b);
-            array_elements_list_slice(a,b,arr);
+            array_elements_list_slice(a, b, arr);
             printf("\n\n");
 
             //ordenar aqui
 
+            idx_reposicionado->contador = 0;
 
+            printf("[%ld, %ld]\n", c1, d1);
+            if ( d2 > max_idx ) { d2 = max_idx; }
+            printf("[%ld, %ld]\n", c2, d2);
+
+            while ( c1 < d1 || c2 < d2 ) {
+
+                if ( arr->elementos[c1] >= arr->elementos[c2] ) {
+                    printf("C1v => %d, C2v => %d;; C1 => %ld, C2 => %ld)\n", arr->elementos[c1], arr->elementos[c2], c1, c2);
+                    array_push(&c2, idx_reposicionado);
+                    if (c2 <= d2) {
+                        c2++;
+                    }
+                    
+
+                    if (c2 > d2 ) {
+                        while ( 1 ) {
+                         printf("C1v => %d, C2v => %d;; C1 => %ld, C2 => %ld)\n", arr->elementos[c1], arr->elementos[c2], c1, c2);
+                         array_push(&c1, idx_reposicionado);
+                         c1++;
+                         if (c1 > d1 ) { break;}
+                        }
+                        break;
+                    }
+
+                    //continue;
+                } else if ( arr->elementos[c1] < arr->elementos[c2] ) {
+                    printf("C1v => %d, C2v => %d;; C1 => %ld, C2 => %ld)\n", arr->elementos[c1], arr->elementos[c2], c1, c2);
+                    array_push(&c1, idx_reposicionado);
+                    c1++;
+
+                    if (c1 > d1 ) {
+                        while ( 1 ) {
+                         printf("C1v => %d, C2v => %d;; C1 => %ld, C2 => %ld)\n", arr->elementos[c1], arr->elementos[c2], c1, c2);
+                         array_push(&c2, idx_reposicionado);
+                         c2++;
+                         if (c2 > d2 ) { break;}
+                        }
+                        break;
+                    }
+
+
+                }
+
+                /*
+                if ( c1 >= d1 ) {
+                    break;
+                }
+
+                if ( c2 >= d2 ) {
+                    break;
+                } */          
+
+            }
+
+            printf("Indices: ");
+            array_elements_list(idx_reposicionado);
+
+            printf("=====================\n\n");
 
             //
 
@@ -83,8 +145,16 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
         if ( group_range >= arr->contador ) { break; }
         group_step++;
         group_range = pow(group_size, group_step);
+        group_range_last = pow(group_size, group_step-1);
+
         a = 0;
         b = group_range - 1;
+
+        c1 = 0;
+        d1 = group_range_last - 1; //limite par 1
+
+        c2 = c1 + group_range_last;
+        d2 = d1 + group_range_last; //limite par 2        
         
     }
     
