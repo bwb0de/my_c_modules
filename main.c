@@ -2,6 +2,34 @@
 #include "queue.h"
 #include <math.h>
 #include "array.h"
+#include "queue.h"
+#include <stdlib.h>
+
+
+
+
+void merge_partition(int i1, int i2, ArrayInteiros *arr) {
+    int idx_meio, tamanho;
+    tamanho = i2 - i1;
+
+    if ( tamanho <= 1 ) {
+        
+    }
+
+    idx_meio = tamanho / 2;
+
+
+
+
+
+
+
+
+}
+
+
+
+
 
 
 void ordenar_pares_consecutivos(ArrayInteiros *arr) {
@@ -36,8 +64,6 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
 	group_range = pow(group_size, group_step);
 	group_range_last = pow(group_size, group_step-1);
 
-
-	printf("%ld\n", (size_t)group_range);
 	a = 0;
 	b = group_range - 1;
 
@@ -50,21 +76,38 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
     ArrayInteiros *idx_reposicionado;
     idx_reposicionado = criar_array_inteiros();
 
+    FilaInteiros *resultados;
+    resultados = criar_fila_inteiros();
+
+    int registrar_resultado;
+    
+    registrar_resultado = 0;
+
 
     while ( 1 ) {
         while ( 1 ) {
             if ( b > max_idx ) { b = max_idx; }
+            /*
             printf("*(%ld, %ld)\n", a, b);
             array_elements_list_slice(a, b, arr);
             printf("\n\n");
+            */
 
             //ordenar aqui
 
             idx_reposicionado->contador = 0;
 
             printf("[%ld, %ld]\n", c1, d1);
-            if ( d2 > max_idx ) { d2 = max_idx; }
+            
+            if ( d2 >= max_idx ) { 
+                d2 = max_idx;
+                registrar_resultado = 1;
+            }
+            
             printf("[%ld, %ld]\n", c2, d2);
+
+
+            // Identifica indices do elemento menor para o maior no grupo em questão
 
             while ( c1 < d1 || c2 < d2 ) {
 
@@ -74,12 +117,15 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
                     if (c2 <= d2) {
                         c2++;
                     }
+
+                    queue_push(&(arr->elementos[c2]), resultados);
                     
 
                     if (c2 > d2 ) {
                         while ( 1 ) {
                          printf("C1v => %d, C2v => %d;; C1 => %ld, C2 => %ld)\n", arr->elementos[c1], arr->elementos[c2], c1, c2);
                          array_push(&c1, idx_reposicionado);
+                         queue_push(&(arr->elementos[c1]), resultados);
                          c1++;
                          if (c1 > d1 ) { break;}
                         }
@@ -91,11 +137,13 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
                     printf("C1v => %d, C2v => %d;; C1 => %ld, C2 => %ld)\n", arr->elementos[c1], arr->elementos[c2], c1, c2);
                     array_push(&c1, idx_reposicionado);
                     c1++;
+                    queue_push(&(arr->elementos[c1]), resultados);
 
                     if (c1 > d1 ) {
                         while ( 1 ) {
                          printf("C1v => %d, C2v => %d;; C1 => %ld, C2 => %ld)\n", arr->elementos[c1], arr->elementos[c2], c1, c2);
                          array_push(&c2, idx_reposicionado);
+                         queue_push(&(arr->elementos[c2]), resultados);
                          c2++;
                          if (c2 > d2 ) { break;}
                         }
@@ -116,10 +164,34 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
 
             }
 
-            printf("Indices: ");
-            array_elements_list(idx_reposicionado);
 
-            printf("=====================\n\n");
+            // Realiza o swap caso o indice de idx_reposicionado seja maior que o indice corrente
+
+            if ( registrar_resultado ) {
+                int n, i, i_rep;
+                n = d2;
+
+                array_elements_list(arr);
+
+                while ( n ) {
+                    i = d2 - n;
+                    i_rep = idx_reposicionado->elementos[i];
+
+                    printf("(%d, %d);\n ", i_rep, i);
+
+                    if ( i_rep > i ) {
+                        array_elements_swap(i, i_rep, arr);
+                    }
+                    n--;
+                }
+
+                array_elements_list(arr);
+            }
+
+
+            
+
+
 
             //
 
@@ -154,17 +226,10 @@ void unir_grupos_ordenadamente(ArrayInteiros *arr) {
         d1 = group_range_last - 1; //limite par 1
 
         c2 = c1 + group_range_last;
-        d2 = d1 + group_range_last; //limite par 2        
-        
+        d2 = d1 + group_range_last; //limite par 2      
     }
-    
-	
-
-	
-	
-	
-	
-	
+    liberar_array(idx_reposicionado);
+    liberar_fila(resultados);
 }
 
 /*
@@ -254,9 +319,72 @@ ArrayParInteiros *criar_camadas_indices_subsequentes(ArrayParInteiros *arr) {
 }
 */
 
+
+
+
+
 int main() {
     //Código para identificar pares próximos em um array a partir dos indices. Primeira linha.. Partir para o merge...
     //Dividir e conquistar procedural
+
+    ArrayInteiros *minha_lista = criar_array_inteiros();
+    int a = 45; array_push(&a, minha_lista);
+        a = 23; array_push(&a, minha_lista);
+        a = 65; array_push(&a, minha_lista);
+        a = 75; array_push(&a, minha_lista);
+        a = 95; array_push(&a, minha_lista);
+        a = 45; array_push(&a, minha_lista);
+        a = 55; array_push(&a, minha_lista);
+        a = 15; array_push(&a, minha_lista);
+
+
+    ArrayInteiros *minha_outra_lista = array_slice(minha_lista, 1,8);
+    ArrayInteiros *minha_outra_lista2 = array_slice(minha_lista, 6,8);
+    
+    ArrayInteiros *minha_lista_concatenada = array_concat(minha_lista, minha_outra_lista2);
+
+    /*
+    int *b = malloc(7 * sizeof(int));
+    b[0] = 23;
+    b[1] = 28;
+    b[2] = 83;
+    b[3] = 73;
+    b[4] = 53;
+    b[5] = 43;
+    b[6] = 24;
+    b[7] = 253;
+    */
+
+
+   /*
+    printf("Tamanho: %d\n", minha_lista->contador);
+
+    for (size_t i = 0; i < minha_lista->contador; i++ ) {
+        printf("%d ", minha_lista->elementos[i]);
+    }
+    */
+
+    printf("\n");
+    printf("Tamanho, outra: %d\n", minha_outra_lista->contador);
+
+    for (size_t i = 0; i < minha_outra_lista->contador; i++ ) {
+        printf("%d ", minha_outra_lista->elementos[i]);
+    }
+
+    printf("\n");
+    printf("Tamanho, concatenada [ml l2]: %d\n", minha_lista_concatenada->contador);
+
+    for (size_t i = 0; i < minha_lista_concatenada->contador; i++ ) {
+        printf("%d ", minha_lista_concatenada->elementos[i]);
+    }
+
+    printf("\n");
+
+
+
+    liberar_array(minha_lista);
+
+    /*
 
 	ArrayInteiros *arr;
 	arr = criar_array_inteiros();

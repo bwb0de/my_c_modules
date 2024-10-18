@@ -59,6 +59,57 @@ int array_len(void *arr) {
 
 
 
+int *_c_int_array_slice(int *input_arr, size_t from, size_t to) {
+    if ( to <= from ) {
+        return NULL;
+    } 
+    int tamanho = to - from;
+    int *saida = malloc((tamanho) * sizeof(int));
+    memcpy(saida, &(input_arr[from]), tamanho * sizeof(int));
+    return saida;
+}
+
+
+int *_c_int_array_concat(int *arr1, size_t arr1_len, int *arr2, size_t arr2_len) {
+    int tamanho_final = arr1_len + arr2_len;
+    int *saida = malloc(tamanho_final * sizeof(int));
+    memcpy(saida, arr1, arr1_len * sizeof(int));
+    memcpy(saida + arr1_len, arr2, arr2_len * sizeof(int));
+    return saida;
+}
+
+
+
+ArrayInteiros *array_slice(ArrayInteiros *arr, size_t from, size_t to) {
+    //Dividir para os diferentes tipos de Array
+    if ( to <= from ) {
+        return NULL;
+    } 
+    int tamanho = to - from;
+    ArrayInteiros *saida = criar_array_inteiros();
+    saida->elementos = malloc((tamanho) * sizeof(int));
+    memcpy(saida->elementos, &(arr->elementos[from]), tamanho * sizeof(int));
+    saida->contador = tamanho;
+    return saida;
+}
+
+
+
+
+
+ArrayInteiros *array_concat(ArrayInteiros *arr1, ArrayInteiros *arr2) {
+    //Dividir para os diferentes tipos de Array
+    int tamanho_final = arr1->contador + arr2->contador;
+    int *novos_elementos = _c_int_array_concat(arr1->elementos, arr1->contador, arr2->elementos, arr2->contador);
+    ArrayInteiros *saida = criar_array_inteiros();
+    saida->elementos = novos_elementos;
+    saida->contador = tamanho_final;
+    return saida;
+}
+
+
+
+
 float _obter_valor_par(Par par) {
     Ponto2D *p_origem = criar_ponto2D(0.0, 0.0);
     Ponto2D *p_dado = criar_ponto2D((double)par.a, (double)par.b);
