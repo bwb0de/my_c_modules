@@ -1,4 +1,5 @@
 #include "array.h"
+#include "c_array_int.h"
 //#include "mathext.h"
 #include <stddef.h>
 #include "geometria.h"
@@ -59,28 +60,15 @@ int array_len(void *arr) {
 
 
 
-int *_c_int_array_slice(int *input_arr, size_t from, size_t to) {
-    if ( to <= from ) {
-        return NULL;
-    } 
-    int tamanho = to - from;
-    int *saida = malloc((tamanho) * sizeof(int));
-    memcpy(saida, &(input_arr[from]), tamanho * sizeof(int));
-    return saida;
-}
-
-
-int *_c_int_array_concat(int *arr1, size_t arr1_len, int *arr2, size_t arr2_len) {
-    int tamanho_final = arr1_len + arr2_len;
-    int *saida = malloc(tamanho_final * sizeof(int));
-    memcpy(saida, arr1, arr1_len * sizeof(int));
-    memcpy(saida + arr1_len, arr2, arr2_len * sizeof(int));
-    return saida;
-}
 
 
 
-ArrayInteiros *array_slice(ArrayInteiros *arr, size_t from, size_t to) {
+
+
+
+
+
+ArrayInteiros *array_slice(size_t from, size_t to, ArrayInteiros *arr) {
     //Dividir para os diferentes tipos de Array
     if ( to <= from ) {
         return NULL;

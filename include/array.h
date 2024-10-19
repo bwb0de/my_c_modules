@@ -79,6 +79,11 @@ const void* array_pop(void *arr);
 void array_elements_list(void *arr);
 void array_elements_swap(int i1, int i2, void *arr);
 void array_reverse(void *arr);
+
+int *_c_int_array_slice(size_t from, size_t to, int *arr);
+
+ArrayInteiros *array_slice(size_t from, size_t to, ArrayInteiros *arr);
+
 int array_len(void *arr);
 void array_max_to_end_swap(void *arr);
 void array_elements_list_slice(size_t i1, size_t i2, void *arr);
