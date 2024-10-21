@@ -2,7 +2,8 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-#include "c_array_int.h"
+#include <limits.h>
+#include "include/c_array_int.h"
 
 int ITER_N = 0;
 int ITER_N2 = 0;
@@ -432,6 +433,7 @@ size_t _c_int_array_binary_split(size_t size_arr) {
         }
         expo--;
     }
+    return 0;
 }
 
 int _c_int_checksorting(int *arr, size_t size_arr) {
@@ -456,6 +458,7 @@ int _c_int_checksorting(int *arr, size_t size_arr) {
         i1++; i2++;
         n--;
     }
+    return -2;
 }
 
 

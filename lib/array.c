@@ -63,11 +63,6 @@ int array_len(void *arr) {
 
 
 
-
-
-
-
-
 ArrayInteiros *array_slice(size_t from, size_t to, ArrayInteiros *arr) {
     //Dividir para os diferentes tipos de Array
     if ( to <= from ) {
