@@ -5,7 +5,7 @@
 #include <limits.h>
 #include "include/c_array_int.h"
 
-int ITER_N = 0;
+int CONTADOR = 0;
 int ITER_N2 = 0;
 
 void _c_int_merge_sort_element_pairs_sort(int *arr, size_t size_arr) {
@@ -18,7 +18,7 @@ void _c_int_merge_sort_element_pairs_sort(int *arr, size_t size_arr) {
     int index_b = 1;
 
     while ( 1 ) {
-        ITER_N++;
+        CONTADOR++;
         if (arr[index_a] > arr[index_b]) {
 			_c_int_array_swap(index_a, index_b, arr);
 		}
@@ -29,7 +29,7 @@ void _c_int_merge_sort_element_pairs_sort(int *arr, size_t size_arr) {
             break;
         }
     }
-    //DEPURAÇÃO: printf("element_pairs_sort\n"); _c_int_array_print(arr, size_arr);
+    //DEBUG: printf("element_pairs_sort\n"); _c_int_array_print(arr, size_arr);
 }
 
 
@@ -49,7 +49,7 @@ int _c_int_merge_sort_estimate_num_of_merges(int *arr, size_t size_arr) {
     multiplicador_grupo = 1;
 
     while ( 1 ) {
-        ITER_N++;
+        CONTADOR++;
         amplitide_grupo = pow(tamanho_mínimo_do_grupo, multiplicador_grupo);
 
         amplitide_grupo = pow(tamanho_mínimo_do_grupo, multiplicador_grupo);
@@ -91,18 +91,18 @@ void _c_int_merge_and_sort_2_groups(int *arr1, size_t size_arr1, int *arr2, size
     output_index = 0;
 
     while ( 1 ) {
-        ITER_N++;
+        CONTADOR++;
 
-        //DEPURAÇÃO: printf("%d vs %d", arr1[arr1_index_corrente], arr2[arr2_index_corrente]);
+        //DEBUG: printf("%d vs %d", arr1[arr1_index_corrente], arr2[arr2_index_corrente]);
 
         if (arr1[arr1_index_corrente] < arr2[arr2_index_corrente] ) {
             output[output_index] = arr1[arr1_index_corrente];
-            //DEPURAÇÃO: printf(" => %d\n", arr1[arr1_index_corrente]);
+            //DEBUG: printf(" => %d\n", arr1[arr1_index_corrente]);
             arr1_index_corrente++;
 
         } else {
             output[output_index] = arr2[arr2_index_corrente];
-            //DEPURAÇÃO: printf(" => %d\n", arr2[arr2_index_corrente]);
+            //DEBUG: printf(" => %d\n", arr2[arr2_index_corrente]);
             arr2_index_corrente++;                
         }
         
@@ -111,7 +111,7 @@ void _c_int_merge_and_sort_2_groups(int *arr1, size_t size_arr1, int *arr2, size
         if (arr1_index_corrente == arr1_index_final ) {
             while (arr2_index_corrente < arr2_index_final) {
                 output[output_index] = arr2[arr2_index_corrente];
-                //DEPURAÇÃO: printf("         => %d\n", arr2[arr2_index_corrente]);
+                //DEBUG: printf("         => %d\n", arr2[arr2_index_corrente]);
                 arr2_index_corrente++;
                 output_index++;
             }
@@ -121,7 +121,7 @@ void _c_int_merge_and_sort_2_groups(int *arr1, size_t size_arr1, int *arr2, size
         if (arr2_index_corrente == arr2_index_final ) {
             while (arr1_index_corrente < arr1_index_final) {
                 output[output_index] = arr1[arr1_index_corrente];
-                //DEPURAÇÃO: printf("         => %d\n", arr1[arr1_index_corrente]);
+                //DEBUG: printf("         => %d\n", arr1[arr1_index_corrente]);
                 arr1_index_corrente++;
                 output_index++;
             }
@@ -170,7 +170,7 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
     offset = 0;
 
     while (1) {
-        ITER_N++;
+        CONTADOR++;
         if (offset_teste > max_index ) {
             break;
         }
@@ -178,12 +178,12 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
         offset_teste += max_iter;
     }
 
-    //DEPURAÇÃO: printf("Numero iterações ordenamento: %d\n", max_iter);
+    //DEBUG: printf("Numero iterações ordenamento: %d\n", max_iter);
 
     int *arr_com_ordenacao = malloc(size_arr * sizeof(int));
 
     while (offset < num_offset ) {
-        ITER_N++;
+        CONTADOR++;
         grupo1_index_inicial = init_grupo1_index_inicial + (max_iter * offset);
         grupo1_index_final = init_grupo1_index_final + (max_iter * offset);
         grupo1_index_corrente = grupo1_index_inicial;
@@ -219,17 +219,17 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
                 n++;
             }            
 
-            //DEPURAÇÃO: printf("GrupoX: "); _c_int_array_print(grupoX, grupoX_index_final - grupoX_index_inicial);
-            //DEPURAÇÃO: printf("Grupo1: "); _c_int_array_print(grupo1_parcial, grupo1_index_final - grupo1_index_inicial);
-            //DEPURAÇÃO: printf("Executando merge...\n");
+            //DEBUG: printf("GrupoX: "); _c_int_array_print(grupoX, grupoX_index_final - grupoX_index_inicial);
+            //DEBUG: printf("Grupo1: "); _c_int_array_print(grupo1_parcial, grupo1_index_final - grupo1_index_inicial);
+            //DEBUG: printf("Executando merge...\n");
             
             _c_int_merge_and_sort_2_groups(grupoX, grupoX_index_final - grupoX_index_inicial, grupo1_parcial, grupo1_index_final - grupo1_index_inicial, arr_com_ordenacao);
 
-            //DEPURAÇÃO: _c_int_array_print(arr_com_ordenacao, size_arr);
-            //DEPURAÇÃO: printf("Input: ");      _c_int_array_print(arr, size_arr);
-            //DEPURAÇÃO: printf("Output: ");  _c_int_array_print(arr_com_ordenacao, size_arr);
-            //DEPURAÇÃO: printf("============================\n");
-            //DEPURAÇÃO: printf("============================\n\n\n");
+            //DEBUG: _c_int_array_print(arr_com_ordenacao, size_arr);
+            //DEBUG: printf("Input: ");      _c_int_array_print(arr, size_arr);
+            //DEBUG: printf("Output: ");  _c_int_array_print(arr_com_ordenacao, size_arr);
+            //DEBUG: printf("============================\n");
+            //DEBUG: printf("============================\n\n\n");
             memcpy(arr, arr_com_ordenacao, size_arr * sizeof(int));
             free(arr_com_ordenacao);
             free(grupoX);
@@ -248,12 +248,12 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
             grupoX_index_final = grupo1_index_inicial;
             grupoX_index_corrente = grupoX_index_inicial;
 
-            //DEPURAÇÃO: printf("============================\n");
-            //DEPURAÇÃO: printf("==offser==%d=================\n", offset);
-            //DEPURAÇÃO: printf("GrupoX: "); _c_int_array_print(_c_int_array_slice(grupoX_index_inicial, grupoX_index_final, arr_com_ordenacao), grupoX_index_final - grupoX_index_inicial);        
-            //DEPURAÇÃO: printf("Grupo1: "); _c_int_array_print(_c_int_array_slice(grupo1_index_inicial, grupo1_index_final, arr), amplitide_grupo);
+            //DEBUG: printf("============================\n");
+            //DEBUG: printf("==offser==%d=================\n", offset);
+            //DEBUG: printf("GrupoX: "); _c_int_array_print(_c_int_array_slice(grupoX_index_inicial, grupoX_index_final, arr_com_ordenacao), grupoX_index_final - grupoX_index_inicial);        
+            //DEBUG: printf("Grupo1: "); _c_int_array_print(_c_int_array_slice(grupo1_index_inicial, grupo1_index_final, arr), amplitide_grupo);
             
-            //DEPURAÇÃO: printf("Ordenando GrupoX:\n ");
+            //DEBUG: printf("Ordenando GrupoX:\n ");
 
             int *grupoX = _c_int_array_slice(grupoX_index_inicial, grupoX_index_final, arr_com_ordenacao);
 
@@ -271,18 +271,18 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
             arr_resultado_index = 0;
 
             while ( 1 ) {
-                ITER_N++;
+                CONTADOR++;
 
-                //DEPURAÇÃO: printf("%d vs %d", grupoX[grupoX_index_corrente], arr[grupo1_index_corrente]);
+                //DEBUG: printf("%d vs %d", grupoX[grupoX_index_corrente], arr[grupo1_index_corrente];
 
                 if (grupoX[grupoX_index_corrente] < arr[grupo1_index_corrente] ) {
                     arr_com_ordenacao2[arr_resultado_index] = grupoX[grupoX_index_corrente];
-                    //DEPURAÇÃO: printf(" => %d\n", grupoX[grupoX_index_corrente]);
+                    //DEBUG: printf(" => %d\n", grupoX[grupoX_index_corrente]);
                     grupoX_index_corrente++;
 
                 } else {
                     arr_com_ordenacao2[arr_resultado_index] = arr[grupo1_index_corrente];
-                    //DEPURAÇÃO: printf(" => %d\n", arr[grupo1_index_corrente]);
+                    //DEBUG: printf(" => %d\n", arr[grupo1_index_corrente]);
                     grupo1_index_corrente++;                
                 }
                 
@@ -291,7 +291,7 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
                 if (grupo1_index_corrente == grupo1_index_final ) {
                     while (grupoX_index_corrente < grupoX_index_final) {
                         arr_com_ordenacao2[arr_resultado_index] = grupoX[grupoX_index_corrente];
-                        //DEPURAÇÃO: printf("         => %d\n", grupoX[grupoX_index_corrente]);
+                        //DEBUG: printf("         => %d\n", grupoX[grupoX_index_corrente]);
                         grupoX_index_corrente++;
                         arr_resultado_index++;
                     }
@@ -301,7 +301,7 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
                 if (grupoX_index_corrente == grupoX_index_final ) {
                     while (grupo1_index_corrente < grupo1_index_final) {
                         arr_com_ordenacao2[arr_resultado_index] = arr[grupo1_index_corrente];
-                        //DEPURAÇÃO: printf("         => %d\n", arr[grupo1_index_corrente]);
+                        //DEBUG: printf("         => %d\n", arr[grupo1_index_corrente]);
                         grupo1_index_corrente++;
                         arr_resultado_index++;
                     }
@@ -310,34 +310,34 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
                 }
             }           
 
-            //DEPURAÇÃO: printf("Input: ");      _c_int_array_print(arr, size_arr);
-            //DEPURAÇÃO: printf("Output: ");  _c_int_array_print(arr_com_ordenacao2, size_arr);
-            //DEPURAÇÃO: printf("============================\n");
-            //DEPURAÇÃO: printf("============================\n\n\n");
+            //DEBUG: printf("Input: ");      _c_int_array_print(arr, size_arr);
+            //DEBUG: printf("Output: ");  _c_int_array_print(arr_com_ordenacao2, size_arr);
+            //DEBUG: printf("============================\n");
+            //DEBUG: printf("============================\n\n\n");
             memcpy(arr, arr_com_ordenacao2, size_arr * sizeof(int));
             free(arr_com_ordenacao2);
             free(arr_com_ordenacao);
             return;
         }
 
-        //DEPURAÇÃO: printf("============================\n");
-        //DEPURAÇÃO: printf("==offser==%d=================\n", offset);
-        //DEPURAÇÃO: printf("Grupo1: "); _c_int_array_print(_c_int_array_slice(grupo1_index_inicial, grupo1_index_final, arr), amplitide_grupo);
-        //DEPURAÇÃO: printf("Grupo2: "); _c_int_array_print(_c_int_array_slice(grupo2_index_inicial, grupo2_index_final, arr), grupo2_index_final - grupo2_index_inicial );        
+        //DEBUG: printf("============================\n");
+        //DEBUG: printf("==offser==%d=================\n", offset);
+        //DEBUG: printf("Grupo1: "); _c_int_array_print(_c_int_array_slice(grupo1_index_inicial, grupo1_index_final, arr), amplitide_grupo);
+        //DEBUG: printf("Grupo2: "); _c_int_array_print(_c_int_array_slice(grupo2_index_inicial, grupo2_index_final, arr), grupo2_index_final - grupo2_index_inicial );        
 
         while ( 1 ) {
-            ITER_N++;
+            CONTADOR++;
 
-            //DEPURAÇÃO: printf("%d vs %d", arr[grupo1_index_corrente], arr[grupo2_index_corrente]);
+            //DEBUG: printf("%d vs %d", arr[grupo1_index_corrente], arr[grupo2_index_corrente]);
 
             if (arr[grupo1_index_corrente] < arr[grupo2_index_corrente] ) {
                 arr_com_ordenacao[arr_resultado_index] = arr[grupo1_index_corrente];
-                //DEPURAÇÃO: printf(" => %d\n", arr[grupo1_index_corrente]);
+                //DEBUG: printf(" => %d\n", arr[grupo1_index_corrente]);
                 grupo1_index_corrente++;
 
             } else {
                 arr_com_ordenacao[arr_resultado_index] = arr[grupo2_index_corrente];
-                //DEPURAÇÃO: printf(" => %d\n", arr[grupo2_index_corrente]);
+                //DEBUG: printf(" => %d\n", arr[grupo2_index_corrente]);
                 grupo2_index_corrente++;                
             }
             
@@ -346,7 +346,7 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
             if (grupo1_index_corrente == grupo1_index_final ) {
                 while (grupo2_index_corrente < grupo2_index_final) {
                     arr_com_ordenacao[arr_resultado_index] = arr[grupo2_index_corrente];
-                    //DEPURAÇÃO: printf("         => %d\n", arr[grupo2_index_corrente]);
+                    //DEBUG: printf("         => %d\n", arr[grupo2_index_corrente]);
                     grupo2_index_corrente++;
                     arr_resultado_index++;
                 }
@@ -356,7 +356,7 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
             if (grupo2_index_corrente == grupo2_index_final ) {
                 while (grupo1_index_corrente < grupo1_index_final) {
                     arr_com_ordenacao[arr_resultado_index] = arr[grupo1_index_corrente];
-                    //DEPURAÇÃO: printf("         => %d\n", arr[grupo1_index_corrente]);
+                    //DEBUG: printf("         => %d\n", arr[grupo1_index_corrente]);
                     grupo1_index_corrente++;
                     arr_resultado_index++;
                 }
@@ -369,10 +369,10 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
     }
 
 
-    //DEPURAÇÃO: printf("Input: ");      _c_int_array_print(arr, size_arr);
-    //DEPURAÇÃO: printf("Output: ");  _c_int_array_print(arr_com_ordenacao, size_arr);
-    //DEPURAÇÃO: printf("============================\n");
-    //DEPURAÇÃO: printf("============================\n\n\n");
+    //DEBUG: printf("Input: ");      _c_int_array_print(arr, size_arr);
+    //DEBUG: printf("Output: ");  _c_int_array_print(arr_com_ordenacao, size_arr);
+    //DEBUG: printf("============================\n");
+    //DEBUG: printf("============================\n\n\n");
     memcpy(arr, arr_com_ordenacao, size_arr * sizeof(int));
     free(arr_com_ordenacao);
 
@@ -511,7 +511,7 @@ int main() {
     printf("Depois: "); _c_int_array_print(arr2, 24);
     printf("idx_erro: %d\n", _c_int_checksorting(arr2, 24));
 
-    printf("Iter n: %d", ITER_N);
+    printf("Iter n: %d", CONTADOR);
     printf("\n\n");
 
     int arr3[] = { 34, 87, 22, 14, 65, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14, 65, 47, 79, 91, 65, 47, 79, 91};
@@ -536,7 +536,7 @@ int main() {
 
     size_t idx2 = _c_int_array_binary_split(46-(idx+1));
     
-    printf("Idx2: %d\n", idx2);
+    printf("Idx2: %zu\n", idx2);
 
     _c_int_merge_sort(arr2_esquerda, idx);
     _c_int_merge_sort(arr2_direita, 46-idx);
@@ -551,9 +551,9 @@ int main() {
     printf("Depois: "); _c_int_array_print(arr2, 46);
     size_t idx_error = _c_int_checksorting(arr2, 46);
     printf("Trecho com erro: "); _c_int_array_print(_c_int_array_slice(idx_error, 46, arr2), 46-idx_error);
-    printf("idx_erro: %d\n", idx_error);
+    printf("idx_erro: %zu\n", idx_error);
 
-    printf("Iter n: %d", ITER_N);
+    printf("Iter n: %d", CONTADOR);
     printf("\n\n");
 
     int arr3[] = { 34, 87, 22, 14, 65, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14, 65, 47, 79, 91, 65, 47, 79, 91, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14};
@@ -562,7 +562,6 @@ int main() {
     printf("Depois: "); _c_int_array_print(arr3, 46);
     printf("idx_erro: %d\n", _c_int_checksorting(arr3, 46));
     printf("Iter n: %d", ITER_N2);
-
  }
 
 
