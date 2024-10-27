@@ -7,6 +7,20 @@
 #include <float.h>
 #include <string.h>
 
+size_t _c_int_array_max_v_idx(int *arr, size_t size_arr) {
+    size_t idx;
+    int v;
+    v = INT_MIN;
+
+    for (unsigned int i = 0; i < size_arr; i++) {
+        if (arr[i] > v) {
+            v = arr[i];
+            idx = i;
+        }
+    }
+    return idx;
+}
+
 
 
 int *_c_int_array_slice(size_t from, size_t to, int *input_arr) {
