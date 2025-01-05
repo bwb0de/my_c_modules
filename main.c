@@ -5,14 +5,61 @@
 #include <stddef.h>
 #include <stdio.h>
 
+void map(int *arr, size_t size_arr, int (*func)(int)) {
+    for (size_t i = 0; i < size_arr; i++) {
+        arr[i] = func(arr[i]);
+    }
+}
+
+
+int add2(int n) {
+    return n + 2;
+}
+
+int mult2(int n) {
+    return n * 2;
+}
+
+float cool(float n) {
+    return n * 3.3;
+}
+
 
 int main() {
-    int arr2[] = {34, 87, 22, 14, 11,134,432,234,543,346,678,876,543,34,234,545,635,612,320,987,654,324, 65, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14, 65, 47, 79, 91, 65, 47, 79, 91, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14,88,77,66,55,44};
-    int arr3[] = {34, 87, 22, 14, 11,134,432,234,543,346,678,876,543,34,234,545,635,612,320,987,654,324, 65, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14, 65, 47, 79, 91, 65, 47, 79, 91, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14, 47, 79, 91, 21, 34, 42, 16, 55, 47, 99, 14,88,77,66,55,44};
-    _c_int_array_print(arr2, 69 );
-    _c_int_quicksort(arr2, 69);
-    printf("\nqsort: \n"); _c_int_array_print(arr2, 69);
-    _c_int_merge_sort(arr3, 69);
-    printf("\nmerge sort: \n"); _c_int_array_print(arr3, 69);
+    int arr[] = {2,3,4,5,6,7,8,9};
+
+    for (size_t i = 0; i < 8; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    printf("\n");
+
+    void *teste = &add2;
+    map(arr, 8, teste);
+
+    for (size_t i = 0; i < 8; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    printf("\n");
+
+    teste = &mult2;
+    map(arr, 8, teste);
+ 
+    for (size_t i = 0; i < 8; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    printf("\n");
+
+    teste = &cool;
+    map(arr, 8, teste);
+ 
+    for (size_t i = 0; i < 8; i++) {
+        printf("%d ", arr[i]);
+    }
+
+
+
     return 0;
 }

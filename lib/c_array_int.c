@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include "geometria.h"
+#include "../include/geometria.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
