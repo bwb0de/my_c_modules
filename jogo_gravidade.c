@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-#include "include/raylib.h"
+#include <raylib.h>
+//#include "include/raylib.h"
 
 
 const char TITULO[] = "Gravidade";

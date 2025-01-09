@@ -40,15 +40,15 @@ int _c_int_merge_sort_estimate_num_of_merges(int *arr, size_t size_arr) {
     int numero_ordenacoes;
     numero_ordenacoes = 1;
 
-    size_t tamanho_mínimo_do_grupo, multiplicador_grupo, amplitide_grupo;
+    size_t tamanho_minimo_do_grupo, multiplicador_grupo, amplitide_grupo;
 
-    tamanho_mínimo_do_grupo = 2;
+    tamanho_minimo_do_grupo = 2;
     multiplicador_grupo = 1;
 
     while (1) {
-        amplitide_grupo = pow(tamanho_mínimo_do_grupo, multiplicador_grupo);
+        amplitide_grupo = pow(tamanho_minimo_do_grupo, multiplicador_grupo);
 
-        amplitide_grupo = pow(tamanho_mínimo_do_grupo, multiplicador_grupo);
+        amplitide_grupo = pow(tamanho_minimo_do_grupo, multiplicador_grupo);
         size_t grupo1_index_inicial = 0;
         size_t grupo1_index_final = amplitide_grupo;
         size_t grupo1_index_corrente = grupo1_index_inicial;
@@ -118,11 +118,11 @@ void _c_int_merge_and_sort_groups(int *arr, size_t size_arr, size_t multiplicado
     n = size_arr;
     max_index = n - 1;
 
-    size_t tamanho_mínimo_do_grupo, amplitide_grupo, arr_resultado_index;
-    tamanho_mínimo_do_grupo = 2;
+    size_t tamanho_minimo_do_grupo, amplitide_grupo, arr_resultado_index;
+    tamanho_minimo_do_grupo = 2;
 
     arr_resultado_index = 0;
-    amplitide_grupo = pow(tamanho_mínimo_do_grupo, multiplicador_grupo);
+    amplitide_grupo = pow(tamanho_minimo_do_grupo, multiplicador_grupo);
 
     size_t init_grupo1_index_inicial = 0;
     size_t init_grupo1_index_final = amplitide_grupo;
