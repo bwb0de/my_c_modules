@@ -1,11 +1,6 @@
 #include <stddef.h>
-#include "../include/geometria.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
 #include <limits.h>
-#include <float.h>
-#include <string.h>
 
 size_t _c_int_array_max_v_idx(int *arr, size_t size_arr) {
     size_t idx;
@@ -23,11 +18,20 @@ size_t _c_int_array_max_v_idx(int *arr, size_t size_arr) {
 
 
 
-int *_c_int_array_slice(size_t from, size_t to, int *input_arr) {
+int *_c_int_array_slice(size_t from, size_t to, int *input_arr, size_t size_arr) {
     if ( to <= from ) {
         return NULL;
     } 
+
     int tamanho = to - from;
+    
+    if ( tamanho > size_arr ) {
+        printf("Fatia maior excede o tamanho do array... Ajustando para o limite do array...\n");
+        to = size_arr-1;
+    }
+    
+    tamanho = to - from;
+    
     int *saida = malloc((tamanho) * sizeof(int));
     memcpy(saida, &(input_arr[from]), tamanho * sizeof(int));
     return saida;

@@ -63,12 +63,44 @@ int array_len(void *arr) {
 
 
 
-ArrayInteiros *array_slice(size_t from, size_t to, ArrayInteiros *arr) {
+void *array_slice(size_t from, size_t to, void *arr) {
     //Dividir para os diferentes tipos de Array
     if ( to <= from ) {
         return NULL;
     } 
-    int tamanho = to - from;
+
+    TipoArray tipo = ((ArrayInteiros*)arr)->tipo;
+    
+    switch (tipo) {
+        case INT_ARRAY: {
+            
+            return _c_int_array_slice( (from, to
+        }
+        case FLOAT_ARRAY: {
+            break;
+        }
+        case DOUBLE_ARRAY: {
+            break;
+        }
+        case PAIR_INT_ARRAY: {
+            break;
+        }
+        case PAIR_FLOAT_ARRAY: {
+            break;
+        }
+        case PAIR_DOUBLE_ARRAY: {
+            break;
+        }
+        case STRING_ARRAY: {
+            break;
+        }
+        default:
+            break;
+    }    
+    
+    
+    
+    
     ArrayInteiros *saida = criar_array_inteiros();
     saida->elementos = malloc((tamanho) * sizeof(int));
     memcpy(saida->elementos, &(arr->elementos[from]), tamanho * sizeof(int));

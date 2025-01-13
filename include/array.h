@@ -10,6 +10,8 @@ typedef enum {
     FLOAT_ARRAY, 
     DOUBLE_ARRAY, 
     PAIR_INT_ARRAY, 
+    PAIR_FLOAT_ARRAY, 
+    PAIR_DOUBLE_ARRAY, 
     STRING_ARRAY 
 } TipoArray;
 
@@ -51,6 +53,20 @@ typedef struct {
 
 
 typedef struct {
+    float a;
+    float b;
+} ParFloat;
+
+
+typedef struct {
+    double a;
+    double b;
+} ParDoubles;
+
+
+
+
+typedef struct {
     int contador;
     Par *elementos;
     TipoArray tipo;
@@ -80,7 +96,7 @@ void array_elements_list(void *arr);
 void array_elements_swap(int i1, int i2, void *arr);
 void array_reverse(void *arr);
 
-int *_c_int_array_slice(size_t from, size_t to, int *arr);
+//int *_c_int_array_slice(size_t from, size_t to, int *arr);
 
 ArrayInteiros *array_slice(size_t from, size_t to, ArrayInteiros *arr);
 
@@ -91,6 +107,7 @@ void array_elements_list_slice(size_t i1, size_t i2, void *arr);
 
 void liberar_array(void *arr);
 
+/*
 
 void _teste_obter_pontos();
 void _memoria_array_inteiros();
@@ -103,5 +120,7 @@ void _teste_array_floats();
 void _teste_array_doubles();
 void _teste_array_par_de_inteiros();
 void _teste_array_string();
+
+*/
 
 #endif
