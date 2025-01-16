@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 #include "topografia.h"
 
 
@@ -39,9 +40,9 @@ double graus_sexagenarios_para_graus_decimais(Graus_Sexagenarios graus_sex) {
 
 
 double calcular_azimute(double azimute_anterior, double angulo_horizontal) {
-    double resposta = azimute_antarior + angulo_horizontal - 180;
+    double resposta = azimute_anterior + angulo_horizontal - 180;
     
-    while resposta > 360 {
+    while (resposta > 360) {
         resposta -= 360;
     }
 
@@ -65,7 +66,7 @@ double erro_angular_da_poligonal(Poligonal poligonal_fechada) {
 }
 
 
-Graus_Sexagenarios erro_angular_poligonal_angulos_sexagenarios() {
+Graus_Sexagenarios erro_angular_poligonal_angulos_sexagenarios(Poligonal p) {
 
 
 }

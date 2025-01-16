@@ -9,13 +9,13 @@ typedef struct {
 
 
 typedef enum {
-    ANGULOS_EXTERNOS;
-    ANGULOS_INTERNOS;
+    ANGULOS_EXTERNOS,
+    ANGULOS_INTERNOS,
 } TipoPoligonal;
 
 typedef enum {
-    ANGULOS_E_DISTANCIAS;
-    COORDENADAS_CARTESIANAS;
+    ANGULOS_E_DISTANCIAS,
+    COORDENADAS_CARTESIANAS,
 } TipoReferencial;
 
 typedef struct {
