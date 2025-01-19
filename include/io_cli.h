@@ -15,6 +15,11 @@ void ler_input_float(const char* etiqueta, float *resposta);
 void ler_input_double(const char* etiqueta, double *resposta);
 int quantidade_opcoes_selecionadas(char* buffer);
 int* traduzir_selecao(char* buffer_in, int *buffer_out);
+int tamanho_string_selecao(char* buffer);
+int retornar_inteiro_resultante_de_multipla_escolha(int* array_selecao, int arr_size);
+int any_in(int* valores_respostas, int n_respostas, int* valores_testes, int n_valores_teste);
+void imprimir_opcoes(const char** opcoes, int limite_maximo);
+void selecionar_opcoes(char* etiqueta, const char** opcoes, int limite_maximo, int* endereco_respostas); 
 
 
 #endif
