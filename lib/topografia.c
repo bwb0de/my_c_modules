@@ -1,6 +1,228 @@
 #include <math.h>
 #include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
 #include "topografia.h"
+#include "io_cli.h"
+#include "string.h"
+
+
+Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
+    int graus = 0;
+    int minutos = 0;
+    float segundos = 0.0;
+    int segundos_inteiros = 0;
+    int segundos_decimais = 0;
+
+    int possui_segundos_decimais = 0; //Boleano
+
+    int PARSER_SIZE = 10;
+    
+    char algarismos[PARSER_SIZE];
+    memset(algarismos, 0, PARSER_SIZE);
+    int algarismos_count = 0;
+
+
+    int idx_str = 0;
+    int idx_algarismos = 0;
+
+
+    while ( 1 ) {
+        if ( isdigit(string_angulo[idx_str]) ) {
+            algarismos[idx_algarismos] = string_angulo[idx_str];
+            idx_algarismos++;
+            algarismos_count++;
+        }
+
+        if ( string_angulo[idx_str] == 'º' ) {
+            //int i = 0;
+            //while ( algarismos_count ) {
+            //    graus += algarismos[i] * ( 10  )
+            //}
+            graus = atoi(algarismos);
+            idx_algarismos = 0;
+            memset(algarismos, 0, PARSER_SIZE);
+        }
+
+        if ( string_angulo[idx_str] == '\'' ) {
+            minutos = atoi(algarismos);
+            idx_algarismos = 0;
+            memset(algarismos, 0, PARSER_SIZE);
+        }
+        
+        if ( string_angulo[idx_str] == '.' ) {
+            segundos_inteiros = atoi(algarismos);
+            idx_algarismos = 0; 
+            memset(algarismos, 0, PARSER_SIZE);
+            possui_segundos_decimais = 1;
+        }
+
+        if ( string_angulo[idx_str] == '\"' ) {
+            if ( possui_segundos_decimais ) {
+                segundos_decimais = atoi(algarismos);
+            } else {
+                segundos_inteiros = atoi(algarismos);
+            }
+
+            idx_algarismos = 0; 
+            memset(algarismos, 0, PARSER_SIZE);
+            break;
+        }
+
+        idx_str++;
+    }
+
+    if ( possui_segundos_decimais ) {
+        segundos = (float)segundos_inteiros + ((float)segundos_decimais / 6);
+    } else {
+        segundos = (float)segundos_inteiros;
+    }
+
+    Graus_Sexagenarios g = {
+        .graus = graus,
+        .minutos = minutos,
+        .segundos = segundos,
+    };
+    
+   return g;
+}
+
+
+void print_graus_sexagenarios(Graus_Sexagenarios g) {
+    printf("%dº %d' %f\"\n", g.graus, g.minutos, g.segundos);
+}
+
+
+AnguloDecimal criar_azimute_decimal() {
+    AnguloDecimal a = {
+        .tipo = AZIMUTE,
+        .valor = 0,
+    };
+
+    ler_input_int("Â .00", &a.valor);
+
+    return a;
+}
+
+
+AnguloDecimal criar_rumo_decimal() {
+    AnguloDecimal a = {
+        .tipo = RUMO,
+        .valor = 0,
+    };
+
+    ler_input_int("Â .00", &a.valor);
+
+    return a;
+}
+
+
+AnguloDecimal criar_angulo_horizontal_decimal() {
+    AnguloDecimal a = {
+        .tipo = HORIZONTAL,
+        .valor = 0,
+    };
+
+    ler_input_int("Â .00", &a.valor);
+
+    return a; 
+
+}
+
+
+AnguloDecimal criar_angulo_vertical_decimal() {
+    AnguloDecimal a = {
+        .tipo = VERTICAL,
+        .valor = 0,
+    };
+
+    ler_input_int("Â .00", &a.valor);
+
+    return a; 
+
+}
+
+
+AnguloSexagenario criar_azimute_sexagenario() {
+    int graus;      ler_input_int("Â 00º", &graus);
+    int minutos;    ler_input_int("Â 00'", &minutos);
+    float segundos; ler_input_float("Â 00\"", &segundos);
+
+    Graus_Sexagenarios g = {
+        .graus = graus,
+        .minutos = minutos,
+        .segundos = segundos,
+    };
+
+    AnguloSexagenario a = {
+        .tipo = AZIMUTE,
+        .valor = g,
+    };
+
+    return a;
+}
+
+
+AnguloSexagenario criar_rumo_sexagenario() {
+    int graus;      ler_input_int("Â 00º", &graus);
+    int minutos;    ler_input_int("Â 00'", &minutos);
+    float segundos; ler_input_float("Â 00\"", &segundos);
+
+    Graus_Sexagenarios g = {
+        .graus = graus,
+        .minutos = minutos,
+        .segundos = segundos,
+    };
+
+    AnguloSexagenario a = {
+        .tipo = RUMO,
+        .valor = g,
+    };
+
+    return a;
+}
+
+
+AnguloSexagenario criar_angulo_horizontal_sexagenario() {
+    int graus;      ler_input_int("Â 00º", &graus);
+    int minutos;    ler_input_int("Â 00'", &minutos);
+    float segundos; ler_input_float("Â 00\"", &segundos);
+
+    Graus_Sexagenarios g = {
+        .graus = graus,
+        .minutos = minutos,
+        .segundos = segundos,
+    };
+
+    AnguloSexagenario a = {
+        .tipo = HORIZONTAL,
+        .valor = g,
+    };
+
+    return a;
+}
+
+
+AnguloSexagenario criar_angulo_vertical_sexagenario() {
+    int graus;      ler_input_int("Â 00º", &graus);
+    int minutos;    ler_input_int("Â 00'", &minutos);
+    float segundos; ler_input_float("Â 00\"", &segundos);
+
+    Graus_Sexagenarios g = {
+        .graus = graus,
+        .minutos = minutos,
+        .segundos = segundos,
+    };
+
+    AnguloSexagenario a = {
+        .tipo = VERTICAL,
+        .valor = g,
+    };
+
+    return a;
+}
+
+
 
 
 Graus_Sexagenarios graus_decimais_para_sexagenarios(double graus_decimais) {

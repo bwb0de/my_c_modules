@@ -186,6 +186,7 @@ int* traduzir_selecao(char* buffer_in, int *buffer_out) {
     return buffer_out;
 }
 
+
 void imprimir_opcoes(const char** opcoes, int limite_maximo) {
     for (int i = 0; i < limite_maximo; i++) {
         printf(" %d: %s\n", i+1, opcoes[i]);
@@ -233,7 +234,6 @@ void selecionar_opcoes(char* etiqueta, const char** opcoes, int limite_maximo, i
            break; 
         }
     }
-
 }
 
 
