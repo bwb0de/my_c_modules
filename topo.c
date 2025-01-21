@@ -27,7 +27,7 @@ int main() {
         printf("%d\n\n", a.tipo);
         n--;
     }
-    /*
+    
     char respostas[100];
     int idade;
     int acumulador;

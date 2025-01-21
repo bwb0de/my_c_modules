@@ -81,7 +81,7 @@ void ler_input_float(const char* etiqueta, float *buffer) {
 
 void ler_input_double(const char* etiqueta, double *buffer) {
     printf("\033[33;1;1m%s\n$: \033[0m", etiqueta);
-    scanf("%f", buffer);
+    scanf("%lf", buffer);
 }
 
 

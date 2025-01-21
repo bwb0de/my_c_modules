@@ -6,6 +6,7 @@
 #include "io_cli.h"
 #include "string.h"
 
+#define SIMBOLO_GRAUS '\xBA'
 
 Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
     int graus = 0;
@@ -34,7 +35,7 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
             algarismos_count++;
         }
 
-        if ( string_angulo[idx_str] == 'º' ) {
+        if ( string_angulo[idx_str] == SIMBOLO_GRAUS ) {
             //int i = 0;
             //while ( algarismos_count ) {
             //    graus += algarismos[i] * ( 10  )
@@ -284,15 +285,17 @@ Graus_Sexagenarios calcular_azimute_angulos_sexagenarios(Graus_Sexagenarios azim
 
 
 double erro_angular_da_poligonal(Poligonal poligonal_fechada) {
+	double v = 0.0;
+	return v;
 
 }
 
-
+/*
 Graus_Sexagenarios erro_angular_poligonal_angulos_sexagenarios(Poligonal p) {
 
 
 }
-
+*/
 
 
 void _teste_conversao_graus() {
