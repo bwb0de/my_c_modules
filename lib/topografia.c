@@ -37,10 +37,6 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
         }
 
         if ( string_angulo[idx_str] == SIMBOLO_GRAUS ) {
-            //int i = 0;
-            //while ( algarismos_count ) {
-            //    graus += algarismos[i] * ( 10  )
-            //}
             graus = atoi(algarismos);
             idx_algarismos = 0;
             memset(algarismos, 0, PARSER_SIZE);
@@ -102,7 +98,7 @@ void print_graus_sexagenarios(Graus_Sexagenarios g) {
 AnguloDecimal criar_azimute_decimal() {
     AnguloDecimal a = {
         .tipo = AZIMUTE,
-        .valor = 0,
+        .valor = 0.0,
     };
 
     ler_input_int("Â .00", &a.valor);
@@ -114,7 +110,7 @@ AnguloDecimal criar_azimute_decimal() {
 AnguloDecimal criar_rumo_decimal() {
     AnguloDecimal a = {
         .tipo = RUMO,
-        .valor = 0,
+        .valor = 0.0,
     };
 
     ler_input_int("Â .00", &a.valor);
@@ -126,7 +122,7 @@ AnguloDecimal criar_rumo_decimal() {
 AnguloDecimal criar_angulo_horizontal_decimal() {
     AnguloDecimal a = {
         .tipo = HORIZONTAL,
-        .valor = 0,
+        .valor = 0.0,
     };
 
     ler_input_int("Â .00", &a.valor);
@@ -139,7 +135,7 @@ AnguloDecimal criar_angulo_horizontal_decimal() {
 AnguloDecimal criar_angulo_vertical_decimal() {
     AnguloDecimal a = {
         .tipo = VERTICAL,
-        .valor = 0,
+        .valor = 0.0,
     };
 
     ler_input_int("Â .00", &a.valor);

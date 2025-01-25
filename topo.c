@@ -5,15 +5,31 @@
 
 
 int main() {
+    int numero_registros; ler_input_int("Informe a quantidade de pontos a ser registrada:", &numero_registros);
+    int numero_registros_originais = numero_registros;
+    char* valor_string;
+    float valor_float;
 
+    Graus_Sexagenarios angulos[numero_registros];
+    float distancias[numero_registros];
 
-    Graus_Sexagenarios g1 = graus_sexagenarios_from_string("123º23'24\"");
-    Graus_Sexagenarios g2 = graus_sexagenarios_from_string("123º23'24.665434\"");
-    Graus_Sexagenarios g3 = graus_sexagenarios_from_string("123º23'24.998765\"");
+    while (numero_registros >= 0) {
+        int i = numero_registros_originais - numero_registros;
+        ler_input("Ângulo: ", valor_string);
+        Graus_Sexagenarios g1 = graus_sexagenarios_from_string(valor_string);
+        ler_input_float("Distância: ", &valor_float);
+        angulos[i] = g1;
+        distancias[i] = valor_float;
+        numero_registros--;
+    }
 
-    print_graus_sexagenarios(g1);
-    print_graus_sexagenarios(g2);
-    print_graus_sexagenarios(g3);
+    for ( int i = 0; i < numero_registros_originais; i++) {
+        print_graus_sexagenarios(angulos[i]);
+        printf(" distancia:  %f\n\n", distancias[i]);
+    }
+
+       //print_graus_sexagenarios(g2);
+//    print_graus_sexagenarios(g3);
 
 
     /*
