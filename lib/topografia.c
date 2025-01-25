@@ -14,6 +14,7 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
     float segundos = 0.0;
     int segundos_inteiros = 0;
     int segundos_decimais = 0;
+    float segundos_decimais_float = 0.0;
 
     int possui_segundos_decimais = 0; //Boleano
 
@@ -61,6 +62,10 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
         if ( string_angulo[idx_str] == '\"' ) {
             if ( possui_segundos_decimais ) {
                 segundos_decimais = atoi(algarismos);
+                segundos_decimais_float = (float)segundos_decimais;
+                while (segundos_decimais_float > 1) {
+                    segundos_decimais_float = segundos_decimais_float / 10;
+                }
             } else {
                 segundos_inteiros = atoi(algarismos);
             }
@@ -74,7 +79,7 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
     }
 
     if ( possui_segundos_decimais ) {
-        segundos = (float)segundos_inteiros + ((float)segundos_decimais / 6);
+        segundos = (float)segundos_inteiros + segundos_decimais_float;
     } else {
         segundos = (float)segundos_inteiros;
     }
@@ -90,7 +95,7 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
 
 
 void print_graus_sexagenarios(Graus_Sexagenarios g) {
-    printf("%dº %d' %f\"\n", g.graus, g.minutos, g.segundos);
+    printf("%dº%d'%f\"\n", g.graus, g.minutos, g.segundos);
 }
 
 
