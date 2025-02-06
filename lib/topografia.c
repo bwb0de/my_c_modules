@@ -12,24 +12,24 @@
 #define PARSER_SIZE 10
 
 Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
-    int8_t parse_step = 0;
-    int8_t exit_loop = 0; //Boleano
-    int8_t possui_segundos_decimais = 0; //Boleano
+    uint8_t parse_step = 0;
+    uint8_t exit_loop = 0; //Boleano
+    uint8_t possui_segundos_decimais = 0; //Boleano
 
-    int8_t graus = 0;
-    int8_t minutos = 0;
-    int8_t segundos_inteiros = 0;
-    int8_t segundos_decimais = 0;
+    uint8_t graus = 0;
+    uint8_t minutos = 0;
+    uint8_t segundos_inteiros = 0;
+    uint8_t segundos_decimais = 0;
     
     float segundos = 0.0;
     float segundos_decimais_float = 0.0;
   
     char algarismos[PARSER_SIZE];
     memset(algarismos, 0, PARSER_SIZE);
-    int8_t algarismos_count = 0;
+    uint8_t algarismos_count = 0;
 
-    int8_t idx_str = 0;
-    int8_t idx_algarismos = 0;
+    uint8_t idx_str = 0;
+    uint8_t idx_algarismos = 0;
 
 
     while ( 1 ) {
@@ -88,6 +88,13 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
         .minutos = minutos,
         .segundos = segundos,
     };
+
+    //Validação
+    if (g.minutos >= 60 || g.segundos >= 60.0 ) {
+        printf("O ângulo fornecido é inválido...\n\n");
+        g.graus = 0; g.minutos = 0; g.segundos = 0.0;
+        return g;
+    }
     
    return g;
 }
