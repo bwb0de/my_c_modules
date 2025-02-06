@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "topografia.h"
 #include "io_cli.h"
 #include "string.h"
@@ -11,25 +12,24 @@
 #define PARSER_SIZE 10
 
 Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
-    int parse_step = 0;
-    int exit_loop = 0; //Boleano
-    int possui_segundos_decimais = 0; //Boleano
+    int8_t parse_step = 0;
+    int8_t exit_loop = 0; //Boleano
+    int8_t possui_segundos_decimais = 0; //Boleano
 
-    int graus = 0;
-    int minutos = 0;
-    float segundos = 0.0;
-    int segundos_inteiros = 0;
-    int segundos_decimais = 0;
-    float segundos_decimais_float = 0.0;
+    int8_t graus = 0;
+    int8_t minutos = 0;
+    int8_t segundos_inteiros = 0;
+    int8_t segundos_decimais = 0;
     
+    float segundos = 0.0;
+    float segundos_decimais_float = 0.0;
   
     char algarismos[PARSER_SIZE];
     memset(algarismos, 0, PARSER_SIZE);
-    int algarismos_count = 0;
+    int8_t algarismos_count = 0;
 
-
-    int idx_str = 0;
-    int idx_algarismos = 0;
+    int8_t idx_str = 0;
+    int8_t idx_algarismos = 0;
 
 
     while ( 1 ) {
