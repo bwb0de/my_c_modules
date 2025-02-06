@@ -11,6 +11,7 @@ void separador_duplo();
 char* executar_comando_externo(const char *command);
 void ler_input(const char* etiqueta, char* resposta);
 void ler_input_int(const char* etiqueta, int *resposta);
+void ler_input_int8(const char* etiqueta, int8_t *resposta);
 void ler_input_float(const char* etiqueta, float *resposta);
 void ler_input_double(const char* etiqueta, double *resposta);
 int quantidade_opcoes_selecionadas(char* buffer);

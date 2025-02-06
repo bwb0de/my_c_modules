@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdint.h>
 #include "io_cli.h"
 
 #define BUFFER_SIZE 128
@@ -70,6 +71,13 @@ void ler_input_int(const char* etiqueta, int *buffer) {
     printf("\033[33;1;1m%s\n$: \033[0m", etiqueta);
     scanf("%f", &n_float);
     *buffer = (int)n_float;
+}
+
+void ler_input_int8(const char* etiqueta, int8_t *buffer) {
+    float n_float;
+    printf("\033[33;1;1m%s\n$: \033[0m", etiqueta);
+    scanf("%f", &n_float);
+    *buffer = (int8_t)n_float;
 }
 
 

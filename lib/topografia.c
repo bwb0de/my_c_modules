@@ -94,7 +94,7 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
 
 
 void print_graus_sexagenarios(Graus_Sexagenarios g) {
-    printf("%i° %i\' %f\"\n", g.graus, g.minutos, g.segundos);
+    printf("%i°%i\'%f\"\n", g.graus, g.minutos, g.segundos);
 }
 
 
