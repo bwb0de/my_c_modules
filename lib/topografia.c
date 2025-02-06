@@ -6,24 +6,23 @@
 #include "io_cli.h"
 #include "string.h"
 
-#ifdef _WIN32
-    #define SIMBOLO_GRAUS '\xBA'  // Windows (provável Windows-1252)
-#else
-    #define SIMBOLO_GRAUS_UTF8 "\xC2\xBA"  // Linux/Mac (UTF-8)
-#endif
 
+#define SIMBOLO_GRAUS_SEXAGENARIOS '\''
 #define PARSER_SIZE 10
 
 Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
+    int parse_step = 0;
+    int exit_loop = 0; //Boleano
+    int possui_segundos_decimais = 0; //Boleano
+
     int graus = 0;
     int minutos = 0;
     float segundos = 0.0;
     int segundos_inteiros = 0;
     int segundos_decimais = 0;
     float segundos_decimais_float = 0.0;
-
-    int possui_segundos_decimais = 0; //Boleano
-   
+    
+  
     char algarismos[PARSER_SIZE];
     memset(algarismos, 0, PARSER_SIZE);
     int algarismos_count = 0;
@@ -34,57 +33,45 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
 
 
     while ( 1 ) {
+        if ( exit_loop ) { break; }
 
         if ( isdigit(string_angulo[idx_str]) ) {
             algarismos[idx_algarismos] = string_angulo[idx_str];
             idx_algarismos++;
             algarismos_count++;
-        } else {
-            printf("Byte atual: %02X\n", (unsigned char)string_angulo[idx_str]);
         }
 
-        #ifdef _WIN32
-            unsigned char byte_atual = (unsigned char)string_angulo[idx_str];
-            if ( byte_atual == 0xB0 || byte_atual == 0xBA ) { // Testa se o byte é 0xB0 (grau) ou 0xBA (ordinal masculino)
-        #else
-            if ( (string_angulo[idx_str] == '\xC2' && string_angulo[idx_str + 1] == '\xB0') ||
-                (string_angulo[idx_str] == '\xC2' && string_angulo[idx_str + 1] == '\xBA') ) {
-                idx_str++;  // Pula o segundo byte da sequência UTF-8
-        #endif
+
+        if ( (unsigned char)string_angulo[idx_str] == SIMBOLO_GRAUS_SEXAGENARIOS ) {
+            if ( parse_step == 0 ) {
+                parse_step += 1;
                 graus = atoi(algarismos);
-                idx_algarismos = 0;
-                memset(algarismos, 0, PARSER_SIZE);
-        }
-
-
-
-        if ( string_angulo[idx_str] == '\'' ) {
-            minutos = atoi(algarismos);
+            } else if ( parse_step == 1 ) {
+                parse_step += 1;
+                minutos = atoi(algarismos);
+            } else if (parse_step == 2 ) {
+                if ( possui_segundos_decimais ) {
+                    segundos_decimais = atoi(algarismos);
+                    segundos_decimais_float = (float)segundos_decimais;
+                    while (segundos_decimais_float > 1) {
+                        segundos_decimais_float = segundos_decimais_float / 10;
+                    }
+                } else {
+                    segundos_inteiros = atoi(algarismos);
+                }
+                exit_loop = 1;
+            }
+            
             idx_algarismos = 0;
             memset(algarismos, 0, PARSER_SIZE);
         }
-        
+
+
         if ( string_angulo[idx_str] == '.' ) {
             segundos_inteiros = atoi(algarismos);
             idx_algarismos = 0; 
             memset(algarismos, 0, PARSER_SIZE);
             possui_segundos_decimais = 1;
-        }
-
-        if ( string_angulo[idx_str] == '\"' ) {
-            if ( possui_segundos_decimais ) {
-                segundos_decimais = atoi(algarismos);
-                segundos_decimais_float = (float)segundos_decimais;
-                while (segundos_decimais_float > 1) {
-                    segundos_decimais_float = segundos_decimais_float / 10;
-                }
-            } else {
-                segundos_inteiros = atoi(algarismos);
-            }
-
-            idx_algarismos = 0; 
-            memset(algarismos, 0, PARSER_SIZE);
-            break;
         }
 
         idx_str++;
@@ -107,7 +94,7 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
 
 
 void print_graus_sexagenarios(Graus_Sexagenarios g) {
-    printf("%iº %i' %f\"\n", g.graus, g.minutos, g.segundos);
+    printf("%i° %i\' %f\"\n", g.graus, g.minutos, g.segundos);
 }
 
 
