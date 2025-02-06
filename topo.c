@@ -3,11 +3,12 @@
 #include <stdio.h>
 
 #define REG_N 100
+#define STRING_SIZE 100
 
 int main() {
     int numero_registros; ler_input_int("Informe a quantidade de pontos a ser registrada:", &numero_registros);
     int numero_registros_originais = numero_registros;
-    char* valor_string;
+    char input_string[STRING_SIZE];
     float valor_float;
 
     Graus_Sexagenarios angulos[REG_N];
@@ -15,9 +16,9 @@ int main() {
 
     while (numero_registros > 0) {
         int i = numero_registros_originais - numero_registros;
-        ler_input("Ângulo: ", valor_string);
+        ler_input("Ângulo: ", input_string);
 
-        Graus_Sexagenarios g1 = graus_sexagenarios_from_string(valor_string);
+        Graus_Sexagenarios g1 = graus_sexagenarios_from_string(input_string);
         ler_input_float("Distância: ", &valor_float);
         angulos[i] = g1;
         distancias[i] = valor_float;
