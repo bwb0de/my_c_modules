@@ -3,8 +3,8 @@
 
 
 typedef struct {
-    int graus;
-    int minutos;
+    uint16_t graus;
+    uint8_t minutos;
     float segundos;
 } Graus_Sexagenarios;
 
