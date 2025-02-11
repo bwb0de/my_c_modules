@@ -190,6 +190,65 @@ double erro_angular_da_poligonal(Poligonal poligonal_fechada) {
 
 }
 
+
+//Funções planimetria e altimetria
+
+double taqueometria_dh(double fio_superior, double fio_inferior, Graus_Sexagenarios angulo_zenital) {
+    double angulo_zenital_radianos = graus_sexagenarios_para_graus_decimais(angulo_zenital) * (M_PI / 180.0);
+    double sen_angulo_zenital = sin(angulo_zenital_radianos);
+    double sen_quadrado_angulo_zenital = pow(sen_angulo_zenital, 2);
+    double resultado = 100 * (fio_superior - fio_inferior) * sen_quadrado_angulo_zenital;
+    return resultado;
+}
+
+double taqueometria_dv(double fio_superior, double fio_inferior, Graus_Sexagenarios angulo_zenital) {
+    double angulo_zenital_radianos = graus_sexagenarios_para_graus_decimais(angulo_zenital) * (M_PI / 180.0);
+    double dh = taqueometria_dh(fio_superior, fio_inferior, angulo_zenital);
+    double resultado = dh / tan(angulo_zenital_radianos);
+    return resultado;
+}
+
+
+double taqueometria_variacao_altura(double ai, double dv, double fm) {
+    return ai + dv - fm;
+}
+
+double taqueometria_cota_alvo(double cota_estacao, double variacao_altura) {
+    return cota_estacao + variacao_altura;
+}
+
+double calcular_erro_angular_poligonal(int nVert, Graus_Sexagenarios sigma_angulos_horizontais) {
+    double tamanho_referencia = (nVert + 2) * 180.0;
+    double resposta = (sigma_angulos_horizontais - tamanho_referencia) * ((double)nVert);
+    resposta = resposta * (-1);
+    return resposta;
+}
+
+ParValores calcular_erro_fechamento(ParValores ponto2D_conhecido, ParValores ponto2D_medido) {
+    //Coordenada conhecida via GNSS
+    double errX = ponto2D_medido.v1 - ponto2D_conhecido.v1;
+    double errY = ponto2D_medido.v2 - ponto2D_vonhecido.v2;
+    ParValores erro = {
+        .v1 = errX,
+        .v2 = errY
+    }
+    return erro;
+}
+
+double calcular_erro_planimetrico(ParValores erro_fechamento) {
+    double quadrado_errX = pow(erro_fechamento.v1, 2);
+    double quadrado_errY = pow(erro_fechamento.v2, 2);
+    return sqrt(quadrado_errX + quadrado_errY);
+}
+
+ParValores calcular_compensacoes_das_componentes(double distancia_horizontal_re_para_ponto_corrente, double perimetro_poligonal, ParValores erro_fechamento) {
+    double Cx = erro_fechamento.v1 * distancia_horizontal_re_para_ponto_corrente / perimetro_poligonal;
+    double Cy = erro_fechamento.v2 * distancia_horizontal_re_para_ponto_corrente / perimetro_poligonal;
+
+
+
+}
+
 /*
 Graus_Sexagenarios erro_angular_poligonal_angulos_sexagenarios(Poligonal p) {
 
