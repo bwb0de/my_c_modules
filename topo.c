@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 //#include <sqlite3.h>
 #include "topografia.h"
@@ -7,6 +8,33 @@
 
 #define REG_N 50
 #define STRING_BUFFER_SIZE 100
+
+
+typedef struct {
+    double angulo_horizontal_medido;
+    double angulo_zenital_medido;
+    double teodolito_fio_superior;
+    double teodolito_fio_medio;
+    double teodolito_fipo_inferior;
+    double dh_para_vante;
+    double dv;
+    double variacao_altura;
+    double cota;
+    double erro_angulo_horizontal;
+    double angulo_horizontal_compensado;
+    double azimute;
+    double x_parcial;
+    double y_parcial;
+    double Cx;
+    double Cy;
+    double x;
+    double y;
+    uint8_t integra_a_poligonal;
+    uint8_t id;
+    uint8_t re;
+    uint8_t vante;
+} PontoInteresse;
+
 
 /*
 sqlite3 *db;
@@ -66,7 +94,58 @@ void create_database() {
 
 int main() {
     //create_database();
+    
+    //printf("%zu", sizeof(PontoInteresse));
 
+    uint8_t numero_registros; ler_input_uint8("Informe a quantidade de pontos a ser registrada:", &numero_registros);
+    uint8_t numero_registros_originais = numero_registros;
+    
+    //Preparando variáveis inputs
+    char input_string[STRING_BUFFER_SIZE]; memset(input_string, 0, STRING_BUFFER_SIZE);
+    float input_float;
+    int input_int;
+    const char *ops[3] =  {"Distância", "Fios", "Nenhuma"};
+
+    int selecionado = selecionar_opcoes("Quais dados sero registrados", ops, 2);
+
+    printf("Selecionado: %d \n", selecionado);
+
+
+
+
+    //Definindo arrays que acumularão valores de entrada, em seguida serão persistidos.
+    PontoInteresse *lista_pontos = malloc(numero_registros * sizeof(PontoInteresse));
+
+    while (numero_registros > 0) {
+        uint8_t i = numero_registros_originais - numero_registros;
+        ler_input("Ângulo: ", input_string);
+
+        Graus_Sexagenarios g1 = graus_sexagenarios_from_string(input_string);
+        //Se formato inválido: 0º0'0.0", repete...
+        if ( g1.graus == 0 && g1.minutos == 0 && g1.segundos == 0.0 ) { continue; }
+
+        ler_input_float("Distância: ", &input_float);
+
+        lista_pontos[i].id = i;
+        lista_pontos[i].angulo_horizontal_medido = graus_sexagenarios_para_graus_decimais(g1);
+        lista_pontos[i].dh_para_vante = input_float;
+
+        numero_registros--;
+        memset(input_string, 0, STRING_BUFFER_SIZE);
+    }
+
+    //Realizar a presistencia em um arquivo de dados sqlite...
+    for ( int8_t i = 0; i < numero_registros_originais; i++) {
+        print_graus_sexagenarios(graus_decimais_para_sexagenarios(lista_pontos[i].angulo_horizontal_medido));
+        printf("distancia:  %f\n\n", lista_pontos[i].dh_para_vante);
+    }
+    
+  
+    free(lista_pontos);
+
+
+
+    /*
 
     char input_string[STRING_BUFFER_SIZE]; memset(input_string, 0, STRING_BUFFER_SIZE);
     float input_double;
@@ -98,6 +177,8 @@ int main() {
     printf("A distancia vertical é: %f\n", dv);
     printf("A variação na altura foi de: %f\n", delta_h);
     printf("A cota do ponto visado é: %f\n", cota_alvo);
+
+    */
 
 
     // Recebendo dados para construção da poligonal...

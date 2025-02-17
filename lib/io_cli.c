@@ -119,7 +119,6 @@ int retornar_inteiro_resultante_de_multipla_escolha(int* valores_respostas, int 
     potencia = 0;
 
     for (int i = 0; i < n_respostas; i++) {
-        printf("Selecionado: %i\n", valores_respostas[i]);
         potencia = valores_respostas[i] - 1;
         resultado += pow(2, potencia);
     }
@@ -216,9 +215,10 @@ void imprimir_opcoes(const char** opcoes, int limite_maximo) {
 }
 
 
-void selecionar_opcoes(char* etiqueta, const char** opcoes, int limite_maximo, int* endereco_respostas) {
+int selecionar_opcoes(char* etiqueta, const char** opcoes, int limite_maximo) {
     int validado = 0;
     char respostas[50];
+    int sigma;
 
     int passagens = 0;
 
@@ -252,10 +252,12 @@ void selecionar_opcoes(char* etiqueta, const char** opcoes, int limite_maximo, i
         } //
 
         if (validado == 1) {
-           int sigma = retornar_inteiro_resultante_de_multipla_escolha(endereco_respostas, n_respostas);
+           sigma = retornar_inteiro_resultante_de_multipla_escolha(endereco_respostas, n_respostas);
            break; 
         }
     }
+    
+    return sigma;
 }
 
 

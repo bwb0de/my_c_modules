@@ -219,7 +219,7 @@ double taqueometria_cota_alvo(double cota_estacao, double variacao_altura) {
 
 double calcular_erro_angular_poligonal(int nVert, Graus_Sexagenarios sigma_angulos_horizontais) {
     double tamanho_referencia = (nVert + 2) * 180.0;
-    double resposta = (sigma_angulos_horizontais - tamanho_referencia) * ((double)nVert);
+    double resposta = (graus_sexagenarios_para_graus_decimais(sigma_angulos_horizontais) - tamanho_referencia) * ((double)nVert);
     resposta = resposta * (-1);
     return resposta;
 }
@@ -227,11 +227,11 @@ double calcular_erro_angular_poligonal(int nVert, Graus_Sexagenarios sigma_angul
 ParValores calcular_erro_fechamento(ParValores ponto2D_conhecido, ParValores ponto2D_medido) {
     //Coordenada conhecida via GNSS
     double errX = ponto2D_medido.v1 - ponto2D_conhecido.v1;
-    double errY = ponto2D_medido.v2 - ponto2D_vonhecido.v2;
+    double errY = ponto2D_medido.v2 - ponto2D_conhecido.v2;
     ParValores erro = {
         .v1 = errX,
         .v2 = errY
-    }
+    };
     return erro;
 }
 
