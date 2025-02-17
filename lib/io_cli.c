@@ -8,6 +8,32 @@
 
 #define BUFFER_SIZE 128
 
+
+typedef enum InputKind {
+    INT,
+    FLOAT,
+    DOUBLE,
+    STRING
+} input_king_t;
+
+typedef union InputData {
+    char *texto;
+    double n_real_d;
+    float n_real_f;
+    int n_int;
+} input_data_t;
+
+
+typedef struct InputReceiver {
+    input_king_t tipo;
+    input_data_t valor;
+} input_rec_t;
+
+
+
+
+
+
 void separador_simples() {
     printf("\n--------------------------------------------------------------\n\n");
 }
