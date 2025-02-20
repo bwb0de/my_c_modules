@@ -97,6 +97,22 @@ int main() {
     
     //printf("%zu", sizeof(PontoInteresse));
 
+    input_rec_t ir = {.tipo = STRING};
+
+    ir = input_text_on_receiver("Input texto:", ir);
+    printf("%s\n", ir.valor.texto);
+
+    ir = input_int_on_receiver("Input int:", ir);
+    printf("%d\n", ir.valor.n_int);
+
+    ir = input_float_on_receiver("Input float:", ir);
+    printf("%f\n", ir.valor.n_real_f);
+
+    ir = input_double_on_receiver("Input double:", ir);
+    printf("%f\n", ir.valor.n_real_d);
+
+    exit(0);
+
     uint8_t numero_registros; ler_input_uint8("Informe a quantidade de pontos a ser registrada:", &numero_registros);
     uint8_t numero_registros_originais = numero_registros;
     
@@ -120,7 +136,7 @@ int main() {
         uint8_t i = numero_registros_originais - numero_registros;
         ler_input("Ângulo: ", input_string);
 
-        Graus_Sexagenarios g1 = graus_sexagenarios_from_string(input_string);
+        Graus_Sexagenarios g1 = parse_graus_sexagenarios(input_string);
         //Se formato inválido: 0º0'0.0", repete...
         if ( g1.graus == 0 && g1.minutos == 0 && g1.segundos == 0.0 ) { continue; }
 
@@ -157,7 +173,7 @@ int main() {
     double cota_estacao = (double)input_double;
 
     ler_input("Ângulo: ", input_string);
-    Graus_Sexagenarios g1 = graus_sexagenarios_from_string(input_string);
+    Graus_Sexagenarios g1 = parse_graus_sexagenarios(input_string);
 
     ler_input_float("Valor FS: ", &input_double);
     double fs = (double)input_double;
@@ -198,7 +214,7 @@ int main() {
         uint8_t i = numero_registros_originais - numero_registros;
         ler_input("Ângulo: ", input_string);
 
-        Graus_Sexagenarios g1 = graus_sexagenarios_from_string(input_string);
+        Graus_Sexagenarios g1 = parse_graus_sexagenarios(input_string);
         //Se formato inválido: 0º0'0.0", repete...
         if ( g1.graus == 0 && g1.minutos == 0 && g1.segundos == 0.0 ) { continue; }
 

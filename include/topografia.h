@@ -47,7 +47,7 @@ typedef struct {
 } Poligonal;
 
 
-Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo);
+Graus_Sexagenarios parse_graus_sexagenarios(char* string_angulo);
 void print_graus_sexagenarios(Graus_Sexagenarios g);
 
 

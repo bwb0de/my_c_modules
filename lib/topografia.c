@@ -11,7 +11,20 @@
 #define SIMBOLO_GRAUS_SEXAGENARIOS '\''
 #define PARSER_SIZE 10
 
-Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
+Graus_Sexagenarios parse_graus_sexagenarios(char* string_angulo) {
+    
+    /*Converte uma string ###'##'##' ou ###'##'##.##' em uma struct Graus_Sexagenarios
+
+        typedef struct {
+            uint16_t graus;
+            uint8_t minutos;
+            float segundos;
+        } Graus_Sexagenarios;
+    
+      Em caso de erro, retorna a struct com todos os campos zerados => {0, 0, 0.0}
+
+    */
+
     uint8_t parse_step = 0;
     uint8_t exit_loop = 0; //Boleano
     uint8_t possui_segundos_decimais = 0; //Boleano
@@ -42,6 +55,10 @@ Graus_Sexagenarios graus_sexagenarios_from_string(char* string_angulo) {
 
     while ( 1 ) {
         if ( exit_loop ) { break; }
+
+        //if (parse_step == 0 ) {
+        //    g.graus = parse_int()
+        //}
 
         if ( isdigit(string_angulo[idx_str]) ) {
             algarismos[idx_algarismos] = string_angulo[idx_str];

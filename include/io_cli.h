@@ -1,14 +1,45 @@
 #ifndef IO_CLI_H
 #define IO_CLI_H
 
-typedef struct {
-    int size;
-    int* values;
-} input_selection;
+#define BUFFER_SIZE 30
+#define PARSER_SIZE 10
 
-void separador_simples();
-void separador_duplo();
+
+typedef enum InputKind {
+    INT,
+    FLOAT,
+    DOUBLE,
+    STRING
+} input_king_t;
+
+
+typedef union InputData {
+    char texto[BUFFER_SIZE];
+    double n_real_d;
+    float n_real_f;
+    int n_int;
+} input_data_t;
+
+
+typedef struct InputReceiver {
+    input_king_t tipo;
+    input_data_t valor;
+} input_rec_t;
+
+
+typedef struct ParserIntOutput {
+    int parsed;
+    char not_parsed[BUFFER_SIZE];
+} parsed_int_t;
+
+
 char* executar_comando_externo(const char *command);
+
+input_rec_t input_text_on_receiver(const char* etiqueta, input_rec_t ir);
+input_rec_t input_int_on_receiver(const char* etiqueta, input_rec_t ir);
+input_rec_t input_float_on_receiver(const char* etiqueta, input_rec_t ir);
+input_rec_t input_double_on_receiver(const char* etiqueta, input_rec_t ir);
+
 
 void ler_input(const char* etiqueta, char* resposta);
 void ler_input_int(const char* etiqueta, int *resposta);

@@ -6,42 +6,6 @@
 #include <stdint.h>
 #include "io_cli.h"
 
-#define BUFFER_SIZE 128
-
-
-typedef enum InputKind {
-    INT,
-    FLOAT,
-    DOUBLE,
-    STRING
-} input_king_t;
-
-typedef union InputData {
-    char *texto;
-    double n_real_d;
-    float n_real_f;
-    int n_int;
-} input_data_t;
-
-
-typedef struct InputReceiver {
-    input_king_t tipo;
-    input_data_t valor;
-} input_rec_t;
-
-
-
-
-
-
-void separador_simples() {
-    printf("\n--------------------------------------------------------------\n\n");
-}
-
-void separador_duplo() {
-    printf("\n==============================================================\n\n");
-}
-
 
 char* executar_comando_externo(const char *command) {
     FILE *fp;
@@ -84,6 +48,139 @@ char* executar_comando_externo(const char *command) {
 
     return resultado;
 }
+
+input_rec_t input_text_on_receiver(const char* etiqueta, input_rec_t ir) {
+    ir.tipo = STRING;
+    printf("\033[33;1;1m%s\n$: \033[0m", etiqueta);
+    if (fgets(ir.valor.texto, sizeof(ir.valor.texto), stdin) != NULL) { //Validação
+        size_t len_inputed_text = strlen(ir.valor.texto);
+        if (len_inputed_text > 0 && ir.valor.texto[len_inputed_text - 1] == '\n') {
+            ir.valor.texto[len_inputed_text - 1] = '\0';
+        }        
+    }
+    printf("\n");
+    return ir;
+}
+
+
+int parse_int(char* string_input) {
+    char algarismos[PARSER_SIZE];
+    memset(algarismos, 0, PARSER_SIZE);
+
+    uint8_t idx_str = 0;
+    uint8_t idx_algarismos = 0;
+
+    while ( 1 ) {
+        if ( isdigit(string_input[idx_str]) ) {
+            algarismos[idx_algarismos] = string_input[idx_str];
+            idx_algarismos++;
+            idx_str++;
+        } else { break; }}
+
+    return atoi(algarismos);
+}
+
+
+parsed_int_t parse_int_partial(char* string_input) {
+    uint8_t string_input_len = strlen(string_input);
+
+    char algarismos[PARSER_SIZE];
+    memset(algarismos, 0, PARSER_SIZE);
+
+    uint8_t idx_str = 0;
+    uint8_t idx_sub = 0;
+    uint8_t idx_algarismos = 0;
+
+    while ( 1 ) {
+        if ( isdigit(string_input[idx_str]) ) {
+            algarismos[idx_algarismos] = string_input[idx_str];
+            idx_algarismos++;
+            idx_str++;
+        } else { break; }
+    }
+
+    parsed_int_t p = { .parsed = atoi(algarismos) };
+
+    if ( idx_str < string_input_len ) {
+        while ( idx_str != string_input_len ) {
+            p.not_parsed[idx_sub] = string_input[idx_str];
+            idx_str++;
+            idx_sub++;
+        }
+    }
+    
+    return p;
+}
+
+
+double parse_double(char* string_input) {
+    char algarismos[PARSER_SIZE];
+
+    int parte_inteira;
+    double parte_decimal;
+    
+    memset(algarismos, 0, PARSER_SIZE);
+    
+    uint8_t idx_str = 0;
+    uint8_t idx_algarismos = 0;
+
+    while ( 1 ) {
+        if ( isdigit(string_input[idx_str]) ) {
+            algarismos[idx_algarismos] = string_input[idx_str];
+            idx_algarismos++;
+            idx_str++;
+        
+        } else if (string_input[idx_str] == ',' || string_input[idx_str] == '.') {
+            parte_inteira = atoi(algarismos);
+            memset(algarismos, 0, PARSER_SIZE);
+            idx_algarismos = 0;
+            algarismos[idx_algarismos] = '0'; idx_algarismos++;
+            algarismos[idx_algarismos] = '.'; idx_algarismos++;
+            idx_str++;
+        
+        } else if (string_input[idx_str] == '\0' || string_input[idx_str] == '\n') {
+            parte_decimal = atof(algarismos);
+            break;
+        
+        } else {
+            if ( idx_algarismos == 0 ) {parte_decimal = 0.0;}
+            break; 
+        }
+    }
+
+    return (double)parte_inteira + parte_decimal;
+}
+
+
+
+input_rec_t input_int_on_receiver(const char* etiqueta, input_rec_t ir) {
+    ir = input_text_on_receiver(etiqueta, ir);
+    parsed_int_t n_int = parse_int_partial(ir.valor.texto);
+    ir.tipo = INT;
+    ir.valor.n_int = n_int.v_parsed;
+    printf("print:%s\n", n_int.substring);
+    return ir;
+}
+
+input_rec_t input_float_on_receiver(const char* etiqueta, input_rec_t ir) {
+    ir = input_text_on_receiver(etiqueta, ir);
+    float n_real = (float)parse_double(ir.valor.texto);
+    ir.tipo = FLOAT;
+    ir.valor.n_real_f = n_real;
+    printf("\n");
+    return ir;
+}
+
+input_rec_t input_double_on_receiver(const char* etiqueta, input_rec_t ir) {
+    ir = input_text_on_receiver(etiqueta, ir);
+    double n_real = parse_double(ir.valor.texto);
+    ir.tipo = DOUBLE;
+    ir.valor.n_real_d = n_real;
+    printf("\n");
+    return ir;
+}
+
+
 
 void ler_input(const char* etiqueta, char* buffer) {
     printf("\033[33;1;1m%s\n$: \033[0m", etiqueta);
@@ -243,7 +340,7 @@ void imprimir_opcoes(const char** opcoes, int limite_maximo) {
 
 int selecionar_opcoes(char* etiqueta, const char** opcoes, int limite_maximo) {
     int validado = 0;
-    char respostas[50];
+    char respostas[BUFFER_SIZE];
     int sigma;
 
     int passagens = 0;
@@ -261,7 +358,7 @@ int selecionar_opcoes(char* etiqueta, const char** opcoes, int limite_maximo) {
         ler_input("", respostas);
 
         int n_respostas = quantidade_opcoes_selecionadas(respostas);
-        int endereco_respostas[n_respostas];
+        int endereco_respostas[BUFFER_SIZE / 3];
 
         traduzir_selecao(respostas, endereco_respostas);
 
