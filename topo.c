@@ -97,8 +97,28 @@ int main() {
     
     //printf("%zu", sizeof(PontoInteresse));
 
-    input_rec_t ir = {.tipo = STRING};
+    input_rec_t ir;
 
+    //Angulo sexagenario parser...
+    ir = input_text_on_receiver("Angulo:", ir);
+
+    parsed_int_t p;
+    parsed_real_t pr;
+
+    p = parse_int_partial(ir.valor.texto);
+    int graus = p.parsed;
+
+    p = parse_int_partial(str_prefix_cut(p.not_parsed, 1));
+    int minutos = p.parsed;
+
+    pr = parse_real_partial(str_prefix_cut(p.not_parsed, 1));
+    double segundos = pr.parsed;
+
+    printf("%d°%d\'%f\"\n", graus, minutos, segundos);
+
+
+
+    /* Teste parsers...
     ir = input_text_on_receiver("Input texto:", ir);
     printf("%s\n", ir.valor.texto);
 
@@ -110,6 +130,7 @@ int main() {
 
     ir = input_double_on_receiver("Input double:", ir);
     printf("%f\n", ir.valor.n_real_d);
+    */
 
     exit(0);
 

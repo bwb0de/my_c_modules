@@ -62,7 +62,7 @@ input_rec_t input_text_on_receiver(const char* etiqueta, input_rec_t ir) {
     return ir;
 }
 
-
+/*
 int parse_int(char* string_input) {
     char algarismos[PARSER_SIZE];
     memset(algarismos, 0, PARSER_SIZE);
@@ -78,7 +78,7 @@ int parse_int(char* string_input) {
         } else { break; }}
 
     return atoi(algarismos);
-}
+}*/
 
 
 parsed_int_t parse_int_partial(char* string_input) {
@@ -112,7 +112,7 @@ parsed_int_t parse_int_partial(char* string_input) {
     return p;
 }
 
-
+/*
 double parse_double(char* string_input) {
     char algarismos[PARSER_SIZE];
 
@@ -150,33 +150,103 @@ double parse_double(char* string_input) {
 
     return (double)parte_inteira + parte_decimal;
 }
+    */
 
+char * str_prefix_cut(char * string, uint8_t cut_size) {
+    int string_len = strlen(string);
+    int idx_str = 0;
+    int idx_sub = 0;
+    char resposta[BUFFER_SIZE];
+
+    while (1) {
+        if (idx_str == string_len ) {break;}
+        if ( idx_str > cut_size - 1 ) {
+            resposta[idx_sub] = string[idx_str];
+            idx_sub++;
+        }
+        idx_str++;
+    }
+
+    return resposta;
+}
+
+
+parsed_real_t parse_real_partial(char* string_input) {
+    uint8_t string_input_len = strlen(string_input);
+ 
+    char algarismos[PARSER_SIZE*2];
+
+    parsed_real_t p = { 
+        .parsed = 0.0,
+    };
+   
+    memset(algarismos, 0, PARSER_SIZE*2);
+    
+    uint8_t idx_str = 0;
+    uint8_t idx_sub = 0;
+    uint8_t idx_algarismos = 0;
+
+
+    while ( 1 ) {
+        if ( isdigit(string_input[idx_str]) ) {
+            algarismos[idx_algarismos] = string_input[idx_str];
+            idx_algarismos++;
+            idx_str++;
+        
+        } else if (string_input[idx_str] == ',' || string_input[idx_str] == '.') {
+            algarismos[idx_algarismos] = '.';
+            if (string_input_len - idx_str > 1 ) {
+                algarismos[idx_algarismos+1] = 0;
+            }
+            idx_algarismos++;
+            idx_str++;
+        
+        } else {
+            printf("%s\n", algarismos);
+            p.parsed = atof(algarismos);
+            break;
+        }
+    }
+    
+    if ( idx_str < string_input_len ) {
+        while ( idx_str != string_input_len && idx_sub < PARSER_SIZE - 1 ) {
+            p.not_parsed[idx_sub] = string_input[idx_str];
+            idx_str++;
+            idx_sub++;
+        }
+        p.not_parsed[idx_sub] = '\0';
+    }
+
+    return p;  
+
+  
+}
 
 
 input_rec_t input_int_on_receiver(const char* etiqueta, input_rec_t ir) {
     ir = input_text_on_receiver(etiqueta, ir);
     parsed_int_t n_int = parse_int_partial(ir.valor.texto);
     ir.tipo = INT;
-    ir.valor.n_int = n_int.v_parsed;
-    printf("print:%s\n", n_int.substring);
+    ir.valor.n_int = n_int.parsed;
+    printf("not parsed:%s\n", n_int.not_parsed);
     return ir;
 }
 
 input_rec_t input_float_on_receiver(const char* etiqueta, input_rec_t ir) {
     ir = input_text_on_receiver(etiqueta, ir);
-    float n_real = (float)parse_double(ir.valor.texto);
+    parsed_real_t n_real = parse_real_partial(ir.valor.texto);
     ir.tipo = FLOAT;
-    ir.valor.n_real_f = n_real;
-    printf("\n");
+    ir.valor.n_real_f = (float)n_real.parsed;
+    printf("not parsed:%s\n", n_real.not_parsed);
     return ir;
 }
 
 input_rec_t input_double_on_receiver(const char* etiqueta, input_rec_t ir) {
     ir = input_text_on_receiver(etiqueta, ir);
-    double n_real = parse_double(ir.valor.texto);
+    parsed_real_t n_real = parse_real_partial(ir.valor.texto);
     ir.tipo = DOUBLE;
-    ir.valor.n_real_d = n_real;
-    printf("\n");
+    ir.valor.n_real_d = n_real.parsed;
+    printf("not parsed:%s\n", n_real.not_parsed);
     return ir;
 }
 

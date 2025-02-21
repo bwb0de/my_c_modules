@@ -2,7 +2,7 @@
 #define IO_CLI_H
 
 #define BUFFER_SIZE 30
-#define PARSER_SIZE 10
+#define PARSER_SIZE 15
 
 
 typedef enum InputKind {
@@ -32,8 +32,18 @@ typedef struct ParserIntOutput {
     char not_parsed[BUFFER_SIZE];
 } parsed_int_t;
 
+typedef struct ParserRealOutput {
+    double parsed;
+    char not_parsed[BUFFER_SIZE];
+} parsed_real_t;
+
 
 char* executar_comando_externo(const char *command);
+
+parsed_int_t parse_int_partial(char* string_input);
+parsed_real_t parse_real_partial(char* string_input);
+
+char* str_prefix_cut(char* string, uint8_t cut_size);
 
 input_rec_t input_text_on_receiver(const char* etiqueta, input_rec_t ir);
 input_rec_t input_int_on_receiver(const char* etiqueta, input_rec_t ir);

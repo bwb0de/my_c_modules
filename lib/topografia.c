@@ -9,7 +9,7 @@
 
 
 #define SIMBOLO_GRAUS_SEXAGENARIOS '\''
-#define PARSER_SIZE 10
+//#define PARSER_SIZE 10
 
 Graus_Sexagenarios parse_graus_sexagenarios(char* string_angulo) {
     
@@ -51,14 +51,37 @@ Graus_Sexagenarios parse_graus_sexagenarios(char* string_angulo) {
         .segundos = segundos,
     };
 
+    parsed_int_t p = { .parsed = 0 };
+    parsed_real_t pr = { .parsed = 0.0 };
 
+    strcpy(p.not_parsed, string_angulo);
+
+    uint8_t not_parsed_len = 0;
+
+    /*
+    do {
+        if (parse_step == 0) {
+            p = parse_int_partial(string_angulo);
+            g.graus = p.parsed;
+            not_parsed_len = strlen(p.not_parsed);
+            uint8_t idx = 0;
+        }
+        else if (parse_step == 1) {
+            p = parse_int_partial(string_angulo);
+            g.minutos = p.parsed;
+            not_parsed_len = strlen(p.not_parsed);
+        }
+        else if (parse_step == 2) {
+            p = parse_real_partial(string_angulo);
+            g.minutos = p.parsed;
+            not_parsed_len = strlen(p.not_parsed);
+        }
+    } while ( not_parsed_len <= 1 );
+     */
+    
 
     while ( 1 ) {
         if ( exit_loop ) { break; }
-
-        //if (parse_step == 0 ) {
-        //    g.graus = parse_int()
-        //}
 
         if ( isdigit(string_angulo[idx_str]) ) {
             algarismos[idx_algarismos] = string_angulo[idx_str];
