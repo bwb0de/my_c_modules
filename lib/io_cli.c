@@ -4,10 +4,17 @@
 #include <string.h>
 #include <math.h>
 #include <stdint.h>
+#include <locale.h>
+
 #include "io_cli.h"
 
 
-char* executar_comando_externo(const char *command) {
+
+char* shellexec(const char *command) {
+    /*
+        Executa comando do shell como um subprocesso
+    */
+
     FILE *fp;
     char buffer[BUFFER_SIZE];
     char *resultado = NULL;
@@ -49,8 +56,9 @@ char* executar_comando_externo(const char *command) {
     return resultado;
 }
 
+
 input_rec_t input_text_on_receiver(const char* etiqueta, input_rec_t ir) {
-    ir.tipo = STRING;
+    ir.tipo = TEXTO;
     printf("\033[33;1;1m%s\n$: \033[0m", etiqueta);
     if (fgets(ir.valor.texto, sizeof(ir.valor.texto), stdin) != NULL) { //Validação
         size_t len_inputed_text = strlen(ir.valor.texto);
@@ -61,6 +69,7 @@ input_rec_t input_text_on_receiver(const char* etiqueta, input_rec_t ir) {
     printf("\n");
     return ir;
 }
+
 
 /*
 int parse_int(char* string_input) {
@@ -152,22 +161,28 @@ double parse_double(char* string_input) {
 }
     */
 
-char * str_prefix_cut(char * string, uint8_t cut_size) {
+void str_prefix_cut(char *string, uint8_t cut_size) {
     int string_len = strlen(string);
+    if ( cut_size > string_len ) {
+        memset(string, 0, string_len);
+        return;
+    }
+
+    char tmp[string_len + 1];
+    strcpy(tmp, string);
+
     int idx_str = 0;
     int idx_sub = 0;
-    char resposta[BUFFER_SIZE];
 
     while (1) {
         if (idx_str == string_len ) {break;}
         if ( idx_str > cut_size - 1 ) {
-            resposta[idx_sub] = string[idx_str];
+            string[idx_sub] = tmp[idx_str];
             idx_sub++;
         }
         idx_str++;
     }
-
-    return resposta;
+    string[idx_sub] = '\0';
 }
 
 
@@ -202,7 +217,6 @@ parsed_real_t parse_real_partial(char* string_input) {
             idx_str++;
         
         } else {
-            printf("%s\n", algarismos);
             p.parsed = atof(algarismos);
             break;
         }
@@ -226,7 +240,7 @@ parsed_real_t parse_real_partial(char* string_input) {
 input_rec_t input_int_on_receiver(const char* etiqueta, input_rec_t ir) {
     ir = input_text_on_receiver(etiqueta, ir);
     parsed_int_t n_int = parse_int_partial(ir.valor.texto);
-    ir.tipo = INT;
+    ir.tipo = NUMEROS_INTEIROS;
     ir.valor.n_int = n_int.parsed;
     printf("not parsed:%s\n", n_int.not_parsed);
     return ir;
@@ -235,7 +249,7 @@ input_rec_t input_int_on_receiver(const char* etiqueta, input_rec_t ir) {
 input_rec_t input_float_on_receiver(const char* etiqueta, input_rec_t ir) {
     ir = input_text_on_receiver(etiqueta, ir);
     parsed_real_t n_real = parse_real_partial(ir.valor.texto);
-    ir.tipo = FLOAT;
+    ir.tipo = NUMEROS_REAIS_SIMPLES;
     ir.valor.n_real_f = (float)n_real.parsed;
     printf("not parsed:%s\n", n_real.not_parsed);
     return ir;
@@ -244,7 +258,7 @@ input_rec_t input_float_on_receiver(const char* etiqueta, input_rec_t ir) {
 input_rec_t input_double_on_receiver(const char* etiqueta, input_rec_t ir) {
     ir = input_text_on_receiver(etiqueta, ir);
     parsed_real_t n_real = parse_real_partial(ir.valor.texto);
-    ir.tipo = DOUBLE;
+    ir.tipo = NUMEROS_REAIS_DOUBLE;
     ir.valor.n_real_d = n_real.parsed;
     printf("not parsed:%s\n", n_real.not_parsed);
     return ir;

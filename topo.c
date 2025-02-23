@@ -100,6 +100,7 @@ int main() {
     input_rec_t ir;
 
     //Angulo sexagenario parser...
+    /*
     ir = input_text_on_receiver("Angulo:", ir);
 
     parsed_int_t p;
@@ -108,20 +109,24 @@ int main() {
     p = parse_int_partial(ir.valor.texto);
     int graus = p.parsed;
 
-    p = parse_int_partial(str_prefix_cut(p.not_parsed, 1));
+    str_prefix_cut(p.not_parsed, 1);
+    p = parse_int_partial(p.not_parsed);
     int minutos = p.parsed;
 
-    pr = parse_real_partial(str_prefix_cut(p.not_parsed, 1));
+    str_prefix_cut(p.not_parsed, 1);
+    pr = parse_real_partial(p.not_parsed);
     double segundos = pr.parsed;
 
     printf("%d°%d\'%f\"\n", graus, minutos, segundos);
+    */
 
 
 
-    /* Teste parsers...
+    //Teste parsers...
     ir = input_text_on_receiver("Input texto:", ir);
     printf("%s\n", ir.valor.texto);
 
+    /*
     ir = input_int_on_receiver("Input int:", ir);
     printf("%d\n", ir.valor.n_int);
 

@@ -6,10 +6,10 @@
 
 
 typedef enum InputKind {
-    INT,
-    FLOAT,
-    DOUBLE,
-    STRING
+    NUMEROS_INTEIROS,
+    NUMEROS_REAIS_SIMPLES,
+    NUMEROS_REAIS_DOUBLE,
+    TEXTO
 } input_king_t;
 
 
@@ -38,12 +38,12 @@ typedef struct ParserRealOutput {
 } parsed_real_t;
 
 
-char* executar_comando_externo(const char *command);
+char* shellexec(const char *command);
 
 parsed_int_t parse_int_partial(char* string_input);
 parsed_real_t parse_real_partial(char* string_input);
 
-char* str_prefix_cut(char* string, uint8_t cut_size);
+void str_prefix_cut(char *string, uint8_t cut_size);
 
 input_rec_t input_text_on_receiver(const char* etiqueta, input_rec_t ir);
 input_rec_t input_int_on_receiver(const char* etiqueta, input_rec_t ir);
