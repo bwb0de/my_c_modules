@@ -1,3 +1,13 @@
+/**********************************************************************************************
+*
+*   mathext - Extensão simples da biblioteca matemática
+*
+*   Refere-se a criação de constantes e funções convenientes para extender a bilblioteca padrão
+*   de matemática.
+*
+*   
+/**********************************************************************************************/
+
 #ifndef MATH_EXT_H
 #define MATH_EXT_H
 
