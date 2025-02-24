@@ -126,8 +126,8 @@ ArrayInteiros *array_concat(ArrayInteiros *arr1, ArrayInteiros *arr2) {
 
 
 float _obter_valor_par(Par par) {
-    Ponto2D *p_origem = criar_ponto2D(0.0, 0.0);
-    Ponto2D *p_dado = criar_ponto2D((double)par.a, (double)par.b);
+    v2_t *p_origem = criar_ponto2D(0.0, 0.0);
+    v2_t *p_dado = criar_ponto2D((double)par.a, (double)par.b);
     double valor = distancia2D(p_origem, p_dado);
     return (float)valor;
 }

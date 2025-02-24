@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 //#include <sqlite3.h>
-#include "topografia.h"
+#include "topografia_base.h"
 #include "io_cli.h"
 
 #define REG_N 50
@@ -92,12 +92,13 @@ void create_database() {
 }
 */
 
+
+
 int main() {
     //create_database();
     
-    //printf("%zu", sizeof(PontoInteresse));
-
     input_rec_t ir;
+
 
     //Angulo sexagenario parser...
     /*
@@ -123,8 +124,8 @@ int main() {
 
 
     //Teste parsers...
-    ir = input_text_on_receiver("Input texto:", ir);
-    printf("%s\n", ir.valor.texto);
+    //ir = input_text_on_receiver("Input texto:", ir);
+    //printf("%s\n", ir.valor.texto);
 
     /*
     ir = input_int_on_receiver("Input int:", ir);
@@ -137,32 +138,27 @@ int main() {
     printf("%f\n", ir.valor.n_real_d);
     */
 
-    exit(0);
-
-    uint8_t numero_registros; ler_input_uint8("Informe a quantidade de pontos a ser registrada:", &numero_registros);
-    uint8_t numero_registros_originais = numero_registros;
     
-    //Preparando variáveis inputs
-    char input_string[STRING_BUFFER_SIZE]; memset(input_string, 0, STRING_BUFFER_SIZE);
-    float input_float;
-    int input_int;
+
+    ir = input_int_on_receiver("Informe a quantidade de pontos a ser registrada:", ir);
+    int numero_registros_originais = ir.valor.n_int;
+    
     const char *ops[3] =  {"Distância", "Fios", "Nenhuma"};
+    ir = input_selection("Quais dados serão registrados", ops, 2, ir);
+    printf("Selection_Int: %d \n", ir.valor.n_int);
 
-    int selecionado = selecionar_opcoes("Quais dados sero registrados", ops, 2);
-
-    printf("Selecionado: %d \n", selecionado);
-
-
+    exit(0);
 
 
     //Definindo arrays que acumularão valores de entrada, em seguida serão persistidos.
+    /*
     PontoInteresse *lista_pontos = malloc(numero_registros * sizeof(PontoInteresse));
 
     while (numero_registros > 0) {
         uint8_t i = numero_registros_originais - numero_registros;
         ler_input("Ângulo: ", input_string);
 
-        Graus_Sexagenarios g1 = parse_graus_sexagenarios(input_string);
+        graus_sex_t g1 = parse_graus_sexagenarios(input_string);
         //Se formato inválido: 0º0'0.0", repete...
         if ( g1.graus == 0 && g1.minutos == 0 && g1.segundos == 0.0 ) { continue; }
 
@@ -185,7 +181,7 @@ int main() {
   
     free(lista_pontos);
 
-
+    */
 
     /*
 
@@ -199,7 +195,7 @@ int main() {
     double cota_estacao = (double)input_double;
 
     ler_input("Ângulo: ", input_string);
-    Graus_Sexagenarios g1 = parse_graus_sexagenarios(input_string);
+    graus_sex_t g1 = parse_graus_sexagenarios(input_string);
 
     ler_input_float("Valor FS: ", &input_double);
     double fs = (double)input_double;
@@ -233,14 +229,14 @@ int main() {
     float input_float;
 
     //Definindo arrays que acumularão valores de entrada, em seguida serão persistidos.
-    Graus_Sexagenarios angulos[REG_N];
+    graus_sex_t angulos[REG_N];
     float distancias[REG_N];
 
     while (numero_registros > 0) {
         uint8_t i = numero_registros_originais - numero_registros;
         ler_input("Ângulo: ", input_string);
 
-        Graus_Sexagenarios g1 = parse_graus_sexagenarios(input_string);
+        graus_sex_t g1 = parse_graus_sexagenarios(input_string);
         //Se formato inválido: 0º0'0.0", repete...
         if ( g1.graus == 0 && g1.minutos == 0 && g1.segundos == 0.0 ) { continue; }
 

@@ -1,24 +1,9 @@
 #ifndef GEOMETRIA_H
 #define GEOMETRIA_H
 
-typedef struct {
-    double x;
-    double y;
-} Ponto2D;
+#include "linear_algebra.h"
 
-
-typedef struct {
-    double x;
-    double y;
-    double z;
-} Ponto3D;
-
-Ponto2D* criar_ponto2D(double x, double y);
-Ponto3D* criar_ponto3D(double x, double y, double z);
-double distancia2D(Ponto2D *p1, Ponto2D *p2);
-double distancia3D(Ponto3D *p1, Ponto3D *p2);
-
-void _teste_ponto_2D();
-void _teste_ponto_3D();
+double distancia2D(v2_t *p1, v2_t *p2);
+double distancia3D(v3_t *p1, v3_t *p2);
 
 #endif
