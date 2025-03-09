@@ -120,7 +120,7 @@ parsed_real_t parse_real_partial(char *string_input) {
 
 
     while ( 1 ) {
-        if ( isdigit(string_input[idx_str]) ) {
+        if ( isdigit(string_input[idx_str]) || string_input[idx_str] == '-' ) {
             algarismos[idx_algarismos] = string_input[idx_str];
             idx_algarismos++;
             idx_str++;

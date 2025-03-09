@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <limits.h>
+#include <stdlib.h>
 
 size_t _c_int_array_max_v_idx(int *arr, size_t size_arr) {
     size_t idx;

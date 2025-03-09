@@ -362,7 +362,9 @@ void _c_int_quicksort(void *arr, size_t size_arr) {
 void quicksort() {} 
 
 
-void merge_sort() {}
+void merge_sort(int *arr, size_t size_arr) {
+    _c_int_merge_sort(arr, size_arr);
+}
 
 
 void insertion_sort(void *arr) {
