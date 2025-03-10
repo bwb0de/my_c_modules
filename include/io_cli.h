@@ -2,6 +2,7 @@
 #define IO_CLI_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #define BUFFER_SIZE 30
 #define PARSER_SIZE 15
