@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <string.h>
 
 size_t _c_int_array_max_v_idx(int *arr, size_t size_arr) {
     size_t idx;
@@ -55,6 +56,27 @@ int *_c_int_array_concat(int *arr1, size_t arr1_len, int *arr2, size_t arr2_len)
     memcpy(saida + arr1_len, arr2, arr2_len * sizeof(int));
     return saida;
 }
+
+
+
+
+void _c_int_arr_reverse(int *nms, size_t n_size) {
+    int first = 0;
+    int last = n_size - 1;
+    int tmp;
+    if ( n_size >= 2 ) {
+        while ( first < last ) {
+            _c_int_array_swap(first, last, nms); 
+            /*tmp = nms[first];
+            nms[first] = nms[last];
+            nms[last] = tmp;*/
+            first++;
+            last--;
+        }
+    }
+}
+
+
 
 
 void _c_int_array_print(int *arr, size_t arr_size) {
