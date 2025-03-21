@@ -1,19 +1,29 @@
 #include <stdio.h>
 #include <sqlite3.h>
 
-int main(void) {
-    sqlite3 *db;
+
+int executar_sql(sqlite3 *db, const char *sql) {
+    char *erro = NULL;
+    int rc = sqlite3_exec(db, sql, 0, 0, &erro);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Erro SQL: %s\n", erro);
+        sqlite3_free(erro);
+        return 0;
+    }
+    return 1;
+}
+
+
+int siur_db(sqlite3 *db) {
     char *errmsg = NULL;
     int rc;
 
-    // Abre (ou cria) o banco de dados "jogo_rpg.db"
     rc = sqlite3_open("siur.db", &db);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "Erro ao abrir o banco de dados: %s\n", sqlite3_errmsg(db));
         return rc;
     }
 
-    // Array com os comandos SQL corrigidos para criação das tabelas
     const char *queries[] = {
         "CREATE TABLE IF NOT EXISTS jogadores ("
             "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -338,10 +348,93 @@ int main(void) {
             fprintf(stderr, "Erro na query %d: %s\nQuery: %s\n", i + 1, errmsg, queries[i]);
             sqlite3_free(errmsg);
         } else {
-            printf("Query %d executada com sucesso.\n", i + 1);
+            //printf("Query %d executada com sucesso.\n", i + 1);
         }
     }
+
+    //sqlite3_close(db);
+    return 0;
+}
+
+
+int adicionar_telefone(sqlite3 *db, int jogador_id, int ddd, int numero) {
+    sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO telefones (id_jogador, ddd, numero) VALUES (?, ?, ?);";
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
+    sqlite3_bind_int(stmt, 1, jogador_id);
+    sqlite3_bind_int(stmt, 2, ddd);
+    sqlite3_bind_int(stmt, 3, numero);
+    if (sqlite3_step(stmt) != SQLITE_DONE) return 0;
+    sqlite3_finalize(stmt);
+    return 1;
+}
+
+int adicionar_email(sqlite3 *db, int jogador_id, const char *email) {
+    sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO emails (id_jogador, email) VALUES (?, ?);";
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
+    sqlite3_bind_int(stmt, 1, jogador_id);
+    sqlite3_bind_text(stmt, 2, email, -1, SQLITE_STATIC);
+    if (sqlite3_step(stmt) != SQLITE_DONE) return 0;
+    sqlite3_finalize(stmt);
+    return 1;
+}
+
+
+// Função para adicionar um novo jogador com opcionalmente email e telefone
+int adicionar_jogador(sqlite3 *db, const char *nome, const char *email, int ddd, int numero) {
+    sqlite3_stmt *stmt;
+    const char *sql = "INSERT INTO jogadores (nome) VALUES (?);";
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
+    sqlite3_bind_text(stmt, 1, nome, -1, SQLITE_STATIC);
+    if (sqlite3_step(stmt) != SQLITE_DONE) return 0;
+    sqlite3_finalize(stmt);
+
+    int jogador_id = sqlite3_last_insert_rowid(db);
+    if (email) {
+        adicionar_email(db, jogador_id, email);
+        /*sql = "INSERT INTO emails (id_jogador, email) VALUES (?, ?);";
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
+        sqlite3_bind_int(stmt, 1, jogador_id);
+        sqlite3_bind_text(stmt, 2, email, -1, SQLITE_STATIC);
+        if (sqlite3_step(stmt) != SQLITE_DONE) return 0;
+        sqlite3_finalize(stmt);*/
+    }
+    if (numero) {
+        adicionar_telefone(db, jogador_id, ddd, numero);
+        /*sql = "INSERT INTO telefones (id_jogador, ddd, numero) VALUES (?, ?, ?);";
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
+        sqlite3_bind_int(stmt, 1, jogador_id);
+        sqlite3_bind_int(stmt, 2, ddd);
+        sqlite3_bind_int(stmt, 3, numero);
+        if (sqlite3_step(stmt) != SQLITE_DONE) return 0;
+        sqlite3_finalize(stmt);*/
+    }
+    return 1;
+}
+
+// Função para adicionar um telefone e um email
+int adicionar_telefone_email(sqlite3 *db, int jogador_id, int ddd, int numero, const char *email) {
+    return adicionar_telefone(db, jogador_id, ddd, numero) && adicionar_email(db, jogador_id, email);
+}
+
+
+
+int main() {
+    sqlite3 *db;
+    siur_db(db);
+    /*if (sqlite3_open("siur.db", &db)) {
+        fprintf(stderr, "Erro ao abrir banco de dados\n");
+        return 1;*/
+
+    // Exemplo de uso
+    adicionar_jogador(db, "Daniel", "daniel@email.com", 11, 987654321);
+    adicionar_telefone(db, 1, 21, 123456789);
+    adicionar_email(db, 1, "novo@email.com");
+    adicionar_telefone_email(db, 1, 31, 987123456, "email2@email.com");
 
     sqlite3_close(db);
     return 0;
 }
+
+

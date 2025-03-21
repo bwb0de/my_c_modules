@@ -1,7 +1,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "array.h"
+#include "heap.h"
 #include <string.h>
 
 typedef struct {

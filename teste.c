@@ -2,6 +2,8 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include "include/array_tool.h"
+#include "include/binary_search_tree.h"
 #include "include/heap.h"
 #include "sorting.h"
 #include "c_array_int.h"
@@ -11,11 +13,13 @@
 #include <stdbool.h>
 #include <limits.h>
 #include "time_tool.h"
+#include "binary_search_tree.h"
+#include "array_tool.h"
 
 #define N 5
 #define DESCRICAO_LOCAL 50
 
-
+/*
 typedef struct Array {
     int *array;
     int elementos;
@@ -44,6 +48,7 @@ int array_pop_last(array_t *a) {
     return INT_MIN;
 }
 
+*/
 
 void read_file(char *filename) {
 
@@ -66,10 +71,65 @@ void read_file(char *filename) {
 
 }
 
+
+void collect_nodes_v(bst_node_t *node, void *arr) {
+    if (node != NULL) {
+        array_push(node->k, arr); 
+    }
+}
+
+void printar(bst_node_t *node, void *arr) {
+    if (node != NULL) {
+        printf("%d ", node->k); 
+    }
+}
+
+
 int main() {
 
+    bst_t *bst = create_bst(50);
+
+    bst_insert(55, bst);
+    bst_insert(53, bst);
+    bst_insert(56, bst);
+    bst_insert(25, bst);
+    bst_insert(15, bst);
+    bst_insert(15, bst);
+    bst_insert(15, bst);
+    bst_insert(15, bst);
+    bst_insert(15, bst);
+    bst_insert(15, bst);
+    bst_insert(15, bst);
+
+    bst_node_t *n = bst_search(16, bst);
+    n = bst_search(15, bst);
+    printf("BST Size: %d\n", bst->size);
+    printf("BST min: %d\n", bst_min(bst));
+    printf("BST max: %d\n", bst_max(bst));
+
+
+    int a[bst->size];
+
+    array_t a1 = {
+        .capacidade = bst->size,
+        .elementos = 0,
+        .array = a,
+    };
+
+    bst_in_order_treverse(bst->root, &a1, collect_nodes_v);
+
+    printf("\n");
+
+
+    for (int i = 0; i < a1.capacidade; i++ ) {
+        printf("%d - ", a1.array[i]);
+    }
+
+
+    /*
     hour_t t = to_hour_t(8732);
     print_time(t);
+    */
 
     //read_file("teste.c");
 

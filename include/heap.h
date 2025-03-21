@@ -1,8 +1,15 @@
 #ifndef HEAP_H
 #define HEAP_H
 
+typedef struct HeapNode {
+    int k;
+    void *element;
+} heap_node_t;
 
-int count_heap_clusters(int *numeros, size_t numeros_size);
+
+//mudar int *numeros ou int *n por 'heap_node_t *nodes'
+//mudar int n_size por 'int nodes_len'
+
 int is_heap(int *numeros, int numeros_size);
 void heapfy(int *numeros, int numeros_size);
 void heap_push(int v, int *n, int n_size);
