@@ -1,28 +1,48 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sqlite3.h>
 
+#define SIUR_DB "siur.db"
 
-int executar_sql(sqlite3 *db, const char *sql) {
-    char *erro = NULL;
-    int rc = sqlite3_exec(db, sql, 0, 0, &erro);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "Erro SQL: %s\n", erro);
-        sqlite3_free(erro);
-        return 0;
+
+
+void list_players(sqlite3 *db) {
+    const char *sql = {
+        "SELECT jogadores.id, jogadores.nome, telefones.ddd, telefones.numero, emails.email "
+        "FROM jogadores "
+        "LEFT JOIN telefones ON jogadores.id = telefones.id_jogador "
+        "LEFT JOIN emails ON jogadores.id = emails.id_jogador "
+        "ORDER BY jogadores.id;"
+    };
+
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, 0) != SQLITE_OK) {
+        printf("Erro ao preparar a consulta: %s\n", sqlite3_errmsg(db));
+        return;
     }
-    return 1;
+
+
+    printf("ID | Nome | DDD | Telefone | Email\n");
+    printf("------------------------------------\n");
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int id = sqlite3_column_int(stmt, 0);
+        const char *nome = (const char *)sqlite3_column_text(stmt, 1);
+        int ddd = sqlite3_column_type(stmt, 2) != SQLITE_NULL ? sqlite3_column_int(stmt, 2) : 0;
+        int numero = sqlite3_column_type(stmt, 3) != SQLITE_NULL ? sqlite3_column_int(stmt, 3) : 0;
+        const char *email = (const char *)sqlite3_column_text(stmt, 4);
+
+        printf("%d | %s | %d | %d | %s\n", id, nome, ddd, numero, email ? email : "Sem email");
+    }
+
+    sqlite3_finalize(stmt);
 }
+
+
 
 
 int siur_db(sqlite3 *db) {
     char *errmsg = NULL;
-    int rc;
-
-    rc = sqlite3_open("siur.db", &db);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "Erro ao abrir o banco de dados: %s\n", sqlite3_errmsg(db));
-        return rc;
-    }
 
     const char *queries[] = {
         "CREATE TABLE IF NOT EXISTS jogadores ("
@@ -340,19 +360,15 @@ int siur_db(sqlite3 *db) {
     };
 
     int numQueries = sizeof(queries) / sizeof(queries[0]);
-
-    // Executa cada comando SQL
+    int rc;
     for (int i = 0; i < numQueries; i++) {
         rc = sqlite3_exec(db, queries[i], 0, 0, &errmsg);
         if (rc != SQLITE_OK) {
-            fprintf(stderr, "Erro na query %d: %s\nQuery: %s\n", i + 1, errmsg, queries[i]);
             sqlite3_free(errmsg);
         } else {
             //printf("Query %d executada com sucesso.\n", i + 1);
         }
     }
-
-    //sqlite3_close(db);
     return 0;
 }
 
@@ -383,6 +399,8 @@ int adicionar_email(sqlite3 *db, int jogador_id, const char *email) {
 
 // Função para adicionar um novo jogador com opcionalmente email e telefone
 int adicionar_jogador(sqlite3 *db, const char *nome, const char *email, int ddd, int numero) {
+    char *errmsg = NULL;
+   
     sqlite3_stmt *stmt;
     const char *sql = "INSERT INTO jogadores (nome) VALUES (?);";
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
@@ -391,48 +409,74 @@ int adicionar_jogador(sqlite3 *db, const char *nome, const char *email, int ddd,
     sqlite3_finalize(stmt);
 
     int jogador_id = sqlite3_last_insert_rowid(db);
-    if (email) {
-        adicionar_email(db, jogador_id, email);
-        /*sql = "INSERT INTO emails (id_jogador, email) VALUES (?, ?);";
-        if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
-        sqlite3_bind_int(stmt, 1, jogador_id);
-        sqlite3_bind_text(stmt, 2, email, -1, SQLITE_STATIC);
-        if (sqlite3_step(stmt) != SQLITE_DONE) return 0;
-        sqlite3_finalize(stmt);*/
-    }
-    if (numero) {
-        adicionar_telefone(db, jogador_id, ddd, numero);
-        /*sql = "INSERT INTO telefones (id_jogador, ddd, numero) VALUES (?, ?, ?);";
-        if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
-        sqlite3_bind_int(stmt, 1, jogador_id);
-        sqlite3_bind_int(stmt, 2, ddd);
-        sqlite3_bind_int(stmt, 3, numero);
-        if (sqlite3_step(stmt) != SQLITE_DONE) return 0;
-        sqlite3_finalize(stmt);*/
-    }
+    if (email)  { adicionar_email(db, jogador_id, email); }
+    if (numero) { adicionar_telefone(db, jogador_id, ddd, numero); }
+
+
     return 1;
 }
 
-// Função para adicionar um telefone e um email
 int adicionar_telefone_email(sqlite3 *db, int jogador_id, int ddd, int numero, const char *email) {
     return adicionar_telefone(db, jogador_id, ddd, numero) && adicionar_email(db, jogador_id, email);
 }
 
 
-
-int main() {
+sqlite3 *open_db(char *dbname) {
     sqlite3 *db;
-    siur_db(db);
-    /*if (sqlite3_open("siur.db", &db)) {
-        fprintf(stderr, "Erro ao abrir banco de dados\n");
-        return 1;*/
+    int rc;
+    rc = sqlite3_open(dbname, &db);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Erro ao abrir o banco de dados: %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
+    return db;
+}
 
-    // Exemplo de uso
-    adicionar_jogador(db, "Daniel", "daniel@email.com", 11, 987654321);
-    adicionar_telefone(db, 1, 21, 123456789);
-    adicionar_email(db, 1, "novo@email.com");
-    adicionar_telefone_email(db, 1, 31, 987123456, "email2@email.com");
 
+int str2int(char *string) {
+    int v = 0;
+    int len = strlen(string);
+    for (int i = 0; i < len; i++) {
+        v += (int)string[i];
+    }
+    return v;
+}
+
+
+int main(int argc, char *argv[]) {
+    sqlite3 *db = open_db(SIUR_DB);
+
+    /*
+
+    for (int i = 0; i < argc; i++) {
+        printf("%s %i ", argv[i], str2int(argv[i]));
+    }
+
+    */
+
+
+
+    for (int i = 0; i < argc; i++) {
+        switch (str2int(argv[i])) {
+            case 921: { //create_db
+                siur_db(db);
+                break;
+            }
+
+            case 1045: { //add_player
+                adicionar_jogador(db, argv[i+1], argv[i+2], atoi(argv[i+3]), atoi(argv[i+4]));
+                i = i + 4;
+                break;
+            }
+
+            case 444: { //list
+                list_players(db);
+                break;
+            }
+        }
+    }
+
+    
     sqlite3_close(db);
     return 0;
 }
