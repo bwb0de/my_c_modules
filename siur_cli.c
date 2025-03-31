@@ -1,39 +1,25 @@
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <C:\sqlite3\sqlite3.h>
 #include <string.h>
 #include <stdbool.h>
-#include "siur_db_create.c"
-#include "siur_db_write.c"
 
-#define SIUR_DB "siur.db"
+#include "siur_db_read.c"
 
-sqlite3 *open_db(char *dbname) {
-    sqlite3 *db;
-    int rc;
-    rc = sqlite3_open(dbname, &db);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "Erro ao abrir o banco de dados: %s\n", sqlite3_errmsg(db));
-        exit(1);
+
+int str2int(char *string) {
+    int v = 0;
+    int len = strlen(string);
+    for (int i = 0; i < len; i++) {
+        v += (int)string[i];
     }
-    return db;
+    return v;
 }
 
-
-
 int main(int argc, char *argv[]) {
-    // srand(time(NULL));
-    sqlite3 *db = open_db(SIUR_DB);
-    bool has_db = check_db(db); if (!(has_db)) { siur_db(db); }
-
-    add_game(db);
-
-
     bool command_error = true;
 
-
-    /*
     if ( argc < 2 ) {
         printf("É necessário fornecer comandos e subcomandos para siur funcionar...\n\n");
         printf("Exemplos de uso:\n");
@@ -315,8 +301,6 @@ int main(int argc, char *argv[]) {
     if (command_error) {
         printf("Opção incorreta. Digite 'siur help' para mais informações.\n");
     }
-
-    */
 
     return 0;
 }
