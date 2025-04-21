@@ -4,7 +4,22 @@
 
 
 typedef struct Fighter {
-    int fadiga;
+    int acao_ativa;             //Tudo que envolve atacar implica +1. Se acima de 3, +1 vai para fadiga
+    int fadiga;                 //Cada ponto de fadiga implica -5 percentual base
+    int agilidade;
+    int vigor;
+    int perspicacia;
+    int compostura;
+    int arma_em_uso;            //Código da arma, 0 = sem arma
+    int arma_alcance;           //Em um combate de instantes é util para determinar o tempo de chegada ao alvo
+    int briga;
+    int armas_brancas;
+    int armas_projetil;
+    int deslocamento;           //Switch com base em Agilidade...
+    int defesa_reflexa;         //Perspicacia + Agilidade + Compostura 
+    int bloqueio;               //Perspicacia + Agilidade + Briga
+    int aparar;                 //Perspicacia + Agilidade + Armas Brancas
+    int esquiva;                //Perspicacia + Agilidade
     int ferimentos_efetivos;
     int ferimentos_incapacitantes;
     char nome[30];

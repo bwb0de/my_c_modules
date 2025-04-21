@@ -21,6 +21,87 @@ sqlite3 *open_db(char *dbname) {
     return db;
 }
 
+typedef struct Movimentacao {
+    float corrida_trote;
+    float corrida_maxima;
+    float deslocamento_instante_padrao;
+    float deslocamento_instante_investida;
+    float deslocamento_turno;               //deslocamento_instante_padrão * 10;
+    float deslocamento_turno_investida;     //deslocamento_instante_investida * 10;
+    float salto_horizontal;
+
+} atributos_movimento_t;
+
+atributos_movimento_t atributos_derivados_movimento(int agilidade, int ligeiro) {
+    int soma = agilidade + ligeiro;
+
+    atributos_movimento_t resposta;
+
+    switch (soma) {
+        case 1: {
+            resposta.corrida_trote = 6.3;
+            resposta.corrida_maxima = 7.8;
+            resposta.deslocamento_instante_padrao = 0.35;
+            resposta.deslocamento_instante_investida = 0.43;
+            break;
+        }
+        case 2: {
+            resposta.corrida_trote = 17.0;
+            resposta.corrida_maxima = 20.7;
+            resposta.deslocamento_instante_padrao = 0.94;
+            resposta.deslocamento_instante_investida = 1.15;
+            break;
+        }
+        case 3: {
+            resposta.corrida_trote = 24.5;
+            resposta.corrida_maxima = 29.1;
+            resposta.deslocamento_instante_padrao = 1.36;
+            resposta.deslocamento_instante_investida = 1.62;
+            break;
+        }
+        case 4: {
+            resposta.corrida_trote = 30.7;
+            resposta.corrida_maxima = 35.9;
+            resposta.deslocamento_instante_padrao = 1.71;
+            resposta.deslocamento_instante_investida = 1.99;
+            break;
+        }
+        case 5: {
+            resposta.corrida_trote = 35.2;
+            resposta.corrida_maxima = 40.4;
+            resposta.deslocamento_instante_padrao = 1.96;
+            resposta.deslocamento_instante_investida = 2.24;
+            break;
+        }
+        case 6: {
+            resposta.corrida_trote = 39.1;
+            resposta.corrida_maxima = 44.1;
+            resposta.deslocamento_instante_padrao = 2.17;
+            resposta.deslocamento_instante_investida = 2.45;
+            break;
+        }
+        case 7: {
+            resposta.corrida_trote = 42.3;
+            resposta.corrida_maxima = 46.9;
+            resposta.deslocamento_instante_padrao = 2.35;
+            resposta.deslocamento_instante_investida = 2.61;
+            break;
+        }
+        case 8: {
+            resposta.corrida_trote = 44.1;
+            resposta.corrida_maxima = 48.0;
+            resposta.deslocamento_instante_padrao = 2.45;
+            resposta.deslocamento_instante_investida = 2.67;
+            break;
+        }
+    }
+
+    resposta.deslocamento_turno = resposta.deslocamento_instante_padrao * 10;
+    resposta.deslocamento_turno_investida = resposta.deslocamento_instante_investida * 10;
+    resposta.salto_horizontal = (resposta.corrida_maxima / 3.6) * 0.7;
+
+    return resposta;
+}
 
 
 int main(int argc, char *argv[]) {
@@ -98,6 +179,8 @@ int main(int argc, char *argv[]) {
         printf("Selecione as ações de %s\n", lutador.fighter.nome);
 
         const char *opcoes[] = {
+            "Esperar",
+            "Mirar ou avaliar o oponente",
             "Atacar",
             "Ataque total",
             "Mover e atacar",
@@ -107,7 +190,7 @@ int main(int argc, char *argv[]) {
             "Pelar ação (declarou espera ou utilizou defesa total)",
         };
 
-        ir = input_selection("Selecione a ação: ", opcoes, 7, ir);
+        ir = input_selection("Selecione a ação: ", opcoes, 9, ir);
 
         switch (ir.valor.n_int) {
             case 1: {
