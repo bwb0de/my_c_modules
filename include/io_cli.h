@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #define BUFFER_SIZE 30
 #define PARSER_SIZE 15
