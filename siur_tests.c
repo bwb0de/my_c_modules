@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "io_cli.h"
 
 
 int percentual_base(int n_capacidades, int somatorio_capacidades) {
@@ -161,13 +162,102 @@ int percentual_base(int n_capacidades, int somatorio_capacidades) {
 }
 
 
-int main(int argc, char *argv[]) {
-    int resp; resp = percentual_base(atoi(argv[1]), atoi(argv[2]));
-    if ( resp == 0 ) {
-        printf("Finalizando o programa...\n");
-        return 1;
+int efeito_estresse(int percentual_base_teste, int estresse) {
+    return percentual_base_teste - (10*estresse);
+}
+
+
+typedef struct ParametrosTeste {
+    int percentual_base;
+    int margem_sucesso_parcial;
+    int margem_falha_agravada;
+} parametros_teste_t;
+
+
+parametros_teste_t ajustar_conforme_dificuldade(parametros_teste_t param, input_rec_t ir) {
+    const char *opcoes[] = {
+        "Muito fácil",                  // 1
+        "Fácil",                        // 2
+        "Trivial",                      // 4
+        "Moderada",                     // 8
+        "Desafiadora",                  // 16
+        "Difícil",                      // 32
+        "Muito difícil",                // 64
+        "Extremamente difícil",         // 128
+        "Praticamente impossível",      // 256
+    };
+
+    ir = input_selection("Selecione dificuldade: ", opcoes, 9, ir);
+
+    switch (ir.valor.n_int) {
+        case 1: {
+            param.percentual_base += 20;
+            param.margem_sucesso_parcial += 20;
+            break;
+        }
+        case 2: {
+            param.percentual_base += 10;
+            param.margem_sucesso_parcial += 10;
+            break;
+        }
+        case 4: {
+            break;
+        }
+        case 8: {
+            param.percentual_base -= 10;
+            param.margem_sucesso_parcial -= 10;
+            break;
+        }
+        case 16: {
+            param.percentual_base -= 20;
+            param.margem_sucesso_parcial -= 20;
+            break;
+        }
+        case 32: {
+            param.percentual_base -= 30;
+            param.margem_sucesso_parcial -= 30;
+            break;
+        }
+        case 64: {
+            param.percentual_base -= 40;
+            param.margem_sucesso_parcial -= 40;
+            break;
+        }
+        case 128: {
+            param.percentual_base -= 50;
+            param.margem_sucesso_parcial -= 50;
+            break;
+        }
+        case 256: {
+            param.percentual_base -= 60;
+            param.margem_sucesso_parcial -= 60;
+            break;
+        }
+    }
+    return param;
+}
+
+
+
+
+int print_teste_info(parametros_teste_t param) {
+
+    if ( param.margem_sucesso_parcial < 0 && param.percentual_base > 16 ) {
+        printf("Percentual base: [%i% |---| 0%] Sucesso parcial\n", param.percentual_base);
+        return 0;
     }
 
-    printf("Percentual base: %i\n", resp);
+    if (param.percentual_base < 16 ) {
+        printf("Lance de sorte....\n");
+        return 0;
+    }
+
+
+    if (param.margem_sucesso_parcial != param.percentual_base) {
+        printf("Percentual base: [%i% |---| %i%] Sucesso parcial [%i% |---| 0%] Sucesso\n", param.percentual_base, param.margem_sucesso_parcial-1, param.margem_sucesso_parcial);
+        return 0;
+    }
+
     return 0;
 }
+

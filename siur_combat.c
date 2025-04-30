@@ -4,10 +4,13 @@
 #include <string.h>
 #include "include/io_cli.h"
 #include "io_cli.h"
-#include "siur_db_create.c"
-#include "siur_db_write.c"
+//#include "siur_db_create.c"
+//#include "siur_db_write.c"
 #include "siur_heap.h"
+#include "siur_tests.c"
 
+
+/*
 #define SIUR_DB "siur.db"
 
 sqlite3 *open_db(char *dbname) {
@@ -20,6 +23,7 @@ sqlite3 *open_db(char *dbname) {
     }
     return db;
 }
+*/
 
 typedef struct Movimentacao {
     float corrida_trote;
@@ -29,7 +33,6 @@ typedef struct Movimentacao {
     float deslocamento_turno;               //deslocamento_instante_padrão * 10;
     float deslocamento_turno_investida;     //deslocamento_instante_investida * 10;
     float salto_horizontal;
-
 } atributos_movimento_t;
 
 atributos_movimento_t atributos_derivados_movimento(int agilidade, int ligeiro) {
@@ -104,42 +107,40 @@ atributos_movimento_t atributos_derivados_movimento(int agilidade, int ligeiro) 
 }
 
 
-int main(int argc, char *argv[]) {
-    input_rec_t ir = {.valor = "", .tipo = TEXTO };
 
-    heap_fighter_item_t lutadores[5]; 
-    heap_fighter_item_t lutadores_tmp[5]; 
-
-    int n = 5;
-    int n_init = n;
-
-    while (n) {
-        #ifdef _WIN32
-            system("cls");
-        #else
-            system("clear");
-        #endif
-        ir = input_text_on_receiver("Nome/identificador: ", ir);
-        strcpy(lutadores[n-1].fighter.nome, ir.valor.texto);
-        ir = input_int_on_receiver("Iniciativa: ", ir);
-        lutadores[n-1].iniciativa = ir.valor.n_int;
-        lutadores[n-1].fighter.fadiga = 0; // buscar fadiga do personagem
-        lutadores[n-1].fighter.ferimentos_efetivos = 0;
-        lutadores[n-1].fighter.ferimentos_incapacitantes = 0;
-        n--;
-    }
-
+void limpar_tela() {
     #ifdef _WIN32
         system("cls");
     #else
         system("clear");
     #endif
+}
 
-    heapfy(lutadores, n_init);    
-    heap_fighter_item_t lutador;
 
-    // Reordenando lutadores com intervalos unitários de iniciativa
+void listar_combatentes(heap_fighter_item_t *lutadores, heap_fighter_item_t *lutadores_tmp, int n_init) {
+        heap_fighter_item_t lutador;
+
+       // Retirando lutadores da heap para listar...
+        for (int i = 0; i < n_init; i++) {
+            lutador = heap_pop(lutadores, n_init - i);
+            printf("%s\n", lutador.fighter.nome);
+            lutadores_tmp[i] = lutador;
+        }
+
+        printf("\n");
+
+        // Reinserindo lutadores na heap para dar prosseguimento do loop de combate...
+        for (int i = 0; i < n_init; i++) {
+            heap_push(lutadores_tmp[i], lutadores, i);
+        }
+}
+
+
+void fila_iniciativa_tradicional(heap_fighter_item_t *lutadores, heap_fighter_item_t *lutadores_tmp, int n_init) {
+    // Reordenando lutadores com intervalos unitários de iniciativa, metodo tradicional de combate...
     int v = 10000;
+
+    heap_fighter_item_t lutador;
     
     for (int i = 0; i < n_init; i++) {
         lutador = heap_pop(lutadores, n_init - i);
@@ -152,103 +153,189 @@ int main(int argc, char *argv[]) {
         heap_push(lutadores_tmp[i], lutadores, i);
     }
 
+}
+
+
+
+input_rec_t selecionar_alvo(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int n_init, input_rec_t ir) {
+    printf("\n\033[33;1;1m%s\033[0m\n", "Selecione o alvo");
+    for (int i = 0; i < n_init-1; i++) {
+        printf("%d: %s\n", i+1, lutadores[i].fighter.nome);
+    }
+    ir = input_int_on_receiver("", ir);
+
+    printf("%s está atacando %s...", lutador.fighter.nome, lutadores[ir.valor.n_int-1].fighter.nome);
+    
+    return ir;
+}
+
+
+
+int melhor_entre_explosao_e_desenvoltura(heap_fighter_item_t lutador) {
+    if (lutador.fighter.desenvoltura > lutador.fighter.explosao ) { 
+        return lutador.fighter.desenvoltura;
+    } else {
+        return lutador.fighter.explosao;
+    }
+}
+
+
+
+
+
+parametros_teste_t encontrar_percentual_para_base_teste(heap_fighter_item_t lutador, input_rec_t ir) {
+
+    const char *manobras[] = { //Buscar no personagem
+        "Briga",
+        "Arma branca, cortante",
+        "Arma branca, contundente",
+        "Arma branca, perfurante",
+    };
+
+    ir = input_selection("Manobra de ataque: ", manobras, 4, ir);
+
+    parametros_teste_t param;
+    int n_capacidades, somatorio_nivel_capacidades, modificador_estresse;
+
+    switch (ir.valor.n_int) {
+        case 1: {
+            n_capacidades = 2; // Desenvoltura ou Explosao + Briga;
+            somatorio_nivel_capacidades = lutador.fighter.briga + melhor_entre_explosao_e_desenvoltura(lutador);
+            break;
+        }
+
+        case 2: {
+            n_capacidades = 2; // Desenvoltura ou Explosão + Armas Brancas;
+            somatorio_nivel_capacidades = lutador.fighter.briga + melhor_entre_explosao_e_desenvoltura(lutador);
+            // Diferenciar dano por tipo
+            break;
+        }
+        case 4: {
+            n_capacidades = 2; // Desenvoltura ou Explosão + Armas Brancas;
+            somatorio_nivel_capacidades = lutador.fighter.briga + melhor_entre_explosao_e_desenvoltura(lutador);
+            // Diferenciar dano por tipo
+
+            break;
+        }
+        case 8: {
+            n_capacidades = 2; // Desenvoltura ou Explosão + Armas Brancas;
+            somatorio_nivel_capacidades = lutador.fighter.briga + melhor_entre_explosao_e_desenvoltura(lutador);
+            // Diferenciar dano por tipo
+
+            break;
+        }
+    }
+
+    modificador_estresse =  lutador.fighter.ferimentos_efetivos + (lutador.fighter.ferimentos_incapacitantes * 3);
+
+    param.percentual_base = percentual_base(n_capacidades, somatorio_nivel_capacidades);
+    param.margem_sucesso_parcial = efeito_estresse(param.percentual_base, modificador_estresse);
+    param.margem_falha_agravada = (param.percentual_base - param.margem_sucesso_parcial) + param.percentual_base;
+
+    return param;
+
+}
+
+
+
+
+void executar_opcoes_da_acao(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int n_init, input_rec_t ir) {
+    switch (ir.valor.n_int) { // Obtem a opção selecionada de input_rec_t
+
+        case 1: {  // Esperar
+
+            break;
+        }
+        case 2: {  // Mirar/avaliar
+
+            break;
+        }
+        case 4: {  // Atacar 
+            ir = selecionar_alvo(lutador, lutadores, n_init, ir);
+            parametros_teste_t param = encontrar_percentual_para_base_teste(lutador, ir);
+            param = ajustar_conforme_dificuldade(param, ir);
+            ir = input_text_on_receiver("...", ir); //final ação
+            print_teste_info(param);
+            break;
+        }
+        case 8: {  // Mover 
+
+            break;
+        }
+        case 16: { // Mudar posição
+
+            break;
+        }
+        case 32: { // Ataque total 
+
+            break;
+        }
+        case 64: { // Defesa total
+
+            break;
+        }
+    }
+}
+
+
+
+int main(int argc, char *argv[]) {
+    input_rec_t ir = {.valor = "", .tipo = TEXTO };
+
+    heap_fighter_item_t lutador;
+    heap_fighter_item_t lutadores[5]; 
+    heap_fighter_item_t lutadores_tmp[5]; 
+
+    int n = 5;
+    int n_init = n; // esse deverá ser um valor variável...
+    int acoes_lutador = 0;
+
+    while (n) {
+        limpar_tela();
+        ir = input_text_on_receiver("Nome/identificador: ", ir);
+        strcpy(lutadores[n-1].fighter.nome, ir.valor.texto);
+        ir = input_int_on_receiver("Iniciativa: ", ir);
+        lutadores[n-1].iniciativa = ir.valor.n_int;
+        lutadores[n-1].fighter.fadiga = 0; // buscar fadiga do personagem
+        lutadores[n-1].fighter.ferimentos_efetivos = 0;
+        lutadores[n-1].fighter.ferimentos_incapacitantes = 0;
+        lutadores[n-1].fighter.acoes_totais_no_turno = 2;
+        lutadores[n-1].fighter.acoes_correntes_no_turno = 2;
+
+        n--;
+    }
+    heapfy(lutadores, n_init);
+    fila_iniciativa_tradicional(lutadores, lutadores_tmp, n_init);
 
     // Loop de combate
     while (1) {
-
-        #ifdef _WIN32
-            system("cls");
-        #else
-            system("clear");
-        #endif
-
-
-        for (int i = 0; i < n_init; i++) {
-            lutador = heap_pop(lutadores, n_init - i);
-            printf("%s\n", lutador.fighter.nome);
-            lutadores_tmp[i] = lutador;
-        }
-
-        printf("\n");
-
-        for (int i = 0; i < n_init; i++) {
-            heap_push(lutadores_tmp[i], lutadores, i);
-        }
+        listar_combatentes(lutadores, lutadores_tmp, n_init);
 
         lutador = heap_pop(lutadores, n_init);
-        printf("Selecione as ações de %s\n", lutador.fighter.nome);
+        while ( lutador.fighter.acoes_correntes_no_turno ) {
+            limpar_tela();
+            printf("Turno de %s, ações restantes %d\n", lutador.fighter.nome, lutador.fighter.acoes_correntes_no_turno);
 
-        const char *opcoes[] = {
-            "Esperar",
-            "Mirar ou avaliar o oponente",
-            "Atacar",
-            "Ataque total",
-            "Mover e atacar",
-            "Atacar e mover",
-            "Mudar posição",
-            "Mover e mudar posição",
-            "Pelar ação (declarou espera ou utilizou defesa total)",
-        };
+            const char *opcoes[] = {
+                "Esperar",       // 1
+                "Mirar",         // 2
+                "Atacar",        // 4
+                "Mover",         // 8
+                "Mudar posição", // 16
+                "Ataque total",  // 32
+                "Defesa total",  // 64
+            };
 
-        ir = input_selection("Selecione a ação: ", opcoes, 9, ir);
-
-        switch (ir.valor.n_int) {
-            case 1: {
-                const char *manobras[] = { //Buscar no personagem
-                    "Briga",
-                    "Arma branca, cortante",
-                    "Arma branca, contundente",
-                    "Arma branca, perfurante",
-                };
-
-                ir = input_selection("Manobra de ataque: ", manobras, 4, ir);
-
-                break;
-            }
-            case 2: {
-
-                break;
-            }
-            case 4: {
-
-                break;
-            }
-            case 8: {
-
-                break;
-            }
-            case 16: {
-
-                break;
-            }
-            case 32: {
-
-                break;
-            }
-            case 64: {
-
-                break;
-            }
-  
+            ir = input_selection("Selecione a ação: ", opcoes, 7, ir);
+            executar_opcoes_da_acao(lutador, lutadores, n_init, ir);
+            lutador.fighter.acoes_correntes_no_turno--;
         }
-
-
-        //Selecionando alvo
-        printf("\n\033[33;1;1m%s\033[0m\n", "Selecione o alvo");
-        for (int i = 0; i < n_init-1; i++) {
-            printf("%d: %s\n", i+1, lutadores[i].fighter.nome);
-        }
-        ir = input_int_on_receiver("", ir);
-
-        printf("%s está atacando %s...", lutador.fighter.nome, lutadores[ir.valor.n_int-1].fighter.nome);
-
-
 
         ir = input_text_on_receiver("...", ir); //final ação
-        lutador.iniciativa -= n_init; //reajustando iniciativa para inserir
+        lutador.iniciativa -= n_init; //reajustando iniciativa após ação
+        lutador.fighter.acoes_correntes_no_turno = lutador.fighter.acoes_totais_no_turno;
+        heap_push(lutador, lutadores, n_init - 1); //reinserindo lutador na fila de iniciativa
 
-        //Reinserindo lutador na fila de iniciativa
-        heap_push(lutador, lutadores, n_init - 1);
     }
    
     return 0;
