@@ -2,9 +2,6 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
-#ifndef LUA_OK //Isso aqui é definido para versões antigas de lua... De 5.2 para frente é desnecessário....
-#define LUA_OK 0
-#endif
 
 int main() {
     lua_State *L = luaL_newstate();
