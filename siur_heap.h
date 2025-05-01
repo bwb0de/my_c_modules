@@ -25,6 +25,9 @@ typedef struct Fighter {
     int esquiva;                  //Perspicacia + Desenvoltura
     int ferimentos_efetivos;
     int ferimentos_incapacitantes;
+    int modificador_ataque;
+    int alvo_ataque;
+    int tipo_ataque;
     char nome[30];
 } fighter_t;
 

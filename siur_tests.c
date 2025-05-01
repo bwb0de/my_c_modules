@@ -4,13 +4,15 @@
 
 
 int percentual_base(int n_capacidades, int somatorio_capacidades) {
+
+
     if (n_capacidades < 1 || n_capacidades > 6) {
-        printf("Invalid number of capacities...\n");
+        printf("Quantidade de capacidades inválidas...\n");
         return 0;
     }
 
     if (somatorio_capacidades < n_capacidades || somatorio_capacidades > (n_capacidades * 6)) {
-        printf("Invalid capacities sigma...\n");
+        printf("Somatório dos níveis de capacidades inválido...\n");
         return 0;
     }
 
@@ -171,6 +173,7 @@ typedef struct ParametrosTeste {
     int percentual_base;
     int margem_sucesso_parcial;
     int margem_falha_agravada;
+    int tipo_ataque;
 } parametros_teste_t;
 
 
@@ -238,26 +241,4 @@ parametros_teste_t ajustar_conforme_dificuldade(parametros_teste_t param, input_
 }
 
 
-
-
-int print_teste_info(parametros_teste_t param) {
-
-    if ( param.margem_sucesso_parcial < 0 && param.percentual_base > 16 ) {
-        printf("Percentual base: [%i% |---| 0%] Sucesso parcial\n", param.percentual_base);
-        return 0;
-    }
-
-    if (param.percentual_base < 16 ) {
-        printf("Lance de sorte....\n");
-        return 0;
-    }
-
-
-    if (param.margem_sucesso_parcial != param.percentual_base) {
-        printf("Percentual base: [%i% |---| %i%] Sucesso parcial [%i% |---| 0%] Sucesso\n", param.percentual_base, param.margem_sucesso_parcial-1, param.margem_sucesso_parcial);
-        return 0;
-    }
-
-    return 0;
-}
 
