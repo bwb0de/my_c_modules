@@ -1,11 +1,10 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "io_cli.h"
 
 
-int percentual_base(int n_capacidades, int somatorio_capacidades) {
-
-
+int8_t percentual_base(int8_t n_capacidades, int8_t somatorio_capacidades) {
     if (n_capacidades < 1 || n_capacidades > 6) {
         printf("Quantidade de capacidades inválidas...\n");
         return 0;
@@ -16,7 +15,6 @@ int percentual_base(int n_capacidades, int somatorio_capacidades) {
         return 0;
     }
 
-    
     switch (n_capacidades) {
         case 1: {
             switch (somatorio_capacidades) {
@@ -164,16 +162,16 @@ int percentual_base(int n_capacidades, int somatorio_capacidades) {
 }
 
 
-int efeito_estresse(int percentual_base_teste, int estresse) {
+int8_t efeito_estresse(int8_t percentual_base_teste, int8_t estresse) {
     return percentual_base_teste - (10*estresse);
 }
 
 
 typedef struct ParametrosTeste {
-    int percentual_base;
-    int margem_sucesso_parcial;
-    int margem_falha_agravada;
-    int tipo_ataque;
+    int8_t percentual_base;
+    int8_t margem_sucesso_parcial;
+    int8_t margem_falha_agravada;
+    int8_t tipo_ataque;
 } parametros_teste_t;
 
 
