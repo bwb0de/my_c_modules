@@ -444,7 +444,7 @@ void dice_eval(int d1max, int d2max, int d3max, int extra, int dif) {
 }
 
 
-void dice_eval2(int d6_dices_num, int extra, int dif) {
+void dice_eval2(int d6_dices_num, int extra, int dif) { // maior ou igual
     if (d6_dices_num < 2 || d6_dices_num > 10) {
         printf("A quantidade de D6 deve estar entre 2 e 10...\n");
         return;
@@ -823,44 +823,257 @@ void dice_eval2(int d6_dices_num, int extra, int dif) {
 }
 
 
+void dice_eval3(int dices_num, int dice_sides, int dif) { // menor ou igual
+    if (dices_num < 2 || dices_num > 10) {
+        printf("A quantidade de D6 deve estar entre 2 e 10...\n");
+        return;
+    }
+
+    int dA, dB, dC, dD, dE, dF, dG, dH, dI, dJ, soma;
+    dA = 1; dB = 1; dC = 1; dD = 1, dE = 1, dF = 1, dG = 1, dH = 1, dI = 1, dJ = 1;
+
+    soma = 0;
+    float sucess = 0;
+    float total = 0;
+
+    switch (dices_num) {
+        case 2: {
+            for (dA = 1; dA < dice_sides+1; dA++) {
+                for (dB = 1; dB < dice_sides+1; dB++) {
+                    soma = dA + dB;
+                    if (soma <= dif) {
+                        sucess++;
+                    }
+                    total++;
+                    soma = 0;
+                }
+            }
+            break;
+        }
+        case 3: {
+            for (dC = 1; dC < dice_sides+1; dC++) {
+                for (dA = 1; dA < dice_sides+1; dA++) {
+                    for (dB = 1; dB < dice_sides+1; dB++) {
+                        soma = dA + dB + dC;
+                        if (soma <= dif) {
+                            sucess++;
+                        }
+                        total++;
+                        soma = 0;
+                    }
+                }
+            }
+            break;
+        }
+        case 4: {
+            for (dD = 1; dD < dice_sides+1; dD++) {
+                for (dC = 1; dC < dice_sides+1; dC++) {
+                    for (dA = 1; dA < dice_sides+1; dA++) {
+                        for (dB = 1; dB < dice_sides+1; dB++) {
+                            soma = dA + dB + dC + dD;
+                            if (soma <= dif) {
+                                sucess++;
+                            }
+                            total++;
+                            soma = 0;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        case 5: {
+            for (dE = 1; dE < dice_sides+1; dE++) {
+                for (dD = 1; dD < dice_sides+1; dD++) {
+                    for (dC = 1; dC < dice_sides+1; dC++) {
+                        for (dA = 1; dA < dice_sides+1; dA++) {
+                            for (dB = 1; dB < dice_sides+1; dB++) {
+                                soma = dA + dB + dC + dD + dE;
+                                if (soma <= dif) {
+                                    sucess++;
+                                }
+                                total++;
+                                soma = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        case 6: {
+            for (dF = 1; dF < dice_sides+1; dF++ ) {
+                for (dE = 1; dE < dice_sides+1; dE++) {
+                    for (dD = 1; dD < dice_sides+1; dD++) {
+                        for (dC = 1; dC < dice_sides+1; dC++) {
+                            for (dA = 1; dA < dice_sides+1; dA++) {
+                                for (dB = 1; dB < dice_sides+1; dB++) {
+                                    soma = dA + dB + dC + dD + dE + dF;
+                                    if (soma <= dif) {
+                                        sucess++;
+                                    }
+                                    total++;
+                                    soma = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        case 7: {
+            for (dG = 1; dG < dice_sides+1; dG++ ) {
+                for (dF = 1; dF < dice_sides+1; dF++ ) {
+                    for (dE = 1; dE < dice_sides+1; dE++) {
+                        for (dD = 1; dD < dice_sides+1; dD++) {
+                            for (dC = 1; dC < dice_sides+1; dC++) {
+                                for (dA = 1; dA < dice_sides+1; dA++) {
+                                    for (dB = 1; dB < dice_sides+1; dB++) {
+                                        soma = dA + dB + dC + dD + dE + dF + dG;
+                                        if (soma <= dif) {
+                                            sucess++;
+                                        }
+                                        total++;
+                                        soma = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+
+
+    }
+
+    float percentual = 0.0;
+    percentual = (sucess / total) * 100.0;
+
+    printf("Num Dices: %d, Dice type: D%d, Dif: %d, Sucessos: %d, Total: %d, Percentual:%f\n", dices_num, dice_sides, dif, (int)sucess, (int)total, percentual);
+}
+
+
+
+
 
 int main(int argc, char *argv[]) {
     srand(time(NULL));
     int dif = atoi(argv[1]);
 
-    while (dif != 4) {
-        dice_eval2(2, 0, dif);
-        dice_eval2(3, 0, dif);
-        dice_eval2(4, 0, dif);
-
-        /*
-        dice_eval2(5, 0, dif);
-        dice_eval2(6, 0, dif);
-        dice_eval2(7, 0, dif);
-        dice_eval2(8, 0, dif);
-        dice_eval2(9, 0, dif);
-        dice_eval2(10, 0, dif);
-        */
-        dif--;
-
-    }
-    
     /*
-    while ( dif != 2 ) {
-        dice_eval(6, 6, 6, 0, dif);
-        dice_eval(6, 6, 8, 0, dif);
-        dice_eval(6, 8, 8, 0, dif);
-        dice_eval(8, 8, 8, 0, dif);
-        dice_eval(8, 8, 10, 0, dif);
-        dice_eval(8, 10, 10, 0, dif);
-        dice_eval(10, 10, 10, 0, dif);
-        dice_eval(10, 10, 12, 0, dif);
-        dice_eval(10, 12, 12, 0, dif);
-        dice_eval(12, 12, 12, 0, dif);
-        dif--;
+    printf("=======================\n");
+
+    printf("Num capacidades 2: vref = 2 * 3 + (4)[Muito fácil]; "); dice_eval3(2,6,10);
+    printf("Num capacidades 3: vref = 3 * 3 + (4)[-----------]; "); dice_eval3(3,6,13);
+    printf("Num capacidades 4: vref = 4 * 3 + (4)[-----------]; "); dice_eval3(4,6,16);
+    printf("Num capacidades 5: vref = 5 * 3 + (4)[-----------]; "); dice_eval3(5,6,19);
+    printf("Num capacidades 6: vref = 6 * 3 + (4)[-----------]; "); dice_eval3(6,6,22);
+    printf("Num capacidades 7: vref = 7 * 3 + (4)[-----------]; "); dice_eval3(7,6,25);
+
+    printf("=======================\n");
+
+    printf("Num capacidades 2: vref = 2 * 3 + (2)[Fácil]; "); dice_eval3(2,6,8);
+    printf("Num capacidades 3: vref = 3 * 3 + (2)[-----]; "); dice_eval3(3,6,11);
+    printf("Num capacidades 4: vref = 4 * 3 + (2)[-----]; "); dice_eval3(4,6,14);
+    printf("Num capacidades 5: vref = 5 * 3 + (2)[-----]; "); dice_eval3(5,6,17);
+    printf("Num capacidades 6: vref = 6 * 3 + (2)[-----]; "); dice_eval3(6,6,20);
+    printf("Num capacidades 7: vref = 7 * 3 + (2)[-----]; "); dice_eval3(7,6,23);
+
+
+    printf("=======================\n");
+
+    printf("Num capacidades 2: vref = 2 * 3 + (1)[Trivial]; "); dice_eval3(2,6,7);
+    printf("Num capacidades 3: vref = 3 * 3 + (1)[Trivial]; "); dice_eval3(3,6,10);
+    printf("Num capacidades 4: vref = 4 * 3 + (1)[Trivial]; "); dice_eval3(4,6,13);
+    printf("Num capacidades 5: vref = 5 * 3 + (1)[Trivial]; "); dice_eval3(5,6,16);
+    printf("Num capacidades 6: vref = 6 * 3 + (1)[Trivial]; "); dice_eval3(6,6,19);
+    printf("Num capacidades 7: vref = 7 * 3 + (1)[Trivial]; "); dice_eval3(7,6,22);
+
+    printf("=======================\n");
+
+    printf("Num capacidades 2: vref = 2 * 3 + (0)[Médio]; "); dice_eval3(2,6,6); // Referencia
+    printf("Num capacidades 3: vref = 3 * 3 + (0)[Médio]; "); dice_eval3(3,6,9);
+    printf("Num capacidades 4: vref = 4 * 3 + (0)[Médio]; "); dice_eval3(4,6,12);
+    printf("Num capacidades 5: vref = 5 * 3 + (0)[Médio]; "); dice_eval3(5,6,15);
+    printf("Num capacidades 6: vref = 6 * 3 + (0)[Médio]; "); dice_eval3(6,6,18);
+    printf("Num capacidades 7: vref = 7 * 3 + (0)[Médio]; "); dice_eval3(7,6,21);
+
+    printf("=======================\n");
+
+    printf("Num capacidades 2: vref = 2 * 3 + (-1)[Desafiador]; "); dice_eval3(2,6,5);
+    printf("Num capacidades 3: vref = 3 * 3 + (-1)[----------]; "); dice_eval3(3,6,8);
+    printf("Num capacidades 4: vref = 4 * 3 + (-1)[----------]; "); dice_eval3(4,6,11);
+    printf("Num capacidades 5: vref = 5 * 3 + (-1)[----------]; "); dice_eval3(5,6,14);
+    printf("Num capacidades 6: vref = 6 * 3 + (-1)[----------]; "); dice_eval3(6,6,17);
+    printf("Num capacidades 7: vref = 7 * 3 + (-1)[----------]; "); dice_eval3(7,6,20);
+
+    printf("=======================\n");
+
+    printf("Num capacidades 2: vref = 2 * 3 + (-2)[Dificil]; "); dice_eval3(2,6,4);
+    printf("Num capacidades 3: vref = 3 * 3 + (-2)[-------]; "); dice_eval3(3,6,7);
+    printf("Num capacidades 4: vref = 4 * 3 + (-2)[-------]; "); dice_eval3(4,6,10);
+    printf("Num capacidades 5: vref = 5 * 3 + (-2)[-------]; "); dice_eval3(5,6,13);
+    printf("Num capacidades 6: vref = 6 * 3 + (-2)[-------]; "); dice_eval3(6,6,16);
+    printf("Num capacidades 7: vref = 7 * 3 + (-2)[-------]; "); dice_eval3(7,6,19);
+
+    printf("=======================\n");
+
+    printf("Num capacidades 2: vref = 2 * 3 + (-3)[Extremamente difícil]; "); dice_eval3(2,6,3);
+    printf("Num capacidades 3: vref = 3 * 3 + (-3)[--------------------]; "); dice_eval3(3,6,6);
+    printf("Num capacidades 4: vref = 4 * 3 + (-3)[--------------------]; "); dice_eval3(4,6,9);
+    printf("Num capacidades 5: vref = 5 * 3 + (-3)[--------------------]; "); dice_eval3(5,6,12);
+    printf("Num capacidades 6: vref = 6 * 3 + (-3)[--------------------]; "); dice_eval3(6,6,15);
+    printf("Num capacidades 7: vref = 7 * 3 + (-3)[--------------------]; "); dice_eval3(7,6,18);
+
+    printf("=======================\n");
+
+    printf("Num capacidades 2: vref = 2 * 3 + (-4)[Praticamente impossível]; "); dice_eval3(2,6,2);
+    printf("Num capacidades 3: vref = 3 * 3 + (-4)[-----------------------]; "); dice_eval3(3,6,5);
+    printf("Num capacidades 4: vref = 4 * 3 + (-4)[-----------------------]; "); dice_eval3(4,6,8);
+    printf("Num capacidades 5: vref = 5 * 3 + (-4)[-----------------------]; "); dice_eval3(5,6,11);
+    printf("Num capacidades 6: vref = 6 * 3 + (-4)[-----------------------]; "); dice_eval3(6,6,14);
+    printf("Num capacidades 7: vref = 7 * 3 + (-4)[-----------------------]; "); dice_eval3(7,6,17);
+    */
+
+    /*
+    printf("Avaliação 3D8\n");
+    for (int i = 3; i < 25; i++) {
+        dice_eval3(3,8,i);
+    }
+
+    printf("Avaliação 3D12\n");
+    for (int i = 3; i < 37; i++) {
+        dice_eval3(3,12,i);
     }
     */
-    return 0;
-}
 
+    printf("Avaliação 5D6\n");
+    for (int i = 5; i < 31; i++) {
+        dice_eval3(5,6,i);
+    }
+
+
+    /*
+    printf("Avaliação 2D12\n");
+    for (int i = 2; i < 25; i++) {
+        dice_eval3(2,12,i);
+    }
+    */
+
+
+    /*
+    printf("Avaliação 3D10\n");
+    for (int i = 3; i < 31; i++) {
+        dice_eval3(3,10,i);
+    }
+    */
+
+
+
+    return 0;
+}  
 
