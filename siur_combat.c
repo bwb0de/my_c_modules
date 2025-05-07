@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -6,8 +7,14 @@
 #include "io_cli.h"
 //#include "siur_db_create.c"
 //#include "siur_db_write.c"
+
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+
 #include "siur_heap.h"
 #include "siur_tests.c"
+#include "siur_protagonistas.c"
 
 
 /*
@@ -35,7 +42,7 @@ typedef struct Movimentacao {
     float salto_horizontal;
 } atributos_movimento_t;
 
-atributos_movimento_t atributos_derivados_movimento(int agilidade, int ligeiro) {
+atributos_movimento_t atributos_derivados_movimento(int8_t agilidade, int8_t ligeiro) {
     int soma = agilidade + ligeiro;
 
     atributos_movimento_t resposta;
@@ -117,7 +124,7 @@ void limpar_tela() {
 }
 
 
-void listar_combatentes(heap_fighter_item_t *lutadores, heap_fighter_item_t *lutadores_tmp, int n_init) {
+void listar_combatentes(heap_fighter_item_t *lutadores, heap_fighter_item_t *lutadores_tmp, int8_t n_init) {
         heap_fighter_item_t lutador;
 
        // Retirando lutadores da heap para listar...
@@ -136,7 +143,7 @@ void listar_combatentes(heap_fighter_item_t *lutadores, heap_fighter_item_t *lut
 }
 
 
-void fila_iniciativa_tradicional(heap_fighter_item_t *lutadores, heap_fighter_item_t *lutadores_tmp, int n_init) {
+void fila_iniciativa_tradicional(heap_fighter_item_t *lutadores, heap_fighter_item_t *lutadores_tmp, int8_t n_init) {
     // Reordenando lutadores com intervalos unitários de iniciativa, metodo tradicional de combate...
     int v = 10000;
 
@@ -156,30 +163,46 @@ void fila_iniciativa_tradicional(heap_fighter_item_t *lutadores, heap_fighter_it
 }
 
 void print_amarelo(char *str) {
-    printf("\n\033[33;1;1m%s\033[0m\n", str);
+    printf("\033[33;1;1m%s\033[0m", str);
 }
 
 
-input_rec_t selecionar_alvo(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int n_init, input_rec_t ir) {
+void print_verde(char *str) {
+    printf("\033[32;1;1m%s\033[0m", str);
+}
+
+void print_vermelho(char *str) {
+    printf("\033[31;1;1m%s\033[0m", str); 
+}
+
+
+input_rec_t selecionar_alvo(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int8_t n_init, input_rec_t ir) {
+    char info[80];
+
     if (lutador.fighter.alvo_ataque == -1) {
-        print_amarelo("Selecione o alvo");
+        print_amarelo("Selecione o alvo\n");
 
         for (int i = 0; i < n_init-1; i++) {
             printf("%d: %s\n", i+1, lutadores[i].fighter.nome);
         }
 
         ir = input_int_on_receiver("", ir);
-        printf("%s está atacando %s...", lutador.fighter.nome, lutadores[ir.valor.n_int-1].fighter.nome);
+
+        sprintf_s(info, 80, "%s está atacando %s...\n", lutador.fighter.nome, lutadores[ir.valor.n_int-1].fighter.nome);
+        print_verde(info);
+        
         return ir;
     }
 
-    printf("%s está atacando %s...", lutador.fighter.nome, lutadores[lutador.fighter.alvo_ataque].fighter.nome);
+    sprintf_s(info, 80, "%s está atacando %s...\n", lutador.fighter.nome, lutadores[lutador.fighter.alvo_ataque].fighter.nome); 
+    print_verde(info);
+
     return ir;
 }
 
 
 
-int melhor_entre_explosao_e_desenvoltura(heap_fighter_item_t lutador) {
+int8_t melhor_entre_explosao_e_desenvoltura(heap_fighter_item_t lutador) {
     if (lutador.fighter.desenvoltura > lutador.fighter.explosao ) { 
         return lutador.fighter.desenvoltura;
     } else {
@@ -203,8 +226,7 @@ void print_teste_info(parametros_teste_t param) {
 
 
 parametros_teste_t encontrar_percentual_para_base_teste(heap_fighter_item_t lutador, input_rec_t ir) {
-
-    int valor_teste;
+    int8_t valor_teste;
 
     if (lutador.fighter.tipo_ataque == -1 ) {
         const char *manobras[] = { //Buscar no personagem
@@ -215,15 +237,19 @@ parametros_teste_t encontrar_percentual_para_base_teste(heap_fighter_item_t luta
         };
 
         ir = input_selection("Manobra de ataque: ", manobras, 4, ir);
-        valor_teste = ir.valor.n_int;
+        valor_teste = (int8_t)ir.valor.n_int;
 
     } else {
         valor_teste = lutador.fighter.tipo_ataque;
     }
 
 
-    parametros_teste_t param;
-    int n_capacidades, somatorio_nivel_capacidades, modificador_estresse;
+    parametros_teste_t param = {};
+    int8_t n_capacidades, somatorio_nivel_capacidades, modificador_estresse;
+
+    n_capacidades = 0;
+    somatorio_nivel_capacidades = 0;
+    modificador_estresse = 0;
 
     switch (valor_teste) {
         case 1: {
@@ -234,46 +260,52 @@ parametros_teste_t encontrar_percentual_para_base_teste(heap_fighter_item_t luta
 
         case 2: {
             n_capacidades = 2; // Desenvoltura ou Explosão + Armas Brancas;
-            somatorio_nivel_capacidades = lutador.fighter.briga + melhor_entre_explosao_e_desenvoltura(lutador);
+            somatorio_nivel_capacidades = lutador.fighter.armas_brancas + melhor_entre_explosao_e_desenvoltura(lutador);
             // Diferenciar dano por tipo
             break;
         }
         case 4: {
             n_capacidades = 2; // Desenvoltura ou Explosão + Armas Brancas;
-            somatorio_nivel_capacidades = lutador.fighter.briga + melhor_entre_explosao_e_desenvoltura(lutador);
+            somatorio_nivel_capacidades = lutador.fighter.armas_brancas + melhor_entre_explosao_e_desenvoltura(lutador);
             // Diferenciar dano por tipo
 
             break;
         }
         case 8: {
             n_capacidades = 2; // Desenvoltura ou Explosão + Armas Brancas;
-            somatorio_nivel_capacidades = lutador.fighter.briga + melhor_entre_explosao_e_desenvoltura(lutador);
+            somatorio_nivel_capacidades = lutador.fighter.armas_brancas + melhor_entre_explosao_e_desenvoltura(lutador);
             // Diferenciar dano por tipo
 
             break;
         }
     }
 
+
     modificador_estresse =  lutador.fighter.ferimentos_efetivos + (lutador.fighter.ferimentos_incapacitantes * 3);
     param.percentual_base = percentual_base(n_capacidades, somatorio_nivel_capacidades);
-    param.percentual_base += lutador.fighter.modificador_ataque;
+
+    param.percentual_base += (int8_t)lutador.fighter.modificador_ataque;
     param.margem_sucesso_parcial = efeito_estresse(param.percentual_base, modificador_estresse);
     param.margem_falha_agravada = (param.percentual_base - param.margem_sucesso_parcial) + param.percentual_base;
-    param.tipo_ataque = ir.valor.n_int;
+    param.tipo_ataque = (int8_t)ir.valor.n_int;
 
     return param;
 
 }
 
 
-heap_fighter_item_t executar_ataque(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int n_init, input_rec_t ir) {
+heap_fighter_item_t executar_ataque(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int8_t n_init, input_rec_t ir) {
+    char info[80];
     if (lutador.fighter.alvo_ataque == -1) {
        ir = selecionar_alvo(lutador, lutadores, n_init, ir);
     }
     parametros_teste_t param = encontrar_percentual_para_base_teste(lutador, ir);
     param = ajustar_conforme_dificuldade(param, ir);
-    printf("Realize o teste de ataque de %s...", lutador.fighter.nome); 
+
+    sprintf_s(info, 80, "Realize o teste de ataque de %s...\n", lutador.fighter.nome); 
+    print_verde(info);
     print_teste_info(param);
+
     ir = input_text_on_receiver("...", ir); //final ação
     lutador.fighter.acoes_correntes_no_turno--;
     lutador.fighter.modificador_ataque = 0;
@@ -283,21 +315,25 @@ heap_fighter_item_t executar_ataque(heap_fighter_item_t lutador, heap_fighter_it
 }
 
 
-heap_fighter_item_t executar_finta(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int n_init, input_rec_t ir) {
+heap_fighter_item_t executar_finta(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int8_t n_init, input_rec_t ir) {
+    char info[80];
     ir = selecionar_alvo(lutador, lutadores, n_init, ir);
     lutador.fighter.alvo_ataque = ir.valor.n_int-1;
     
-    parametros_teste_t param;
+    parametros_teste_t param = {};
     param = encontrar_percentual_para_base_teste(lutador, ir);
     lutador.fighter.tipo_ataque = param.tipo_ataque;
 
-    printf("Realize o teste de ataque de %s...", lutador.fighter.nome); 
+    sprintf_s(info, 80, "Realize o teste de ataque-finta de %s...\n", lutador.fighter.nome); 
+    print_verde(info);
     print_teste_info(param);
 
-    printf("Realize o teste de defesa de %s...\n\n", lutadores[lutador.fighter.alvo_ataque].fighter.nome);
+    sprintf_s(info, 80, "Realize o teste de defesa de %s...\n\n",  lutadores[lutador.fighter.alvo_ataque].fighter.nome);
+    print_verde(info);
+
     lutadores[lutador.fighter.alvo_ataque].fighter.acoes_correntes_no_turno--;
 
-    ir = input_int_on_receiver("Qual foi a margem de sucesso do ofensor?", ir);
+    ir = input_int_on_receiver("Qual foi a margem de sucesso do ofensor na execução da finta?", ir);
     lutador.fighter.modificador_ataque = 10 * ir.valor.n_int;
     
     return lutador;
@@ -306,7 +342,7 @@ heap_fighter_item_t executar_finta(heap_fighter_item_t lutador, heap_fighter_ite
 
 
 
-heap_fighter_item_t executar_ataque_total(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int n_init, input_rec_t ir) {
+heap_fighter_item_t executar_ataque_total(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int8_t n_init, input_rec_t ir) {
     const char *opcoes[] = {
             "Fintar e atacar",   // 1
             "Golpe preciso",     // 2
@@ -319,8 +355,8 @@ heap_fighter_item_t executar_ataque_total(heap_fighter_item_t lutador, heap_figh
     switch (ir.valor.n_int) {
 
         case 1: {
-            print_amarelo("Finta: ");  lutador = executar_finta(lutador, lutadores, n_init, ir);
-            print_amarelo("Ataque: "); lutador = executar_ataque(lutador, lutadores, n_init, ir);
+            print_vermelho("Finta: ");  lutador = executar_finta(lutador, lutadores, n_init, ir);
+            print_vermelho("Ataque: "); lutador = executar_ataque(lutador, lutadores, n_init, ir);
             return lutador;
         }
 
@@ -349,7 +385,7 @@ heap_fighter_item_t executar_ataque_total(heap_fighter_item_t lutador, heap_figh
 
 
 
-heap_fighter_item_t executar_opcoes_da_acao(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int n_init, input_rec_t ir) {
+heap_fighter_item_t executar_opcoes_da_acao(heap_fighter_item_t lutador, heap_fighter_item_t *lutadores, int8_t n_init, input_rec_t ir) {
     switch (ir.valor.n_int) { // Obtem a opção selecionada de input_rec_t
 
         case 1: {  // Esperar
@@ -416,43 +452,94 @@ input_rec_t selecionar_tipo_acao(heap_fighter_item_t lutador, input_rec_t ir) {
 }
 
 
+int count_lua_files(const char *folder) {
+    #ifdef _WIN32
+        char pattern[MAX_PATH];
+        WIN32_FIND_DATA fd;
+        HANDLE h;
+
+        snprintf(pattern, sizeof(pattern), "%s\\*.lua", folder);
+        h = FindFirstFile(pattern, &fd);
+        if (h == INVALID_HANDLE_VALUE) {
+            fprintf(stderr, "FindFirstFile falhou em '%s'\n", folder);
+            return -1;
+        }
+
+        int count = 0;
+        do {
+            // Ignore diretórios (só arquivos .lua)
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+                count++;
+            }
+        } while (FindNextFile(h, &fd));
+
+        FindClose(h);
+        return count;
+    #else
+        DIR *dp = opendir(folder);
+        if (!dp) {
+            perror("opendir");
+            return -1;
+        }
+
+        struct dirent *entry;
+        int count = 0;
+        size_t len_ext = strlen(".lua");
+
+        while ((entry = readdir(dp))) {
+            size_t len = strlen(entry->d_name);
+            if (len > len_ext &&
+                strcmp(entry->d_name + len - len_ext, ".lua") == 0)
+            {
+                count++;
+            }
+        }
+
+        closedir(dp);
+        return count;
+    #endif
+}
+
+
 
 int main(int argc, char *argv[]) {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
     input_rec_t ir = {.valor = "", .tipo = TEXTO };
+    int8_t keep_fight = 1;
 
-    heap_fighter_item_t lutador;
-    heap_fighter_item_t lutadores[5]; 
-    heap_fighter_item_t lutadores_tmp[5]; 
+    int8_t n = count_lua_files("siur_protagonistas"); // contagem dinâmica de protagonistas
 
-    int n = 5;
-    int n_init = n; // esse deverá ser um valor variável...
-    int acoes_lutador = 0;
+    heap_fighter_item_t lutador = {};
+    heap_fighter_item_t lutadores[n] = {}; 
+    heap_fighter_item_t lutadores_tmp[n] = {}; 
+
+    int8_t n_init = n; // esse deverá ser um valor variável...
+    int8_t acoes_lutador = 0;
+
+    carregar_pasta_protagonistas(L, "siur_protagonistas", lutadores);
+    
+    lua_close(L);
 
     while (n) {
         limpar_tela();
-        ir = input_text_on_receiver("Nome/identificador: ", ir);
-        strcpy(lutadores[n-1].fighter.nome, ir.valor.texto);
-        ir = input_int_on_receiver("Iniciativa: ", ir);
-        lutadores[n-1].iniciativa = ir.valor.n_int;
-        lutadores[n-1].fighter.fadiga = 0; // buscar fadiga do personagem
-        lutadores[n-1].fighter.ferimentos_efetivos = 0;
-        lutadores[n-1].fighter.ferimentos_incapacitantes = 0;
+        char prompt[50] = {};
+        sprintf_s(prompt, 50, "Iniciativa de %s: ", lutadores[n-1].fighter.nome);
+        ir = input_int_on_receiver(prompt, ir);
+        lutadores[n-1].iniciativa = (int32_t)ir.valor.n_int;
         lutadores[n-1].fighter.acoes_totais_no_turno = 2;
         lutadores[n-1].fighter.acoes_correntes_no_turno = 2;
-        lutadores[n-1].fighter.explosao = 2;
-        lutadores[n-1].fighter.desenvoltura = 2;
-        lutadores[n-1].fighter.briga = 2;
-        lutadores[n-1].fighter.armas_brancas = 2;
-        lutadores[n-1].fighter.armas_projetil = 2;
         lutadores[n-1].fighter.alvo_ataque = -1;
         lutadores[n-1].fighter.tipo_ataque = -1;
         n--;
     }
+
     heapfy(lutadores, n_init);
     fila_iniciativa_tradicional(lutadores, lutadores_tmp, n_init);
 
     // Loop de combate
-    while (1) {
+    while (keep_fight) {
         listar_combatentes(lutadores, lutadores_tmp, n_init);
 
         lutador = heap_pop(lutadores, n_init);
@@ -465,9 +552,20 @@ int main(int argc, char *argv[]) {
         lutador.iniciativa -= n_init; //reajustando iniciativa após ação
         lutador.fighter.acoes_correntes_no_turno = lutador.fighter.acoes_totais_no_turno;
         heap_push(lutador, lutadores, n_init - 1); //reinserindo lutador na fila de iniciativa
+        
+        
+        const char *opcoes[] = {
+            "Não",        // 1
+            "Sim",        // 2
+        };
 
+        ir = input_selection("Finalizar combate? ", opcoes, 2, ir);
+
+        switch (ir.valor.n_int) {
+            case 1: break;
+            case 2: keep_fight = 0;
+        }
     }
-   
     return 0;
 }
 

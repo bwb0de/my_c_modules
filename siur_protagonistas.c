@@ -1,3 +1,4 @@
+#include "siur_heap.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,43 +22,55 @@ typedef struct Protagonista {
 } protagonista_t;
 
 
-void carregar_protagonista(lua_State *L, const char *caminho, protagonista_t *p, int i) {
+heap_fighter_item_t carregar_protagonista_combate(lua_State *L, const char *caminho) {
     //printf("Carregando plugin: %s\n", caminho);
+    heap_fighter_item_t lutador = {};
 
     if (luaL_dofile(L, caminho) != LUA_OK) {
         printf("Erro carregando plugin: %s\n", lua_tostring(L, -1));
         lua_pop(L, 1); // remove erro
-        return;
+        return lutador;
     }
 
     lua_getglobal(L, "personagem_info");
 
     if (!lua_istable(L, -1)) {
-        printf("Erro: 'peronagem_info' não é uma tabela! Arquivo está no formato correto?\n");
-        return;
+        printf("Erro: 'personagem_info' não é uma tabela!\n");
+        return lutador;
     }
 
-    lua_getfield(L, -1, "nome");
-    strncpy(p[i].nome, lua_tostring(L, -1), sizeof(p[i].nome));
+    lua_getfield(L, -1, "personagem");
+    strncpy_s(lutador.fighter.nome, 30, lua_tostring(L, -1), 30);
     lua_pop(L, 1);
 
     lua_getfield(L, -1, "explosao");
-    p[i].explosao = lua_tointeger(L, -1);
+    lutador.fighter.explosao = lua_tointeger(L, -1);
     lua_pop(L, 1);
 
     lua_getfield(L, -1, "briga");
-    p[i].briga = lua_tointeger(L, -1);
+    lutador.fighter.briga = lua_tointeger(L, -1);
     lua_pop(L, 1);
 
     lua_getfield(L, -1, "desenvoltura");
-    p[i].desenvoltura = lua_tointeger(L, -1);
+    lutador.fighter.desenvoltura = lua_tointeger(L, -1);
     lua_pop(L, 1);
+
+    lua_getfield(L, -1, "armas_brancas");
+    lutador.fighter.armas_brancas = lua_tointeger(L, -1);
+    lua_pop(L, 1);
+
+    lua_getfield(L, -1, "armas_projetil");
+    lutador.fighter.armas_projetil = lua_tointeger(L, -1);
+    lua_pop(L, 1);
+
+    return lutador;
 }
 
 
 
-void carregar_plugins(lua_State *L, const char *pasta) {
-    #ifdef _WIN32
+void carregar_pasta_protagonistas(lua_State *L, const char *pasta, heap_fighter_item_t *p) {
+   int i = 0;
+   #ifdef _WIN32
         WIN32_FIND_DATA find_data;
         HANDLE hFind;
         char pattern[MAX_PATH];
@@ -69,7 +82,16 @@ void carregar_plugins(lua_State *L, const char *pasta) {
             fprintf(stderr, "Não foi possível abrir a pasta de plugins: %s\n", pasta);
             return;
         }
+
+        do {
+            char caminho[MAX_PATH];
+            snprintf(caminho, sizeof(caminho), "%s\\%s", pasta, find_data.cFileName);
+            p[i++] = carregar_protagonista_combate(L, caminho);
+        } while (FindNextFile(hFind, &find_data) != 0);
+        FindClose(hFind);
+
     #else
+    
         struct dirent *entry;
         DIR *dp = opendir(pasta);
 
@@ -77,41 +99,17 @@ void carregar_plugins(lua_State *L, const char *pasta) {
             perror("Não foi possível abrir a pasta de plugins");
             return;
         }
-    #endif
 
 
-    protagonista_t p[10];
-    int i = 0;
-
-
-    #ifdef _WIN32
-        do {
-            char caminho[MAX_PATH];
-            snprintf(caminho, sizeof(caminho), "%s\\%s", pasta, find_data.cFileName);
-            carregar_protagonista(L, caminho, p, i);
-            i++;
-        } while (FindNextFile(hFind, &find_data) != 0);
-        FindClose(hFind);
-
-    #else
         while ((entry = readdir(dp))) {
             if (strstr(entry->d_name, ".lua")) {
                 char caminho[512];
                 snprintf(caminho, sizeof(caminho), "%s/%s", pasta, entry->d_name);
-                carregar_protagonista(L, caminho, p, i);
-                i++;
+                p[i++] = carregar_protagonista_combate(L, caminho);
             }
         }
         closedir(dp);
     #endif
-
-
-    for (int j = 0; j < i; j++) {
-        printf("Personagem: %s\n", p[j].nome);
-        printf("  explosão: %d\n", p[j].explosao);
-        printf("  desenvoltura: %d\n", p[j].desenvoltura);
-        printf("  briga: %d\n\n", p[j].briga);
-    }
 }
 
 void executar_comando(lua_State *L, const char *nome_funcao) {
@@ -129,6 +127,9 @@ void executar_comando(lua_State *L, const char *nome_funcao) {
     }
 }
 
+
+
+/*
 int main() {
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
@@ -141,11 +142,11 @@ int main() {
     executar_comando(L, "plugin_defesa");
     executar_comando(L, "plugin_cura");
     executar_comando(L, "plugin_voar"); // inexistente
-    */
+    
 
     lua_close(L);
     return 0;
-}
+} */
 
 /*
 
