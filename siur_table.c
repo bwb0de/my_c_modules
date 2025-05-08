@@ -8,17 +8,17 @@
 //#include "include/raylib.h"
 
 #define RAIO_PECA 20
-#define SCREEN_WIDTH 1200
-#define SCREEN_HEIGHT 900
 #define FPS 60
 #define TITULO "SiUR Table"
 #define INFO_STATUS_SIZE 20
 
 //const char     TITULO[] = "SiUR Table";
 //const int      FPS = 60;
-const Vector2  SCREEN_CENTER = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
+int            SCREEN_WIDTH = 1200;
+int            SCREEN_HEIGHT = 900;
+Vector2        SCREEN_CENTER = {1200 / 2, 900 / 2};
 const Vector2  SCREEN_TOP_LEFT = {0.0, 0.0};
-const Color    BACKGROUND_COLOR = BLACK;
+Color          BACKGROUND_COLOR = BLACK;
 
 
 typedef struct Piece {
@@ -63,6 +63,11 @@ int main(void) {
 
     line_t linha_distancia = {};
     line_t linha_caminho = {};
+    line_t linhas[50] = {};
+    uint8_t lineidx = 0;
+    uint8_t linefirst = 0;
+    uint8_t linesecond = 0;
+
 
     char info[20];
     char dist[10];
@@ -76,6 +81,7 @@ int main(void) {
     uint8_t selecao_ativa = 0;
     uint8_t move_step = 0;
     uint8_t piece_take = 0;
+    uint8_t bgcoloridx = 0;
 
     float zoom_factor = 1.0;
     uint8_t zoom_change = 0;
@@ -96,7 +102,43 @@ int main(void) {
         line_dist.y = ((cursor.pos.y - selecionada->pos.y) / 2) + selecionada->pos.y;
 
         count_changes = 0;
-  
+
+        if (IsKeyDown(KEY_RIGHT) && IsKeyDown(KEY_SPACE)) {
+            SCREEN_WIDTH += 10; SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            SCREEN_CENTER.x = SCREEN_WIDTH / 2;
+            SCREEN_CENTER.y = SCREEN_HEIGHT / 2;
+
+        } else if (IsKeyDown(KEY_LEFT) && IsKeyDown(KEY_SPACE)) {
+            SCREEN_WIDTH -= 10; SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            SCREEN_CENTER.x = SCREEN_WIDTH / 2;
+            SCREEN_CENTER.y = SCREEN_HEIGHT / 2;
+        } else if (IsKeyDown(KEY_UP) && IsKeyDown(KEY_SPACE)) {
+            SCREEN_HEIGHT += 10; SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            SCREEN_CENTER.x = SCREEN_WIDTH / 2;
+            SCREEN_CENTER.y = SCREEN_HEIGHT / 2;
+
+        } else if (IsKeyDown(KEY_DOWN) && IsKeyDown(KEY_SPACE)) {
+            SCREEN_HEIGHT -= 10; SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            SCREEN_CENTER.x = SCREEN_WIDTH / 2;
+            SCREEN_CENTER.y = SCREEN_HEIGHT / 2;
+        } else if (IsKeyDown(KEY_C) && IsKeyDown(KEY_SPACE) && count > 20) {
+            count = 0;
+            switch (bgcoloridx) {
+                case 0: { BACKGROUND_COLOR = GRAY;      bgcoloridx += 1; break; }
+                case 1: { BACKGROUND_COLOR = DARKGREEN; bgcoloridx += 1; break; }
+                case 2: { BACKGROUND_COLOR = WHITE;     bgcoloridx += 1; break; }
+                case 3: { BACKGROUND_COLOR = BROWN;     bgcoloridx += 1; break; }
+                case 4: { BACKGROUND_COLOR = DARKGRAY;  bgcoloridx += 1; break; }
+                case 5: { BACKGROUND_COLOR = BLACK;     bgcoloridx =  0; break; }
+            }
+        }
+
+        if (IsKeyDown(KEY_SPACE) && count > 20 && IsKeyDown(KEY_M)) {
+            count = 0;
+            ToggleFullscreen();
+        }
+
+         
         for (int i = 0; i < 10; i++) {
             count_changes++;
 
@@ -129,11 +171,35 @@ int main(void) {
                     switch (todas_pecas[i].cor_idx) {
                         case 0: {
                             todas_pecas[i].cor_idx += 1;
+                            todas_pecas[i].cor = DARKGREEN;
+                            break;
+                        }
+                        case 1: {
+                            todas_pecas[i].cor_idx += 1;
                             todas_pecas[i].cor = BLUE;
                             break;
                         }
-
-                        case 1: {
+                        case 2: {
+                            todas_pecas[i].cor_idx += 1;
+                            todas_pecas[i].cor = MAGENTA;
+                            break;
+                        }
+                        case 3: {
+                            todas_pecas[i].cor_idx += 1;
+                            todas_pecas[i].cor = WHITE;
+                            break;
+                        }
+                        case 4: {
+                            todas_pecas[i].cor_idx += 1;
+                            todas_pecas[i].cor = RED;
+                            break;
+                        }
+                        case 5: {
+                            todas_pecas[i].cor_idx += 1;
+                            todas_pecas[i].cor = GRAY;
+                            break;
+                        }
+                        case 6: {
                             todas_pecas[i].cor_idx = 0;
                             todas_pecas[i].cor = YELLOW;
                             break;
@@ -147,13 +213,13 @@ int main(void) {
                 todas_pecas[i].pos = GetMousePosition();
             }
 
-            if (IsKeyDown(KEY_LEFT)) {
+            if (IsKeyDown(KEY_LEFT) && !(IsKeyDown(KEY_SPACE))) {
                 todas_pecas[i].pos.x -= 2;
-            } else if (IsKeyDown(KEY_RIGHT)) {
+            } else if (IsKeyDown(KEY_RIGHT) && !(IsKeyDown(KEY_SPACE))) {
                 todas_pecas[i].pos.x += 2;
-            } else if (IsKeyDown(KEY_DOWN)) {
+            } else if (IsKeyDown(KEY_DOWN) && !(IsKeyDown(KEY_SPACE))) {
                 todas_pecas[i].pos.y += 2;
-            } else if (IsKeyDown(KEY_UP)) {
+            } else if (IsKeyDown(KEY_UP) && !(IsKeyDown(KEY_SPACE))) {
                 todas_pecas[i].pos.y -= 2;
             } 
 
@@ -246,7 +312,7 @@ int main(void) {
         }
 
         BeginDrawing();
-            ClearBackground(BLACK);
+            ClearBackground(BACKGROUND_COLOR);
             DrawText(info,10,SCREEN_HEIGHT-30, INFO_STATUS_SIZE, RED);
             if (selecao_ativa) {
                 if ( dist_v > 7 ) {
@@ -262,6 +328,10 @@ int main(void) {
             DrawLine(linha_caminho.origin.x, linha_caminho.origin.y, linha_caminho.destination.x, linha_caminho.destination.y,GRAY);
             DrawCircle(cursor.pos.x, cursor.pos.y, cursor.raio, cursor.cor);
             DrawCircle(SCREEN_CENTER.x, SCREEN_CENTER.y, 2, RED);
+
+            for (int i = 0; i < lineidx; i++) {
+                DrawLine(linhas[i].origin.x, linhas[i].origin.y, linhas[i].destination.x, linhas[i].destination.y, GRAY);
+            }
 
             for (int i = 0; i < 10; i++) {
                 DrawCircle(todas_pecas[i].pos.x, todas_pecas[i].pos.y, todas_pecas[i].raio, todas_pecas[i].cor);
