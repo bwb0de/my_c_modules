@@ -1038,39 +1038,53 @@ int main(int argc, char *argv[]) {
     printf("Num capacidades 6: vref = 6 * 3 + (-4)[-----------------------]; "); dice_eval3(6,6,14);
     printf("Num capacidades 7: vref = 7 * 3 + (-4)[-----------------------]; "); dice_eval3(7,6,17);
     */
+    printf("Avaliação 2D6\n");
+    for (int i = 2; i < 13; i++) {
+        dice_eval3(2,6,i);
+    }; printf("\n");
 
-    /*
+    printf("Avaliação 3D6\n");
+    for (int i = 3; i < 19; i++) {
+        dice_eval3(3,6,i);
+    }; printf("\n");
+ 
+
+    printf("Avaliação 4D6\n");
+    for (int i = 3; i < 25; i++) {
+        dice_eval3(4,6,i);
+    }; printf("\n");
+  
     printf("Avaliação 3D8\n");
     for (int i = 3; i < 25; i++) {
         dice_eval3(3,8,i);
-    }
+    }; printf("\n");
+
+    printf("Avaliação 2D12\n");
+    for (int i = 2; i < 25; i++) {
+        dice_eval3(2,12,i);
+    }printf("\n");
+
+    
+    printf("Avaliação 3D10\n");
+    for (int i = 3; i < 31; i++) {
+        dice_eval3(3,10,i);
+    }printf("\n");
+
 
     printf("Avaliação 3D12\n");
     for (int i = 3; i < 37; i++) {
         dice_eval3(3,12,i);
-    }
-    */
+    }printf("\n");
 
-    printf("Avaliação 5D6\n");
-    for (int i = 5; i < 31; i++) {
-        dice_eval3(5,6,i);
-    }
-
-
-    /*
-    printf("Avaliação 2D12\n");
-    for (int i = 2; i < 25; i++) {
-        dice_eval3(2,12,i);
-    }
-    */
+    printf("Avaliação 2D10\n");
+    for (int i = 2; i < 21; i++) {
+        dice_eval3(2,10,i);
+    }printf("\n");
+   
 
 
-    /*
-    printf("Avaliação 3D10\n");
-    for (int i = 3; i < 31; i++) {
-        dice_eval3(3,10,i);
-    }
-    */
+    
+    
 
 
 
