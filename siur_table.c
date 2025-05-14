@@ -44,6 +44,14 @@ double distancia(Vector2 p1, Vector2 p2) {
 }
 
 
+Texture2D ImageGPULoad(const char *im) {
+    Image image = LoadImage(im);
+    Texture2D texture = LoadTextureFromImage(image);
+    UnloadImage(image);
+    return texture;
+}
+
+
 int main(void) {
     srand(time(NULL)); 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITULO);
@@ -51,6 +59,7 @@ int main(void) {
     peca_t cursor = { .cor = BLUE };
     peca_t *selecionada;
     peca_t move_point = {};
+    peca_t regua_medida = {};
 
     peca_t todas_pecas[10] = {};
 
@@ -82,6 +91,7 @@ int main(void) {
     uint8_t move_step = 0;
     uint8_t piece_take = 0;
     uint8_t bgcoloridx = 0;
+    uint8_t regua = 0;
 
     float zoom_factor = 1.0;
     uint8_t zoom_change = 0;
@@ -91,6 +101,8 @@ int main(void) {
     int count_changes = 0;
     
     SetTargetFPS(FPS);
+
+    Texture2D img = LoadTexture("fundo.png");
 
     while (!WindowShouldClose()) {
 
@@ -136,6 +148,26 @@ int main(void) {
         if (IsKeyDown(KEY_SPACE) && count > 20 && IsKeyDown(KEY_M)) {
             count = 0;
             ToggleFullscreen();
+        } else if (IsKeyDown(KEY_R) && count > 20 && regua == 0) {
+            move_point.pos.x = GetMouseX();
+            move_point.pos.y = GetMouseY();
+            selecionada = &regua_medida;
+            selecionada->pos.x = GetMouseX();
+            selecionada->pos.y = GetMouseY();
+            escolher_destino = 1;
+            linha_caminho.origin = move_point.pos;
+            linha_caminho.destination = move_point.pos;
+            selecao_ativa = 1;
+            regua = 1;
+            count = 0;
+        } else if (IsKeyDown(KEY_R) && count > 20 && regua != 0) {
+            move_point.pos.x = -20.0;
+            move_point.pos.y = -20.0;
+            linha_caminho.origin = move_point.pos;
+            linha_caminho.destination = move_point.pos;
+            selecao_ativa = 0;
+            regua = 0;
+            count = 0;
         }
 
          
@@ -245,21 +277,6 @@ int main(void) {
             while (count_changes) {
                 int i = count_changes-1;
                 todas_pecas[i].raio = RAIO_PECA * zoom_factor;
-
-                //double distancia_antes = distancia(todas_pecas[i].pos, SCREEN_TOP_LEFT);
-                //double distancia_depois = distancia_antes * zoom_factor;
-
-                //todas_pecas[i].pos.x = (distancia_depois * todas_pecas[i].pos.x) / distancia_antes;
-                //todas_pecas[i].pos.y = (distancia_depois * todas_pecas[i].pos.y) / distancia_antes;
-
-
-                /*
-                
-                x1 --- h1;
-                x2 --- h2 = h1 * factor;
-
-                */
-                
                 count_changes--;
             }
 
@@ -313,6 +330,7 @@ int main(void) {
 
         BeginDrawing();
             ClearBackground(BACKGROUND_COLOR);
+            DrawTexture(img, 0, 0, WHITE);
             DrawText(info,10,SCREEN_HEIGHT-30, INFO_STATUS_SIZE, RED);
             if (selecao_ativa) {
                 if ( dist_v > 7 ) {
@@ -326,8 +344,10 @@ int main(void) {
 
             DrawCircle(move_point.pos.x, move_point.pos.y, 5, GRAY);
             DrawLine(linha_caminho.origin.x, linha_caminho.origin.y, linha_caminho.destination.x, linha_caminho.destination.y,GRAY);
-            DrawCircle(cursor.pos.x, cursor.pos.y, cursor.raio, cursor.cor);
-            DrawCircle(SCREEN_CENTER.x, SCREEN_CENTER.y, 2, RED);
+            if (!(regua)) {
+                DrawCircle(cursor.pos.x, cursor.pos.y, cursor.raio, cursor.cor);
+            }
+            //DrawCircle(SCREEN_CENTER.x, SCREEN_CENTER.y, 2, RED);
 
             for (int i = 0; i < lineidx; i++) {
                 DrawLine(linhas[i].origin.x, linhas[i].origin.y, linhas[i].destination.x, linhas[i].destination.y, GRAY);
@@ -341,6 +361,7 @@ int main(void) {
         EndDrawing();
 
     }
+    UnloadTexture(img);
     CloseWindow();
     
     return 0;
