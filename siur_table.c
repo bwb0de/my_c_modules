@@ -12,8 +12,6 @@
 #define TITULO "SiUR Table"
 #define INFO_STATUS_SIZE 20
 
-//const char     TITULO[] = "SiUR Table";
-//const int      FPS = 60;
 int            SCREEN_WIDTH = 1200;
 int            SCREEN_HEIGHT = 900;
 Vector2        SCREEN_CENTER = {1200 / 2, 900 / 2};
@@ -188,14 +186,17 @@ int main(void) {
 
                 if (IsKeyDown(KEY_P) && todas_pecas[i].piked == 0 && count > 20) {
                     todas_pecas[i].piked = 1;
-                    sprintf_s(info, 20, "%s", "Peça capturada...");
+                    sprintf(info, "%s", "Peça capturada...");
+                    //sprintf_s(info, 20, "%s", "Peça capturada...");
                     count = 0;
                 } else if (IsKeyDown(KEY_P) && todas_pecas[i].piked != 0 && count > 20) {
                     todas_pecas[i].piked = 0;
-                    sprintf_s(info, 20, "%s", "Peça liberada...");
+                    sprintf(info, "%s", "Peça capturada...");
+                    //sprintf_s(info, 20, "%s", "Peça liberada...");
                     count = 0;
                 } else if (IsKeyDown(KEY_E) && todas_pecas[i].piked == 0 && count > 20) {
-                    sprintf_s(info, 20, "%s", "Peça excluída...");
+                    sprintf(info, "%s", "Peça capturada...");
+                    //sprintf_s(info, 20, "%s", "Peça excluída...");
                     todas_pecas[i].pos.x = -2000.0f;
                     todas_pecas[i].pos.y = -2000.0f;
                     count = 0;
@@ -286,7 +287,8 @@ int main(void) {
         dist_v = sqrt( pow(cursor.pos.x - selecionada->pos.x, 2) + pow(cursor.pos.y - selecionada->pos.y, 2) );
         dist_v = trunc(dist_v / (RAIO_PECA*zoom_factor));
 
-        sprintf_s(dist, 10, "%d", (int)dist_v);
+        sprintf(dist, "%d", (int)dist_v);
+        //sprintf_s(dist, 10, "%d", (int)dist_v);
 
         if ( escolher_destino && dist_v <= 7 ) {
             if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {

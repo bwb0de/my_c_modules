@@ -9,6 +9,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+
+
+void clear_cli(){
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
+
+
 char *shellexec(const char *command) {
   /*
       Executa comando do shell como um subprocesso
