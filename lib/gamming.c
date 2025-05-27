@@ -93,9 +93,6 @@ void desenhar_pontos(game_status_t *g, int x, int y, int tamanho_fonte, Color co
 
 
 bool fim_de_jogo(game_status_t *g) {
-    if (g->fim_de_jogo) {
-        return true;
-    }
-    return false;
+    return g->fim_de_jogo;
 }
 

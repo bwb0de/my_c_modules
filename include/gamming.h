@@ -6,15 +6,16 @@
 #include <stdbool.h>
 
 typedef struct GameStatus {
-    uint8_t tela;
-    uint8_t fase;
-    uint8_t nivel;
-    uint8_t reino_fluxo;
-    uint8_t vidas;
-    uint8_t vitalidade;
-    uint8_t vitalidade_maxima;
-    uint8_t arma_corrente;
-    bool fim_de_jogo;
+    uint8_t  tela;
+    uint8_t  fase;
+    uint8_t  nivel;
+    uint8_t  reino_fluxo;
+    uint8_t  vidas;
+    uint8_t  vitalidade;
+    uint8_t  vitalidade_maxima;
+    uint8_t  arma_corrente;
+    Color    cor_fundo;
+    bool     fim_de_jogo;
     uint32_t steps;
     uint32_t pontos;
 } game_status_t;

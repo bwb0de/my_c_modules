@@ -73,7 +73,7 @@ void mover_tanque(game_status_t *g, tanque_t *t) {
     }
     else if (IsKeyDown(KEY_DOWN)) {
         t->corpo.x -= (cosf(t->direcao*DEG2RAD) / 2) * t->v_mov;
-t->corpo.y -= (sinf(t->direcao*DEG2RAD) / 2) * t->v_mov;
+        t->corpo.y -= (sinf(t->direcao*DEG2RAD) / 2) * t->v_mov;
     }
 
     if (IsKeyPressed(KEY_SPACE)) {
