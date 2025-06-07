@@ -195,3 +195,4 @@ int add_game(sqlite3 *db, const char *titulo, const char *descricao, const char 
 
 
 
+
