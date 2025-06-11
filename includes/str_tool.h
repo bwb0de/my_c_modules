@@ -6,6 +6,7 @@
 Funções para lidar com strings
 
 */
+#include <stdint.h>
 
 #define BUFFER_SIZE 30
 #define PARSER_SIZE 15

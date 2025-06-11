@@ -9,6 +9,11 @@
 
 
 substring_info_t str_sub_match(char *string, char *substring) {
+    //
+    // Retorna objeto substring com posição, tamanho e referencia de localização
+    // da substring em relação à string inicial. 
+    //
+
     int string_len = strlen(string);
     int substring_len = strlen(substring);
 
@@ -57,6 +62,7 @@ int str_get_sub(substring_info_t sbt, char *buffer, int buffer_size) {
     }
 
     if (sbt.len + 1 > buffer_size) {
+        printf("[str_get_sub]: Buffer size para string resposta é pequeno...\n");
         return -2; // Buffer muito pequeno
     }
 
@@ -75,6 +81,10 @@ int str_get_sub(substring_info_t sbt, char *buffer, int buffer_size) {
 
 
 int str_strip(char *string) {
+    //
+    // Remove apenas caracteres brancos do início e fim
+    //
+
     int string_len = strlen(string);
 
     int init_i = -1;
@@ -112,6 +122,10 @@ int str_strip(char *string) {
 
 
 int str_remove_whitespace(char *string) {
+    // 
+    // Remove caracteres em branco em qualquer posição
+    //
+
     int string_len = strlen(string);
 
     int init_i = -1;
